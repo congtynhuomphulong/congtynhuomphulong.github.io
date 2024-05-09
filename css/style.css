@@ -1,0 +1,19 @@
+body {
+  
+      height: 100%;
+      margin: 0;
+      background-color:#ffffff;
+      color:#450101;
+	
+	  table, th, td {
+		border: 1.5px solid rgb(0, 0, 0);
+		border-collapse: collapse;
+		table-layout: auto;
+	}
+	.center {
+		text-align: center;
+	}
+	.right{
+		text-align: right;
+	}
+}
