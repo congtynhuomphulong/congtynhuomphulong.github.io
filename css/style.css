@@ -10,10 +10,19 @@ body {
 		border-collapse: collapse;
 		table-layout: fixed;
 	}
+	th {
+		background-color: rgb(24, 225, 9);
+
+	}
+	
 	.center {
 		text-align: center;
 	}
 	.right{
 		text-align: right;
 	}
+	.greenClass {
+		background-color: rgb(176, 235, 172);
+	}
+
 }

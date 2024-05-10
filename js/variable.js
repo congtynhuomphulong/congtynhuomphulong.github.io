@@ -1,9 +1,11 @@
+var startIndex = 4;
 
 document.addEventListener("readystatechange", (event) => {
   if (event.target.readyState === "interactive") {
     //nitLoader();
   } else if (event.target.readyState === "complete") {
   document.getElementById("bangchamcong").innerHTML = "BẢNG CHẤM CÔNG - Tháng 5 năm 2024";
+  fillDateInWeek();
 
   // Nhan vien 1
 	document.getElementById("nv1_ho").innerHTML = "Hà Thị";
@@ -107,3 +109,27 @@ document.addEventListener("readystatechange", (event) => {
 
   }
 });
+
+function fillDateInWeek() {
+  var elements = document.getElementsByClassName("thuColor");
+  Array.prototype.forEach.call(elements, function(element, index) {
+    var bumber = 0;
+    if (index < 31) {
+      number = (index + startIndex)%7;
+      if (number == 1) {
+        element.innerHTML = "CN";
+        element.style.background = "#f161bfe";
+        var str = "date"+(index+1);
+        var els = document.getElementsByClassName(str);
+        Array.prototype.forEach.call(els, function(e) {
+          e.style.background="#f934e5";
+        });
+      } else if (number == 0) {
+        element.innerHTML = "Th7";
+      } else {
+        element.innerHTML = "Th" + number;
+      }
+    }
+});
+
+}
