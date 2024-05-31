@@ -24,8 +24,14 @@ document.addEventListener("readystatechange", (event) => {
             var date = entry.date;
             var str = nhanVien + "_vao" + date;
             document.getElementById(str).innerHTML = entry.in;
+            if (entry.in == "Ko dữ liệu") {
+              document.getElementById(str).style.color = "#ff0000";
+            }
             var str2 = nhanVien + "_ra" + date;
             document.getElementById(str2).innerHTML = entry.out;
+            if (entry.out == "Ko dữ liệu") {
+              document.getElementById(str2).style.color = "#ff0000";
+            }
           }
         }
 
