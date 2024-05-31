@@ -60,3 +60,25 @@ body {
 	.wrapper table th::nth-child(5){
 		left: 50;
 	}
+	tr > *:nth-child(38) {
+		display: none;
+	}
+	tr > *:nth-child(39) {
+		display: none;
+	}
+	tr > *:nth-child(40) {
+		display: none;
+	}
+	tr > *:nth-child(41) {
+		display: none;
+	}
+	tr > *:nth-child(43) {
+		display: none;
+	}
+	tr > *:nth-child(44) {
+		display: none;
+	}
+	tr > *:nth-child(45) {
+		display: none;
+	}
+
