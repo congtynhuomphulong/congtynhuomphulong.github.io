@@ -16,6 +16,7 @@ document.addEventListener("readystatechange", (event) => {
           var nhanVien = "nv" + i;
           var ho =nhanVien+"_ho";
           var ten =nhanVien+"_ten";
+          var chucdanh = nhanVien+"_chucdanh";
           document.getElementById(ho).innerHTML = obj[nhanVien].fristName;
           document.getElementById(ten).innerHTML = obj[nhanVien].lastName;
           document.getElementById(chucdanh).innerHTML = obj[nhanVien].job;
