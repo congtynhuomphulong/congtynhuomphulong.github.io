@@ -164,7 +164,7 @@
     "nv2": {
         "fristName": "Huỳnh Thị Kim",
         "lastName": "Ngân",
-        "job":"NV đóng gói",
+        "job":"Trợ lý Sản Xuất",
         "data": [
             {
                 "date": 1,
@@ -326,7 +326,7 @@
     "nv3": {
         "fristName": "Phan Thanh",
         "lastName": "Huy",
-        "job":"NV vận hành máy",
+        "job":"NV Vận hành máy",
         "data": [
             {
                 "date": 1,
@@ -488,7 +488,7 @@
     "nv4": {
         "fristName": "Hà Minh",
         "lastName": "Trí",
-        "job":"NV vận hành máy",
+        "job":"NV Vận hành máy",
         "data": [
             {
                 "date": 1,

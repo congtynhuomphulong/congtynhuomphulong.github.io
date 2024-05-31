@@ -18,6 +18,7 @@ document.addEventListener("readystatechange", (event) => {
           var ten =nhanVien+"_ten";
           document.getElementById(ho).innerHTML = obj[nhanVien].fristName;
           document.getElementById(ten).innerHTML = obj[nhanVien].lastName;
+          document.getElementById(chucdanh).innerHTML = obj[nhanVien].job;
           for (const entry of obj[nhanVien].data) {
             var date = entry.date;
             var str = nhanVien + "_vao" + date;
@@ -48,7 +49,7 @@ function fillDateInWeek() {
         var str = "date"+(index+1);
         var els = document.getElementsByClassName(str);
         Array.prototype.forEach.call(els, function(e) {
-          e.style.background="#f934e5";
+          e.style.background="#ffe680";
         });
       } else if (number == 0) {
         element.innerHTML = "Th7";
