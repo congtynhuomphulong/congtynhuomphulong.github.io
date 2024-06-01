@@ -6,8 +6,8 @@
         "data": [
             {
                 "date": 1,
-                "in": "-",
-                "out": "-"
+                "in": "-aa",
+                "out": "-aaa"
             },
             {
                 "date": 2,
