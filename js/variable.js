@@ -4,8 +4,15 @@ document.addEventListener("readystatechange", (event) => {
   if (event.target.readyState === "interactive") {
     //nitLoader();
   } else if (event.target.readyState === "complete") {
-    // Include another JavaScript file
-    fetch('./data/data.json')
+	  loadJson();
+	  document.getElementById("bangchamcong").innerHTML = "BẢNG CHẤM CÔNG - Tháng 5 năm 2024";
+	  fillDateInWeek();
+	  fillDateInHoliday();
+  }
+});
+
+function loadJson(){
+	fetch('./data/data.json')
       .then((res) => res.text())
       .then((text) => {
         //document.getElementById("demo").innerHTML = text;
@@ -34,16 +41,12 @@ document.addEventListener("readystatechange", (event) => {
             }
           }
         }
-
-
     });
-  
-  document.getElementById("bangchamcong").innerHTML = "BẢNG CHẤM CÔNG - Tháng 5 năm 2024";
-  fillDateInWeek();
-  fillDateInHoliday();
+}
+function refresh() {
+  loadJson();
+}
 
-  }
-});
 
 function fillDateInWeek() {
   var elements = document.getElementsByClassName("thuColor");
