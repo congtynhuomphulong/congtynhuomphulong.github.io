@@ -12,7 +12,7 @@ document.addEventListener("readystatechange", (event) => {
 });
 
 function loadJson(){
-	fetch('./data/data.json', {cache: "no-store"})
+	fetch('./data/data.json', {cache: "reload"})
       .then((res) => res.text())
       .then((text) => {
         //document.getElementById("demo").innerHTML = text;
