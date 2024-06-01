@@ -1,5 +1,4 @@
 var startIndex = 4;
-window.location.reload(true);
 
 document.addEventListener("readystatechange", (event) => {
   if (event.target.readyState === "interactive") {
