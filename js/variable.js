@@ -40,6 +40,7 @@ document.addEventListener("readystatechange", (event) => {
   
   document.getElementById("bangchamcong").innerHTML = "BẢNG CHẤM CÔNG - Tháng 5 năm 2024";
   fillDateInWeek();
+  fillDateInHoliday();
 
   }
 });
@@ -64,6 +65,19 @@ function fillDateInWeek() {
         element.innerHTML = "Th" + number;
       }
     }
-});
+  });
+}
 
+function fillDateInHoliday() {
+  var elements = document.getElementsByClassName("leColor");
+  Array.prototype.forEach.call(elements, function (element, index) {
+    if(element.innerHTML == "L"){
+      element.style.background = "#f161bfe";
+      var str = "date" + (index + 1);
+      var els = document.getElementsByClassName(str);
+      Array.prototype.forEach.call(els, function (e) {
+        e.style.background = "#ffe680";
+      });
+    }
+  });
 }
