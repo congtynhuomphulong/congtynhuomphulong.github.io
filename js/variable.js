@@ -44,7 +44,8 @@ function loadJson(){
     });
 }
 function refresh() {
-  loadJson();
+	window.location.href = window.location.href;
+  //loadJson();
 }
 
 
