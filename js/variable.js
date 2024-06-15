@@ -1,14 +1,35 @@
+// //import { readText } from "js/readTxtFile.js";
+// fetchInject([
+//   'js/readTxtFile.js'
+// ]).then(() => {
+//   console.log(`Finish in less than ${moment().endOf('year').fromNow(true)}`)
+// })
+
+// import the variables and function from module.js
+//import { message, number, multiplyNumbers } from './modules.js';
+//import { message, number, multiplyNumbers } from './js/modules.js';
+//import { message, number, multiplyNumbers } from '/js/modules.js';
+//import { message, number, multiplyNumbers } from 'modules.js';
+
+import { message, number, multiplyNumbers } from './module.js';
+
+
+console.log(message); // hello world
+console.log(number); // 10
+
+console.log(multiplyNumbers(3, 4)); // 12
+console.log(multiplyNumbers(5, 8)); // 4
+
 var startIndex = 4;
 var oldHolidayMap = new Map();
+var oldLastDayMap = new Map();
 
 document.addEventListener("readystatechange", (event) => {
   if (event.target.readyState === "interactive") {
     //nitLoader();
   } else if (event.target.readyState === "complete") {
     changeMonth();
-    document.getElementById("bangchamcong").innerHTML = "BẢNG CHẤM CÔNG - Tháng 5 năm 2024";
-    fillDateInWeek();
-    //    fillDateInHoliday();
+    alert(message);
   }
 });
 
@@ -50,7 +71,7 @@ function fillDateInWeek() {
   Array.prototype.forEach.call(elements, function (element, index) {
     var bumber = 0;
     if (index < 31) {
-      number = (index + startIndex) % 7;
+      let number = (index + startIndex) % 7;
       if (number == 1) {
         element.innerHTML = "CN";
         element.style.background = "#f161bfe";
@@ -68,19 +89,19 @@ function fillDateInWeek() {
   });
 }
 
-function fillDateInHoliday() {
-  var elements = document.getElementsByClassName("leColor");
-  Array.prototype.forEach.call(elements, function (element, index) {
-    if (element.innerHTML == "L") {
-      element.style.background = "#f161bfe";
-      var str = "date" + (index + 1);
-      var els = document.getElementsByClassName(str);
-      Array.prototype.forEach.call(els, function (e) {
-        e.style.background = "#ffe680";
-      });
-    }
-  });
-}
+// function fillDateInHoliday() {
+//   var elements = document.getElementsByClassName("leColor");
+//   Array.prototype.forEach.call(elements, function (element, index) {
+//     if (element.innerHTML == "L") {
+//       element.style.background = "#f161bfe";
+//       var str = "date" + (index + 1);
+//       var els = document.getElementsByClassName(str);
+//       Array.prototype.forEach.call(els, function (e) {
+//         e.style.background = "#ffe680";
+//       });
+//     }
+//   });
+// }
 
 function fillDateInHoliday(thangNam) {
   fetch("./js/holiday.json", { cache: "reload" })
@@ -88,9 +109,9 @@ function fillDateInHoliday(thangNam) {
     .then((text) => {
       const obj = JSON.parse(text);
       var holidayMap = new Map();
-      for (year in obj) {
+      for (let year in obj) {
         var valueY = obj[year];
-        for (month in valueY) {
+        for (let month in valueY) {
           var dates = valueY[month];
           holidayMap.set(year + month, dates);
         }
@@ -128,10 +149,13 @@ function changeMonth() {
   var thangNam = e.value;
   //var text = e.options[e.selectedIndex].text;
   var jsonFile = "./data/" + "data_" + thangNam + ".json";
-  var thang = thangNam.substring(5, 6);
-  var nam = thangNam.substring(0, 4)
+  var thang = thangNam.substring(4, 6);
+  var nam = thangNam.substring(0, 4);
   setupStartIndex(thang, nam);
   fillDateInHoliday(thangNam);
+  fillDateInWeek();
+  invisibleDayInMonth(thang, nam);
+  document.getElementById("bangchamcong").innerHTML = "BẢNG CHẤM CÔNG - Tháng "+ Number(thang)+" năm "+nam;
   loadJson(jsonFile);
 }
 
@@ -139,3 +163,40 @@ function setupStartIndex(thang, nam) {
   var date = new Date(nam + "-" + thang + "-01");
   startIndex = date.getDay();
 }
+
+function invisibleDayInMonth(thang, nam) {
+  const month30days = ["04", "06", "09", "11"];
+  var date31s = document.getElementsByClassName("date31");
+  var date30s = document.getElementsByClassName("date30");
+  var date29s = document.getElementsByClassName("date29");
+  for (let [key, value] of oldLastDayMap) {
+    key.style.background = value;
+  }
+
+  oldLastDayMap.clear();
+  if (thang == "02") {
+    if (Number(nam) % 4 != 0) {
+      displayBlock(date29s);
+    }
+    displayBlock(date30s);
+    displayBlock(date31s);
+  } else if (month30days.includes(thang)) {
+    displayBlock(date31s);
+  }
+}
+function toggleDisplayNone(dates) {
+    Array.prototype.forEach.call(dates, function (e) {
+      e.style = "display: none;";
+    });
+}
+
+function displayBlock(dates) {
+    Array.prototype.forEach.call(dates, function(e){
+      oldLastDayMap.set(e, e.style.background);
+      e.style.background = "#a3a3c2";
+    });
+
+}
+
+window.changeMonth = changeMonth;
+
