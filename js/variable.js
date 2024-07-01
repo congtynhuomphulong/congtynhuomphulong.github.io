@@ -12,8 +12,6 @@
 //import { message, number, multiplyNumbers } from 'modules.js';
 
 import { message, number, multiplyNumbers } from './module.js';
-
-
 //console.log(message); // hello world
 console.log(number); // 10
 
@@ -23,13 +21,14 @@ console.log(multiplyNumbers(5, 8)); // 4
 var startIndex = 4;
 var oldHolidayMap = new Map();
 var oldLastDayMap = new Map();
+var orgColorDayInWeekMap = new Map();
 
 document.addEventListener("readystatechange", (event) => {
   if (event.target.readyState === "interactive") {
     //nitLoader();
   } else if (event.target.readyState === "complete") {
     changeMonth();
- //   alert(message);
+    //   alert(message);
   }
 });
 
@@ -72,30 +71,69 @@ function loadJson(jsonFile) {
     });
 }
 
-function fillDateInWeek() {
+function fillDateInWeek(thang, nam) {
+  startIndex = setupStartIndex(thang, nam);
   var elements = document.getElementsByClassName("thuColor");
   Array.prototype.forEach.call(elements, function (element, index) {
     var bumber = 0;
     if (index < 31) {
-      startIndex = 7; // only thang 6
       let number = (index + startIndex) % 7;
       if (number == 1) {
         element.innerHTML = "CN";
-        element.style.background = "#f161bfe";
         var str = "date" + (index + 1);
         var els = document.getElementsByClassName(str);
         Array.prototype.forEach.call(els, function (e) {
+          orgColorDayInWeekMap.set(e, e.style.background);
           e.style.background = "#ffe680";
         });
+        //fillColorDateInWeek(str, "#ffe680", "#ffe680");
+       //var els = document.getElementsByClassName(str);
+       // Array.prototype.forEach.call(els, function (e) {
+       //   e.style.background = "#ffe680";
+       // });
       } else if (number == 0) {
         element.innerHTML = "Th7";
+        var str = "date" + (index + 1);
+        var els = document.getElementsByClassName(str);
+        Array.prototype.forEach.call(els, function (e) {
+          let color = orgColorDayInWeekMap.get(e);
+          if (typeof (color) != "undefined") {
+            e.style.background = orgColorDayInWeekMap.get(e);
+          }
+        });
       } else {
         element.innerHTML = "Th" + number;
+        var str = "date" + (index + 1);
+        var els = document.getElementsByClassName(str);
+        Array.prototype.forEach.call(els, function (e) {
+          let color = orgColorDayInWeekMap.get(e);
+          if (typeof (color) != "undefined") {
+            e.style.background = orgColorDayInWeekMap.get(e);
+          }
+        });
       }
     }
   });
 }
-
+function fillColorDateInWeek(date, colorHead, colorBody) {
+  var els = document.getElementsByClassName(date);
+  Array.prototype.forEach.call(els, function (e) {
+    orgColorDayInWeekMap.set(e, e.style.background);
+    e.style.background = colorBody;
+  });
+  var els2 = document.getElementsByClassName("leColor");
+  Array.prototype.forEach.call(els2, function (e) {
+    e.style.background = colorHead;
+  });
+  var els3 = document.getElementsByClassName("thuColor");
+  Array.prototype.forEach.call(els3, function (e) {
+    e.style.background = colorHead;
+  });
+  var els3 = document.getElementsByClassName("ngayColor");
+  Array.prototype.forEach.call(els3, function (e) {
+    e.style.background = colorHead;
+  });
+}
 // function fillDateInHoliday() {
 //   var elements = document.getElementsByClassName("leColor");
 //   Array.prototype.forEach.call(elements, function (element, index) {
@@ -158,9 +196,8 @@ function changeMonth() {
   var jsonFile = "./data/" + "data_" + thangNam + ".json";
   var thang = thangNam.substring(4, 6);
   var nam = thangNam.substring(0, 4);
-  setupStartIndex(thang, nam);
+  fillDateInWeek(thang, nam);
   fillDateInHoliday(thangNam);
-  fillDateInWeek();
   invisibleDayInMonth(thang, nam);
   document.getElementById("bangchamcong").innerHTML = "BẢNG CHẤM CÔNG - Tháng " + Number(thang) + " năm " + nam;
   loadJson(jsonFile);
@@ -168,7 +205,7 @@ function changeMonth() {
 
 function setupStartIndex(thang, nam) {
   var date = new Date(nam + "-" + thang + "-01");
-  startIndex = date.getDay();
+  return date.getDay() + 1;
 }
 
 function invisibleDayInMonth(thang, nam) {
