@@ -77,6 +77,7 @@ function fillDateInWeek() {
   Array.prototype.forEach.call(elements, function (element, index) {
     var bumber = 0;
     if (index < 31) {
+      startIndex = 7; // only thang 6
       let number = (index + startIndex) % 7;
       if (number == 1) {
         element.innerHTML = "CN";
