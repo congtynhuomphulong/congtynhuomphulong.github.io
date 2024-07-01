@@ -29,7 +29,7 @@ document.addEventListener("readystatechange", (event) => {
     //nitLoader();
   } else if (event.target.readyState === "complete") {
     changeMonth();
-    alert(message);
+ //   alert(message);
   }
 });
 
@@ -51,15 +51,21 @@ function loadJson(jsonFile) {
         document.getElementById(chucdanh).innerHTML = obj[nhanVien].job;
         for (const entry of obj[nhanVien].data) {
           var date = entry.date;
-          var str = nhanVien + "_vao" + date;
-          document.getElementById(str).innerHTML = entry.in;
+          var vao = nhanVien + "_vao" + date;
+          document.getElementById(vao).innerHTML = entry.in;
           if (entry.in == "Ko dữ liệu") {
-            document.getElementById(str).style.color = "#ff0000";
+            document.getElementById(vao).style.color = "#ff0000";
           }
-          var str2 = nhanVien + "_ra" + date;
-          document.getElementById(str2).innerHTML = entry.out;
+          var ra = nhanVien + "_ra" + date;
+          document.getElementById(ra).innerHTML = entry.out;
           if (entry.out == "Ko dữ liệu") {
-            document.getElementById(str2).style.color = "#ff0000";
+            document.getElementById(ra).style.color = "#ff0000";
+          }
+          var off = nhanVien + "_off" + date;
+          if (typeof (entry.off) != "undefined") {
+            document.getElementById(off).innerHTML = entry.off;
+          } else {
+            document.getElementById(off).innerHTML = "";
           }
         }
       }
@@ -155,7 +161,7 @@ function changeMonth() {
   fillDateInHoliday(thangNam);
   fillDateInWeek();
   invisibleDayInMonth(thang, nam);
-  document.getElementById("bangchamcong").innerHTML = "BẢNG CHẤM CÔNG - Tháng "+ Number(thang)+" năm "+nam;
+  document.getElementById("bangchamcong").innerHTML = "BẢNG CHẤM CÔNG - Tháng " + Number(thang) + " năm " + nam;
   loadJson(jsonFile);
 }
 
@@ -185,16 +191,16 @@ function invisibleDayInMonth(thang, nam) {
   }
 }
 function toggleDisplayNone(dates) {
-    Array.prototype.forEach.call(dates, function (e) {
-      e.style = "display: none;";
-    });
+  Array.prototype.forEach.call(dates, function (e) {
+    e.style = "display: none;";
+  });
 }
 
 function displayBlock(dates) {
-    Array.prototype.forEach.call(dates, function(e){
-      oldLastDayMap.set(e, e.style.background);
-      e.style.background = "#a3a3c2";
-    });
+  Array.prototype.forEach.call(dates, function (e) {
+    oldLastDayMap.set(e, e.style.background);
+    e.style.background = "#a3a3c2";
+  });
 
 }
 
