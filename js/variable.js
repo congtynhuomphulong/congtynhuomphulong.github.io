@@ -14,7 +14,7 @@
 import { message, number, multiplyNumbers } from './module.js';
 
 
-console.log(message); // hello world
+//console.log(message); // hello world
 console.log(number); // 10
 
 console.log(multiplyNumbers(3, 4)); // 12
