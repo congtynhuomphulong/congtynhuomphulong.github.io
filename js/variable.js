@@ -45,9 +45,11 @@ function loadJson(jsonFile) {
         var ho = nhanVien + "_ho";
         var ten = nhanVien + "_ten";
         var chucdanh = nhanVien + "_chucdanh";
+        var pl = nhanVien +"_pl"
         document.getElementById(ho).innerHTML = obj[nhanVien].fristName;
         document.getElementById(ten).innerHTML = obj[nhanVien].lastName;
         document.getElementById(chucdanh).innerHTML = obj[nhanVien].job;
+        document.getElementById(pl).innerHTML = obj[nhanVien].contract;
         for (const entry of obj[nhanVien].data) {
           var date = entry.date;
           var vao = nhanVien + "_vao" + date;
