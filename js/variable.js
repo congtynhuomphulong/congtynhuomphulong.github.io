@@ -22,11 +22,14 @@ var startIndex = 4;
 var oldHolidayMap = new Map();
 var oldLastDayMap = new Map();
 var orgColorDayInWeekMap = new Map();
+var list = [];
 
 document.addEventListener("readystatechange", (event) => {
   if (event.target.readyState === "interactive") {
     //nitLoader();
   } else if (event.target.readyState === "complete") {
+    
+  //asyncCall();
     changeMonth();
     //   alert(message);
   }
@@ -45,7 +48,7 @@ function loadJson(jsonFile) {
         var ho = nhanVien + "_ho";
         var ten = nhanVien + "_ten";
         var chucdanh = nhanVien + "_chucdanh";
-        var pl = nhanVien +"_pl"
+        var pl = nhanVien + "_pl"
         document.getElementById(ho).innerHTML = obj[nhanVien].fristName;
         document.getElementById(ten).innerHTML = obj[nhanVien].lastName;
         document.getElementById(chucdanh).innerHTML = obj[nhanVien].job;
@@ -70,7 +73,7 @@ function loadJson(jsonFile) {
           }
         }
       }
-    });
+    }).catch(()=>loadJson("../data/data_org.json"));
 }
 
 function fillDateInWeek(thang, nam) {
@@ -89,10 +92,10 @@ function fillDateInWeek(thang, nam) {
           e.style.background = "#ffe680";
         });
         //fillColorDateInWeek(str, "#ffe680", "#ffe680");
-       //var els = document.getElementsByClassName(str);
-       // Array.prototype.forEach.call(els, function (e) {
-       //   e.style.background = "#ffe680";
-       // });
+        //var els = document.getElementsByClassName(str);
+        // Array.prototype.forEach.call(els, function (e) {
+        //   e.style.background = "#ffe680";
+        // });
       } else if (number == 0) {
         element.innerHTML = "Th7";
         var str = "date" + (index + 1);
@@ -191,9 +194,14 @@ function fillDateInHoliday(thangNam) {
     });
 }
 
-function changeMonth() {
-  var e = document.getElementById("thang");
-  var thangNam = e.value;
+async function changeMonth() {
+  var thangNam = null;
+  if (list.length == 0){  
+    thangNam = await generateSelections();
+  } else {
+    var e = document.getElementById("thang");
+    thangNam = e.value;
+  }
   //var text = e.options[e.selectedIndex].text;
   var jsonFile = "./data/" + "data_" + thangNam + ".json";
   var thang = thangNam.substring(4, 6);
@@ -245,4 +253,51 @@ function displayBlock(dates) {
 }
 
 window.changeMonth = changeMonth;
+
+async function generateSelections() {
+  // do something with "text"
+  var selection = "";
+  const text = await loadMonths();
+  var lines = text.split('\n');
+  for (var line = 0; line < lines.length; line++) {
+    list.push(lines[line]);
+  }
+  var myDiv = document.getElementById("thang");
+    for (var i = 0, item; item = list[i]; i++) {
+      const op = document.createElement("option");
+      op.innerHTML = item.substring(9, 11) + "_" + item.substring(5, 9);
+      op.setAttribute('value', item.substring(5, 11));
+      if (i == list.length - 1) {
+        op.setAttribute('selected', 'selected');
+        selection = item.substring(5, 9)+item.substring(9, 11);
+      }
+      // Append to another element:
+      myDiv.appendChild(op);
+    }
+  return selection;
+    
+}
+
+function loadMonths(){
+  return fetch("../data/months.txt")
+    .then((res) => res.text())
+    .then((text) => { 
+      return text;
+    }).catch((e) => console.error(e));
+}
+function resolveAfter2Seconds() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve('resolved');
+    }, 2000);
+  });
+}
+
+async function asyncCall() {
+  console.log('calling');
+  const result = await resolveAfter2Seconds();
+  console.log(result);
+  // Expected output: "resolved"
+}
+
 

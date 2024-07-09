@@ -3,6 +3,7 @@
         "fristName": "Hà Thị",
         "lastName": "Hằng",
         "job":"NV đóng gói",
+		"contract":"PL24/001",
         "data": [
             {
                 "date": 1,
@@ -165,6 +166,7 @@
         "fristName": "Huỳnh Thị Kim",
         "lastName": "Ngân",
         "job":"Trợ lý Sản Xuất",
+		"contract":"PL24/002",
         "data": [
             {
                 "date": 1,
@@ -327,6 +329,7 @@
         "fristName": "Phan Thanh",
         "lastName": "Huy",
         "job":"NV Vận hành máy",
+		"contract":"PL24/004",
         "data": [
             {
                 "date": 1,
@@ -489,6 +492,7 @@
         "fristName": "Hà Minh",
         "lastName": "Trí",
         "job":"NV Vận hành máy",
+		"contract":"PL24/003",
         "data": [
             {
                 "date": 1,
