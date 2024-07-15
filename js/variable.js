@@ -71,6 +71,13 @@ function loadJson(jsonFile) {
           } else {
             document.getElementById(off).innerHTML = "";
           }
+          var time = caculateDurationTime(entry.out, entry.in);
+          var workingTime = nhanVien + "_time" + date;
+          if (typeof (workingTime) != "undefined") {
+            document.getElementById(workingTime).innerHTML = time;
+          } else {
+            document.getElementById(workingTime).innerHTML = "";
+          }
         }
       }
     }).catch(()=>loadJson("../data/data_org.json"));
@@ -300,4 +307,21 @@ async function asyncCall() {
   // Expected output: "resolved"
 }
 
+function caculateDurationTime(ra, vao) {
+  var arrayRa = ra.split(":");
+  var arrayVao = vao.split(":");
+  if (arrayRa.length == 3 && arrayVao.length == 3){
+    var second 
+    = (Number(arrayRa[0]) - Number(arrayVao[0])) * 3600
+    + Number(Number(arrayRa[1])- Number(arrayVao[1]))*60
+    +  Number(Number(arrayRa[2])- Number(arrayVao[2]));
+
+    var hh = Math.floor(second / 3600);
+    var mm = Math.floor((second % 3600) / 60);
+    var ss = Math.floor((second % 3600) % 60);
+   return (hh +":"+mm+":"+ss);
+  }
+  return null;
+
+}
 
