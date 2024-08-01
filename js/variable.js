@@ -43,7 +43,7 @@ function loadJson(jsonFile) {
       const obj = JSON.parse(text);
       // document.getElementById("nv1_ho").innerHTML = obj.nv1.fristName;
       //document.getElementById("nv1_ten").innerHTML = obj.nv1.lastName;
-      for (let i = 1; i < 5; i++) {
+      for (let i = 1; i < 8; i++) {
         var nhanVien = "nv" + i;
         var ho = nhanVien + "_ho";
         var ten = nhanVien + "_ten";
@@ -71,13 +71,13 @@ function loadJson(jsonFile) {
           } else {
             document.getElementById(off).innerHTML = "";
           }
-          var time = caculateDurationTime(entry.out, entry.in);
-          var workingTime = nhanVien + "_time" + date;
-          if (typeof (workingTime) != "undefined") {
-            document.getElementById(workingTime).innerHTML = time;
-          } else {
-            document.getElementById(workingTime).innerHTML = "";
-          }
+          // var time = caculateDurationTime(entry.out, entry.in);
+          // var workingTime = nhanVien + "_time" + date;
+          // if (typeof (workingTime) != "undefined") {
+          //   document.getElementById(workingTime).innerHTML = time;
+          // } else {
+          //   document.getElementById(workingTime).innerHTML = "";
+          // }
         }
       }
     }).catch(()=>loadJson("../data/data_org.json"));
