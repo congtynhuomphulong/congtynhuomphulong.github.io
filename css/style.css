@@ -10,17 +10,32 @@ body {
 		border-collapse: collapse;
 		table-layout: fixed;
 	}
-	th {
-		background-color: #18e109;
-
+	table thead tr {
+		position: -webkit-sticky;
+		position: sticky;
 	}
-	.wrapper {
+	table thead {
+		width: 7500px;
+	}
+	table tbody{
+		display: block;
+		height:400px;
+		width: 7500px;
+		overflow:auto;
+	  }
+	  .wrapper {
 		position: relative;
 		overflow: auto;
 		border: 1px solid black;
 		white-space: nowrap;
 	  }
-	
+	  span {
+		word-wrap: break-word;
+	  }
+	th {
+		background-color: #18e109;
+
+	}
 	.center {
 		text-align: center;
 	}
@@ -35,31 +50,11 @@ body {
 		position: sticky;
 	}
 	.view {
-		margin: auto;
+
 		width: 1450px;
 		margin-left: 0;
 	}
-	.wrapper table td:first-child {
-		left: 0;
-	}
-	.wrapper table th:is(:first-child) {
-		left: 0;
-	}
-	.wrapper table th::nth-child(1){
-		left: 10;
-	}
-	.wrapper table th::nth-child(2){
-		left: 20;
-	}
-	.wrapper table th::nth-child(3){
-		left: 30;
-	}
-	.wrapper table th::nth-child(4){
-		left: 40;
-	}
-	.wrapper table th::nth-child(5){
-		left: 50;
-	}
+	 
 	tr > *:is(:nth-child(38), :nth-child(39),:nth-child(40), :nth-child(41), :nth-child(43), :nth-child(44), :nth-child(45)) {
 		display: none;
 	}
