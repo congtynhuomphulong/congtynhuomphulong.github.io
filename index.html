@@ -5,6 +5,7 @@
     <script type="module" src="js/readTxtFile.js"></script>
     <script type="module" src="js/module.js"></script>
     <script type="module" src="js/variable.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -24,8 +25,21 @@
     <p style="display:inline-block;"><b> Tháng: </b></p>
     <select id="thang" style="display:inline-block;" onchange="changeMonth()">
     </select>
+    <p style="display:inline-block;"><b> Chọn nhân viên: </b></p>
+    <select id="select_NV" name="Select Staff" class="widget">
+        <option value="0" selected="selected">All</option>
+        <option value="1" >Nhân viên 1</option>
+        <option value="2" >Nhân viên 2</option>
+        <option value="3" >Nhân viên 3</option>
+        <option value="4" >Nhân viên 4</option>
+        <option value="5" >Nhân viên 5</option>
+        <option value="6" >Nhân viên 6</option>
+        <option value="7" >Nhân viên 7</option>
+       </select>
 	<p>Hard refresh: Ctrl + F5 (Ctrl + Fn + F5) || Ctrl+ "Refresh" button</p>
     <br>
+    <a href="#" class="toggler" data-prod-cat="1">+ On Store</a>
+
     <div class="view">
         <div class="wrapper">
             <table style="width: 500%">
@@ -148,7 +162,7 @@
                 </thead>
                 <tbody>
                     <!--Nhân viên 1-->
-                <tr height=18 style='height:13.2pt'>
+                <tr class="cat1" height=18  style='height:13.2pt'>
                     <td class="center sticky-col" rowspan=5 style="width: 0.32%;">1</td>
                     <td rowspan=5 id="nv1_ho" style="width: 0.99%;">Nhân viên 1</td>
                     <td rowspan=5 id="nv1_ten" style="width: 0.36%;">A</td>
@@ -187,15 +201,15 @@
                     <td class="center date30" id="nv1_off30" style="width: 1.199%;"></td>
                     <td class="center date31" id="nv1_off31" style="width: 1.199%;"></td>
                     <td class=dateclass style="width: 10%;">0</td>
-                    <td class=xl11018002 style="width: 2.90%;">0</td>
-                    <td class=xl11018002 style="width: 2.90%;">0</td>
-                    <td class=xl11018002 style="width: 2.90%;">0</td>
-                    <td class=xl11618002 style="width: 2.90%;"></td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;"></td>
                     <td class=xl9618002  style="width: 2.90%;">0.0</td>
                     <td class=xl9618002 style="width: 2.90%;">0.0</td>
                     <td class=xl9618002 style="width: 2.90%;">0.0</td>
                 </tr>
-                <tr height=18 style='height:13.2pt'>
+                <tr class="cat1" height=18  style='height:13.2pt'>
                     <td></td>
                     <td>Vào</td>
                     <td class=date1 id="nv1_vao1"></td>
@@ -230,7 +244,7 @@
                     <td class=date30 id="nv1_vao30"></td>
                     <td class=date31 id="nv1_vao31"></td>
                 </tr>
-                <tr height=18 style='height:13.2pt'>
+                <tr class="cat1" height=18  style='height:13.2pt'>
                     <td></td>
                     <td>Ra</td>
                     <td class=date1 id="nv1_ra1"></td>
@@ -266,7 +280,7 @@
                     <td class=date31 id="nv1_ra31"></td>
                     <td></td>
                 </tr>
-                <tr height=18 style='height:13.2pt'>
+                <tr class="cat1" height=18  style='height:13.2pt'>
                     <td></td>
                     <td>Thời gian (Ra - Vào)</td>
                     <td class="date1 right" id="nv1_time1"></td>
@@ -303,7 +317,7 @@
                     <td class=xl11118002 width=64 style='border-top:none;border-left:none;
           width:48pt'></td>
                 </tr>
-                <tr height=18 style='height:13.2pt'>
+                <tr class="cat1"  height=18 style='height:13.2pt'>
                     <td></td>
                     <td>Tăng ca</td>
                     <td class=date1></td>
@@ -340,54 +354,54 @@
                 </tr>
                 <!--Nhân viên 1-->
                 <!--Nhân viên 2-->
-                <tr class="greenclass" height=18 style='height:13.2pt'>
-                    <td class="center sticky-col" rowspan=5>2</td>
-                    <td rowspan=5 id="nv2_ho">Nhân viên 2</td>
-                    <td rowspan=5 id="nv2_ten">A</td>
-                    <td rowspan=5 id="nv2_chucdanh">Nhân viên vận hành máy</td>
-                    <td id="nv2_pl">PL24/002</td>
-                    <td>Nghỉ</td>
-                    <td class="center date1" id="nv2_off1"></td>
-                    <td class="center date2" id="nv2_off2"></td>
-                    <td class="center date3" id="nv2_off3"></td>
-                    <td class="center date4" id="nv2_off4"></td>
-                    <td class="center date5" id="nv2_off5"></td>
-                    <td class="center date6" id="nv2_off6"></td>
-                    <td class="center date7" id="nv2_off7"></td>
-                    <td class="center date8" id="nv2_off8"></td>
-                    <td class="center date9" id="nv2_off9"></td>
-                    <td class="center date10" id="nv2_off10"></td>
-                    <td class="center date11" id="nv2_off11"></td>
-                    <td class="center date12" id="nv2_off12"></td>
-                    <td class="center date13" id="nv2_off13"></td>
-                    <td class="center date14" id="nv2_off14"></td>
-                    <td class="center date15" id="nv2_off15"></td>
-                    <td class="center date16" id="nv2_off16"></td>
-                    <td class="center date17" id="nv2_off17"></td>
-                    <td class="center date18" id="nv2_off18"></td>
-                    <td class="center date19" id="nv2_off19"></td>
-                    <td class="center date20" id="nv2_off20"></td>
-                    <td class="center date21" id="nv2_off21"></td>
-                    <td class="center date22" id="nv2_off22"></td>
-                    <td class="center date23" id="nv2_off23"></td>
-                    <td class="center date24" id="nv2_off24"></td>
-                    <td class="center date25" id="nv2_off25"></td>
-                    <td class="center date26" id="nv2_off26"></td>
-                    <td class="center date27" id="nv2_off27"></td>
-                    <td class="center date28" id="nv2_off28"></td>
-                    <td class="center date29" id="nv2_off29"></td>
-                    <td class="center date30" id="nv2_off30"></td>
-                    <td class="center date31" id="nv2_off31"></td>
-                    <td width=64 >0</td>
-                    <td class=xl11018002>0</td>
-                    <td class=xl11018002>0</td>
-                    <td class=xl11018002>0</td>
-                    <td class=xl11618002></td>
-                    <td class=xl9618002 align=right>0.0</td>
-                    <td class=xl9618002 align=right>0.0</td>
-                    <td class=xl9618002 align=right>0.0</td>
+                <tr class="cat2 greenclass" height=18 style='height:13.2pt'>
+                    <td class="center sticky-col" rowspan=5 style="width: 0.32%;">2</td>
+                    <td rowspan=5 id="nv2_ho" style="width: 0.99%;">Nhân viên 2</td>
+                    <td rowspan=5 id="nv2_ten" style="width: 0.36%;">A</td>
+                    <td rowspan=5 id="nv2_chucdanh" style="width: 0.52%;">Nhân viên vận hành máy</td>
+                    <td id="nv2_pl" style="width: 0.23%;" >PL24/002</td>
+                    <td style="width: 1.03%;">Nghỉ</td>
+                    <td class="center date1" id="nv2_off1" style="width: 1.199%;"></td>
+                    <td class="center date2" id="nv2_off2" style="width: 1.199%;"></td>
+                    <td class="center date3" id="nv2_off3" style="width: 1.199%;"></td>
+                    <td class="center date4" id="nv2_off4" style="width: 1.199%;"></td>
+                    <td class="center date5" id="nv2_off5" style="width: 1.199%;"></td>
+                    <td class="center date6" id="nv2_off6" style="width: 1.199%;"></td>
+                    <td class="center date7" id="nv2_off7" style="width: 1.199%;"></td>
+                    <td class="center date8" id="nv2_off8" style="width: 1.199%;"></td>
+                    <td class="center date9" id="nv2_off9" style="width: 1.199%;"></td>
+                    <td class="center date10" id="nv2_off10" style="width: 1.199%;"></td>
+                    <td class="center date11" id="nv2_off11" style="width: 1.199%;"></td>
+                    <td class="center date12" id="nv2_off12" style="width: 1.199%;"></td>
+                    <td class="center date13" id="nv2_off13" style="width: 1.199%;"></td>
+                    <td class="center date14" id="nv2_off14" style="width: 1.199%;"></td>
+                    <td class="center date15" id="nv2_off15" style="width: 1.199%;"></td>
+                    <td class="center date16" id="nv2_off16" style="width: 1.199%;"></td>
+                    <td class="center date17" id="nv2_off17" style="width: 1.199%;"></td>
+                    <td class="center date18" id="nv2_off18" style="width: 1.199%;"></td>
+                    <td class="center date19" id="nv2_off19" style="width: 1.199%;"></td>
+                    <td class="center date20" id="nv2_off20" style="width: 1.199%;"></td>
+                    <td class="center date21" id="nv2_off21" style="width: 1.199%;"></td>
+                    <td class="center date22" id="nv2_off22" style="width: 1.199%;"></td>
+                    <td class="center date23" id="nv2_off23" style="width: 1.199%;"></td>
+                    <td class="center date24" id="nv2_off24" style="width: 1.199%;"></td>
+                    <td class="center date25" id="nv2_off25" style="width: 1.199%;"></td>
+                    <td class="center date26" id="nv2_off26" style="width: 1.199%;"></td>
+                    <td class="center date27" id="nv2_off27" style="width: 1.199%;"></td>
+                    <td class="center date28" id="nv2_off28" style="width: 1.199%;"></td>
+                    <td class="center date29" id="nv2_off29" style="width: 1.199%;"></td>
+                    <td class="center date30" id="nv2_off30" style="width: 1.199%;"></td>
+                    <td class="center date31" id="nv2_off31" style="width: 1.199%;"></td>
+                    <td style="width: 10%;" >0</td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;"></td>
+                    <td style="width: 2.90%;">0.0</td>
+                    <td style="width: 2.90%;">0.0</td>
+                    <td style="width: 2.90%;">0.0</td>
                 </tr>
-                <tr class="greenclass" height=18 style='height:13.2pt'>
+                <tr class="cat2 greenclass" height=18 style='height:13.2pt'>
                     <td></td>
                     <td>Vào</td>
                     <td class=date1 id="nv2_vao1"></td>
@@ -422,7 +436,7 @@
                     <td class=date30 id="nv2_vao30"></td>
                     <td class=date31 id="nv2_vao31"></td>
                 </tr>
-                <tr class="greenClass" height=18 style='height:13.2pt'>
+                <tr class="cat2 greenClass" height=18 style='height:13.2pt'>
                     <td></td>
                     <td>Ra</td>
                     <td class=date1 id="nv2_ra1"></td>
@@ -458,7 +472,7 @@
                     <td class=date31 id="nv2_ra31"></td>
                     <td></td>
                 </tr>
-                <tr class="greenClass" height=18 style='height:13.2pt'>
+                <tr class="cat2 greenClass" height=18 style='height:13.2pt'>
                     <td></td>
                     <td>Thời gian (Ra - Vào)</td>
                     <td class="date1 right" id="nv2_time1"></td>
@@ -495,7 +509,7 @@
                     <td class=xl11118002 width=64 style='border-top:none;border-left:none;
           width:48pt'></td>
                 </tr>
-                <tr class="greenClass" height=18 style='height:13.2pt'>
+                <tr class="cat2 greenClass" height=18 style='height:13.2pt'>
                     <td></td>
                     <td>Tăng ca</td>
                     <td class=date1></td>
@@ -533,54 +547,54 @@
                 <!--Nhân viên 2-->
         
                 <!--Nhân viên 3-->
-                <tr height=18 style='height:13.2pt'>
-                    <td class="center sticky-col" rowspan=5>3</td>
-                    <td rowspan=5 id="nv3_ho">Nhân viên 3</td>
-                    <td rowspan=5 id="nv3_ten">A</td>
-                    <td rowspan=5 id="nv3_chucdanh">Nhân viên vận hành máy</td>
-                    <td id="nv3_pl">PL24/004</td>
-                    <td class=xl9218002>Nghỉ</td>
-                    <td class="center date1" id="nv3_off1"></td>
-                    <td class="center date2" id="nv3_off2"></td>
-                    <td class="center date3" id="nv3_off3"></td>
-                    <td class="center date4" id="nv3_off4"></td>
-                    <td class="center date5" id="nv3_off5"></td>
-                    <td class="center date6" id="nv3_off6"></td>
-                    <td class="center date7" id="nv3_off7"></td>
-                    <td class="center date8" id="nv3_off8"></td>
-                    <td class="center date9" id="nv3_off9"></td>
-                    <td class="center date10" id="nv3_off10">P</td>
-                    <td class="center date11" id="nv3_off11"></td>
-                    <td class="center date12" id="nv3_off12"></td>
-                    <td class="center date13" id="nv3_off13"></td>
-                    <td class="center date14" id="nv3_off14"></td>
-                    <td class="center date15" id="nv3_off15"></td>
-                    <td class="center date16" id="nv3_off16"></td>
-                    <td class="center date17" id="nv3_off17"></td>
-                    <td class="center date18" id="nv3_off18"></td>
-                    <td class="center date19" id="nv3_off19"></td>
-                    <td class="center date20" id="nv3_off20"></td>
-                    <td class="center date21" id="nv3_off21"></td>
-                    <td class="center date22" id="nv3_off22"></td>
-                    <td class="center date23" id="nv3_off23"></td>
-                    <td class="center date24" id="nv3_off24"></td>
-                    <td class="center date25" id="nv3_off25"></td>
-                    <td class="center date26" id="nv3_off26"></td>
-                    <td class="center date27" id="nv3_off27"></td>
-                    <td class="center date28" id="nv3_off28"></td>
-                    <td class="center date29" id="nv3_off29"></td>
-                    <td class="center date30" id="nv3_off30"></td>
-                    <td class="center date31" id="nv3_off31"></td>
-                    <td class=xl9518002 width=64 >0</td>
-                    <td class=xl11018002>0</td>
-                    <td class=xl11018002>0</td>
-                    <td class=xl11018002>0</td>
-                    <td class=xl11618002></td>
-                    <td class=xl9618002 align=right>0.0</td>
-                    <td class=xl9618002 align=right>0.0</td>
-                    <td class=xl9618002 align=right>0.0</td>
+                <tr class="cat3" height=18 style='height:13.2pt'>
+                    <td class="center sticky-col" rowspan=5 style="width: 0.32%;">3</td>
+                    <td rowspan=5 id="nv3_ho" style="width: 0.99%;">Nhân viên 3</td>
+                    <td rowspan=5 id="nv3_ten" style="width: 0.36%;">A</td>
+                    <td rowspan=5 id="nv3_chucdanh" style="width: 0.52%;">Nhân viên vận hành máy</td>
+                    <td id="nv3_pl" style="width: 0.23%;" >PL24/004</td>
+                    <td class=xl9218002 style="width: 1.03%;">Nghỉ</td>
+                    <td class="center date1" id="nv3_off1" style="width: 1.199%;"></td>
+                    <td class="center date2" id="nv3_off2" style="width: 1.199%;"></td>
+                    <td class="center date3" id="nv3_off3" style="width: 1.199%;"></td>
+                    <td class="center date4" id="nv3_off4" style="width: 1.199%;"></td>
+                    <td class="center date5" id="nv3_off5" style="width: 1.199%;"></td>
+                    <td class="center date6" id="nv3_off6" style="width: 1.199%;"></td>
+                    <td class="center date7" id="nv3_off7" style="width: 1.199%;"></td>
+                    <td class="center date8" id="nv3_off8" style="width: 1.199%;"></td>
+                    <td class="center date9" id="nv3_off9" style="width: 1.199%;"></td>
+                    <td class="center date10" id="nv3_off10" style="width: 1.199%;">P</td>
+                    <td class="center date11" id="nv3_off11" style="width: 1.199%;"></td>
+                    <td class="center date12" id="nv3_off12" style="width: 1.199%;"></td>
+                    <td class="center date13" id="nv3_off13" style="width: 1.199%;"></td>
+                    <td class="center date14" id="nv3_off14" style="width: 1.199%;"></td>
+                    <td class="center date15" id="nv3_off15" style="width: 1.199%;"></td>
+                    <td class="center date16" id="nv3_off16" style="width: 1.199%;"></td>
+                    <td class="center date17" id="nv3_off17" style="width: 1.199%;"></td>
+                    <td class="center date18" id="nv3_off18" style="width: 1.199%;"></td>
+                    <td class="center date19" id="nv3_off19" style="width: 1.199%;"></td>
+                    <td class="center date20" id="nv3_off20" style="width: 1.199%;"></td>
+                    <td class="center date21" id="nv3_off21" style="width: 1.199%;"></td>
+                    <td class="center date22" id="nv3_off22" style="width: 1.199%;"></td>
+                    <td class="center date23" id="nv3_off23" style="width: 1.199%;"></td>
+                    <td class="center date24" id="nv3_off24" style="width: 1.199%;"></td>
+                    <td class="center date25" id="nv3_off25" style="width: 1.199%;"></td>
+                    <td class="center date26" id="nv3_off26" style="width: 1.199%;"></td>
+                    <td class="center date27" id="nv3_off27" style="width: 1.199%;"></td>
+                    <td class="center date28" id="nv3_off28" style="width: 1.199%;"></td>
+                    <td class="center date29" id="nv3_off29" style="width: 1.199%;"></td>
+                    <td class="center date30" id="nv3_off30" style="width: 1.199%;"></td>
+                    <td class="center date31" id="nv3_off31" style="width: 1.199%;"></td>
+                    <td class=xl9518002 style="width: 10%;">0</td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;"></td>
+                    <td style="width: 2.90%;">0.0</td>
+                    <td style="width: 2.90%;">0.0</td>
+                    <td style="width: 2.90%;">0.0</td>
                 </tr>
-                <tr height=18 style='height:13.2pt'>
+                <tr class="cat3" height=18 style='height:13.2pt'>
                     <td></td>
                     <td>Vào</td>
                     <td class=date1 id="nv3_vao1"></td>
@@ -615,7 +629,7 @@
                     <td class=date30 id="nv3_vao30"></td>
                     <td class=date31 id="nv3_vao31"></td>
                 </tr>
-                <tr height=18 style='height:13.2pt'>
+                <tr class="cat3" height=18 style='height:13.2pt'>
                     <td></td>
                     <td>Ra</td>
                     <td class=date1 id="nv3_ra1"></td>
@@ -651,7 +665,7 @@
                     <td class=date31 id="nv3_ra31"></td>
                     <td></td>
                 </tr>
-                <tr height=18 style='height:13.2pt'>
+                <tr class="cat3" height=18 style='height:13.2pt'>
                     <td></td>
                     <td>Thời gian (Ra - Vào)</td>
                     <td class="date1 right" id="nv3_time1"></td>
@@ -685,10 +699,10 @@
                     <td class="date29 right" id="nv3_time29"></td>
                     <td class="date30 right" id="nv3_time30"></td>
                     <td class="date31 right" id="nv3_time31"></td>
-                    <td class=xl11118002 width=64 style='border-top:none;border-left:none;
+                    <td class=xl11118002 style="width: 10%;"style='border-top:none;border-left:none;
           width:48pt'></td>
                 </tr>
-                <tr height=18 style='height:13.2pt'>
+                <tr class="cat3" height=18 style='height:13.2pt'>
                     <td></td>
                     <td>Tăng ca</td>
                     <td class=date1></td>
@@ -726,54 +740,54 @@
                 <!--Nhân viên 3-->
         
                 <!--Nhân viên 4-->
-                <tr class="greenClass" height=18 style='height:13.2pt' display="none">
-                    <td class="center sticky-col" rowspan=5>4</td>
-                    <td rowspan=5 id="nv4_ho">Nhân viên 1</td>
-                    <td rowspan=5 id="nv4_ten">A</td>
-                    <td rowspan=5 id="nv4_chucdanh">Nhân viên vận hành máy</td>
-                    <td id=nv4_pl>PL24/003</td>
-                    <td class=xl9218002>Nghỉ</td>
-                    <td class="center date1" id="nv4_off1"></td>
-                    <td class="center date2" id="nv4_off2"></td>
-                    <td class="center date3" id="nv4_off3"></td>
-                    <td class="center date4" id="nv4_off4"></td>
-                    <td class="center date5" id="nv4_off5"></td>
-                    <td class="center date6" id="nv4_off6"></td>
-                    <td class="center date7" id="nv4_off7"></td>
-                    <td class="center date8" id="nv4_off8"></td>
-                    <td class="center date9" id="nv4_off9"></td>
-                    <td class="center date10" id="nv4_off10"></td>
-                    <td class="center date11" id="nv4_off11"></td>
-                    <td class="center date12" id="nv4_off12"></td>
-                    <td class="center date13" id="nv4_off13"></td>
-                    <td class="center date14" id="nv4_off14"></td>
-                    <td class="center date15" id="nv4_off15"></td>
-                    <td class="center date16" id="nv4_off16"></td>
-                    <td class="center date17" id="nv4_off17"></td>
-                    <td class="center date18" id="nv4_off18"></td>
-                    <td class="center date19" id="nv4_off19"></td>
-                    <td class="center date20" id="nv4_off20"></td>
-                    <td class="center date21" id="nv4_off21"></td>
-                    <td class="center date22" id="nv4_off22"></td>
-                    <td class="center date23" id="nv4_off23"></td>
-                    <td class="center date24" id="nv4_off24"></td>
-                    <td class="center date25" id="nv4_off25"></td>
-                    <td class="center date26" id="nv4_off26"></td>
-                    <td class="center date27" id="nv4_off27"></td>
-                    <td class="center date28" id="nv4_off28"></td>
-                    <td class="center date29" id="nv4_off29"></td>
-                    <td class="center date30" id="nv4_off30"></td>
-                    <td class="center date31" id="nv4_off31"></td>
-                    <td class=xl9518002 width=64 >0</td>
-                    <td class=xl11018002>0</td>
-                    <td class=xl11018002>0</td>
-                    <td class=xl11018002>0</td>
-                    <td class=xl11618002></td>
-                    <td class=xl9618002 align=right>0.0</td>
-                    <td class=xl9618002 align=right>0.0</td>
-                    <td class=xl9618002 align=right>0.0</td>
+                <tr class="cat4 greenClass" height=18 style='height:13.2pt' display="none">
+                    <td class="center sticky-col" rowspan=5 style="width: 0.32%;">4</td>
+                    <td rowspan=5 id="nv4_ho" style="width: 0.99%;">Nhân viên 1</td>
+                    <td rowspan=5 id="nv4_ten" style="width: 0.36%;">A</td>
+                    <td rowspan=5 id="nv4_chucdanh" style="width: 0.52%;">Nhân viên vận hành máy</td>
+                    <td id="nv4_pl" style="width: 0.23%;" >PL24/003</td>
+                    <td class=xl9218002 style="width: 1.03%;">Nghỉ</td>
+                    <td class="center date1" id="nv4_off1" style="width: 1.199%;"></td>
+                    <td class="center date2" id="nv4_off2" style="width: 1.199%;"></td>
+                    <td class="center date3" id="nv4_off3" style="width: 1.199%;"></td>
+                    <td class="center date4" id="nv4_off4" style="width: 1.199%;"></td>
+                    <td class="center date5" id="nv4_off5" style="width: 1.199%;"></td>
+                    <td class="center date6" id="nv4_off6" style="width: 1.199%;"></td>
+                    <td class="center date7" id="nv4_off7" style="width: 1.199%;"></td>
+                    <td class="center date8" id="nv4_off8" style="width: 1.199%;"></td>
+                    <td class="center date9" id="nv4_off9" style="width: 1.199%;"></td>
+                    <td class="center date10" id="nv4_off10" style="width: 1.199%;"></td>
+                    <td class="center date11" id="nv4_off11" style="width: 1.199%;"></td>
+                    <td class="center date12" id="nv4_off12" style="width: 1.199%;"></td>
+                    <td class="center date13" id="nv4_off13" style="width: 1.199%;"></td>
+                    <td class="center date14" id="nv4_off14" style="width: 1.199%;"></td>
+                    <td class="center date15" id="nv4_off15" style="width: 1.199%;"></td>
+                    <td class="center date16" id="nv4_off16" style="width: 1.199%;"></td>
+                    <td class="center date17" id="nv4_off17" style="width: 1.199%;"></td>
+                    <td class="center date18" id="nv4_off18" style="width: 1.199%;"></td>
+                    <td class="center date19" id="nv4_off19" style="width: 1.199%;"></td>
+                    <td class="center date20" id="nv4_off20" style="width: 1.199%;"></td>
+                    <td class="center date21" id="nv4_off21" style="width: 1.199%;"></td>
+                    <td class="center date22" id="nv4_off22" style="width: 1.199%;"></td>
+                    <td class="center date23" id="nv4_off23" style="width: 1.199%;"></td>
+                    <td class="center date24" id="nv4_off24" style="width: 1.199%;"></td>
+                    <td class="center date25" id="nv4_off25" style="width: 1.199%;"></td>
+                    <td class="center date26" id="nv4_off26" style="width: 1.199%;"></td>
+                    <td class="center date27" id="nv4_off27" style="width: 1.199%;"></td>
+                    <td class="center date28" id="nv4_off28" style="width: 1.199%;"></td>
+                    <td class="center date29" id="nv4_off29" style="width: 1.199%;"></td>
+                    <td class="center date30" id="nv4_off30" style="width: 1.199%;"></td>
+                    <td class="center date31" id="nv4_off31" style="width: 1.199%;"></td>
+                    <td class=xl9518002 style="width: 10%;">0</td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;"></td>
+                    <td style="width: 2.90%;">0.0</td>
+                    <td style="width: 2.90%;">0.0</td>
+                    <td style="width: 2.90%;">0.0</td>
                 </tr>
-                <tr class="greenClass" height=18 style='height:13.2pt' display="none">
+                <tr class="cat4 greenClass" height=18 style='height:13.2pt' display="none">
                     <td></td>
                     <td>Vào</td>
                     <td class=date1 id="nv4_vao1"></td>
@@ -808,7 +822,7 @@
                     <td class=date30 id="nv4_vao30"></td>
                     <td class=date31 id="nv4_vao31"></td>
                 </tr>
-                <tr class="greenClass" height=18 style='height:13.2pt' display="none">
+                <tr class="cat4 greenClass" height=18 style='height:13.2pt' display="none">
                     <td></td>
                     <td>Ra</td>
                     <td class=date1 id="nv4_ra1"></td>
@@ -844,7 +858,7 @@
                     <td class=date31 id="nv4_ra31"></td>
                     <td></td>
                 </tr>
-                <tr  class="greenClass"  height=18 style='height:13.2pt' display="none">
+                <tr  class="cat4 greenClass"  height=18 style='height:13.2pt' display="none">
                     <td></td>
                     <td>Thời gian (Ra - Vào)</td>
                     <td class="date1 right" id="nv4_time1"></td>
@@ -881,7 +895,7 @@
                     <td class=xl11118002 width=64 style='border-top:none;border-left:none;
           width:48pt'></td>
                 </tr>
-                <tr  class="greenClass" height=18 style='height:13.2pt' display="none">
+                <tr  class="cat4 greenClass" height=18 style='height:13.2pt' display="none">
                     <td></td>
                     <td>Tăng ca</td>
                     <td class=date1></td>
@@ -918,54 +932,54 @@
                 </tr>
                 <!--Nhân viên 4-->
                 <!--Nhân viên 5-->
-                <tr height=18 style='height:13.2pt' display="none">
-                    <td class="center sticky-col" rowspan=5>5</td>
-                    <td rowspan=5 id="nv5_ho">Nhân viên 5</td>
-                    <td rowspan=5 id="nv5_ten">A</td>
-                    <td rowspan=5 id="nv5_chucdanh">Nhân viên vận hành máy</td>
-                    <td id=nv5_pl>PL24/003</td>
-                    <td class=xl9218002>Nghỉ</td>
-                    <td class="center date1" id="nv5_off1"></td>
-                    <td class="center date2" id="nv5_off2"></td>
-                    <td class="center date3" id="nv5_off3"></td>
-                    <td class="center date4" id="nv5_off4"></td>
-                    <td class="center date5" id="nv5_off5"></td>
-                    <td class="center date6" id="nv5_off6"></td>
-                    <td class="center date7" id="nv5_off7"></td>
-                    <td class="center date8" id="nv5_off8"></td>
-                    <td class="center date9" id="nv5_off9"></td>
-                    <td class="center date10" id="nv5_off10"></td>
-                    <td class="center date11" id="nv5_off11"></td>
-                    <td class="center date12" id="nv5_off12"></td>
-                    <td class="center date13" id="nv5_off13"></td>
-                    <td class="center date14" id="nv5_off14"></td>
-                    <td class="center date15" id="nv5_off15"></td>
-                    <td class="center date16" id="nv5_off16"></td>
-                    <td class="center date17" id="nv5_off17"></td>
-                    <td class="center date18" id="nv5_off18"></td>
-                    <td class="center date19" id="nv5_off19"></td>
-                    <td class="center date20" id="nv5_off20"></td>
-                    <td class="center date21" id="nv5_off21"></td>
-                    <td class="center date22" id="nv5_off22"></td>
-                    <td class="center date23" id="nv5_off23"></td>
-                    <td class="center date24" id="nv5_off24"></td>
-                    <td class="center date25" id="nv5_off25"></td>
-                    <td class="center date26" id="nv5_off26"></td>
-                    <td class="center date27" id="nv5_off27"></td>
-                    <td class="center date28" id="nv5_off28"></td>
-                    <td class="center date29" id="nv5_off29"></td>
-                    <td class="center date30" id="nv5_off30"></td>
-                    <td class="center date31" id="nv5_off31"></td>
-                    <td class=xl9518002 width=64 >0</td>
-                    <td class=xl11018002>0</td>
-                    <td class=xl11018002>0</td>
-                    <td class=xl11018002>0</td>
-                    <td class=xl11618002></td>
-                    <td class=xl9618002 align=right>0.0</td>
-                    <td class=xl9618002 align=right>0.0</td>
-                    <td class=xl9618002 align=right>0.0</td>
+                <tr class="cat5" height=18 style='height:13.2pt' display="none">
+                    <td class="center sticky-col" rowspan=5 style="width: 0.32%;">5</td>
+                    <td rowspan=5 id="nv5_ho" style="width: 0.99%;">Nhân viên 5</td>
+                    <td rowspan=5 id="nv5_ten" style="width: 0.36%;">A</td>
+                    <td rowspan=5 id="nv5_chucdanh" style="width: 0.52%;">Nhân viên vận hành máy</td>
+                    <td id="nv5_pl" style="width: 0.23%;" >PL24/003</td>
+                    <td class=xl9218002 style="width: 1.03%;">Nghỉ</td>
+                    <td class="center date1" id="nv5_off1" style="width: 1.199%;"></td>
+                    <td class="center date2" id="nv5_off2" style="width: 1.199%;"></td>
+                    <td class="center date3" id="nv5_off3" style="width: 1.199%;"></td>
+                    <td class="center date4" id="nv5_off4" style="width: 1.199%;"></td>
+                    <td class="center date5" id="nv5_off5" style="width: 1.199%;"></td>
+                    <td class="center date6" id="nv5_off6" style="width: 1.199%;"></td>
+                    <td class="center date7" id="nv5_off7" style="width: 1.199%;"></td>
+                    <td class="center date8" id="nv5_off8" style="width: 1.199%;"></td>
+                    <td class="center date9" id="nv5_off9" style="width: 1.199%;"></td>
+                    <td class="center date10" id="nv5_off10" style="width: 1.199%;"></td>
+                    <td class="center date11" id="nv5_off11" style="width: 1.199%;"></td>
+                    <td class="center date12" id="nv5_off12" style="width: 1.199%;"></td>
+                    <td class="center date13" id="nv5_off13" style="width: 1.199%;"></td>
+                    <td class="center date14" id="nv5_off14" style="width: 1.199%;"></td>
+                    <td class="center date15" id="nv5_off15" style="width: 1.199%;"></td>
+                    <td class="center date16" id="nv5_off16" style="width: 1.199%;"></td>
+                    <td class="center date17" id="nv5_off17" style="width: 1.199%;"></td>
+                    <td class="center date18" id="nv5_off18" style="width: 1.199%;"></td>
+                    <td class="center date19" id="nv5_off19" style="width: 1.199%;"></td>
+                    <td class="center date20" id="nv5_off20" style="width: 1.199%;"></td>
+                    <td class="center date21" id="nv5_off21" style="width: 1.199%;"></td>
+                    <td class="center date22" id="nv5_off22" style="width: 1.199%;"></td>
+                    <td class="center date23" id="nv5_off23" style="width: 1.199%;"></td>
+                    <td class="center date24" id="nv5_off24" style="width: 1.199%;"></td>
+                    <td class="center date25" id="nv5_off25" style="width: 1.199%;"></td>
+                    <td class="center date26" id="nv5_off26" style="width: 1.199%;"></td>
+                    <td class="center date27" id="nv5_off27" style="width: 1.199%;"></td>
+                    <td class="center date28" id="nv5_off28" style="width: 1.199%;"></td>
+                    <td class="center date29" id="nv5_off29" style="width: 1.199%;"></td>
+                    <td class="center date30" id="nv5_off30" style="width: 1.199%;"></td>
+                    <td class="center date31" id="nv5_off31" style="width: 1.199%;"></td>
+                    <td class=xl9518002 style="width: 10%;">0</td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;"></td>
+                    <td style="width: 2.90%;">0.0</td>
+                    <td style="width: 2.90%;">0.0</td>
+                    <td style="width: 2.90%;">0.0</td>
                 </tr>
-                <tr height=18 style='height:13.2pt' display="none">
+                <tr class="cat5" height=18 style='height:13.2pt' display="none">
                     <td></td>
                     <td>Vào</td>
                     <td class=date1 id="nv5_vao1"></td>
@@ -1000,7 +1014,7 @@
                     <td class=date30 id="nv5_vao30"></td>
                     <td class=date31 id="nv5_vao31"></td>
                 </tr>
-                <tr height=18 style='height:13.2pt' display="none">
+                <tr class="cat5" height=18 style='height:13.2pt' display="none">
                     <td></td>
                     <td>Ra</td>
                     <td class=date1 id="nv5_ra1"></td>
@@ -1036,7 +1050,7 @@
                     <td class=date31 id="nv5_ra31"></td>
                     <td></td>
                 </tr>
-                <tr    height=18 style='height:13.2pt' display="none">
+                <tr class="cat5" height=18 style='height:13.2pt' display="none">
                     <td></td>
                     <td>Thời gian (Ra - Vào)</td>
                     <td class="date1 right" id="nv5_time1"></td>
@@ -1073,7 +1087,7 @@
                     <td class=xl11118002 width=64 style='border-top:none;border-left:none;
           width:48pt'></td>
                 </tr>
-                <tr   height=18 style='height:13.2pt' display="none">
+                <tr class="cat5" height=18 style='height:13.2pt' display="none">
                     <td></td>
                     <td>Tăng ca</td>
                     <td class=date1></td>
@@ -1110,54 +1124,54 @@
                 </tr>
                 <!--Nhân viên 5-->
                 <!--Nhân viên 6s-->
-                <tr class="greenClass" height=18 style='height:13.2pt' display="none">
-                    <td class="center sticky-col" rowspan=5>6</td>
-                    <td rowspan=5 id="nv6_ho">Nhân viên 1</td>
-                    <td rowspan=5 id="nv6_ten">A</td>
-                    <td rowspan=5 id="nv6_chucdanh">Nhân viên vận hành máy</td>
-                    <td id=nv6_pl>PL24/003</td>
-                    <td class=xl9218002>Nghỉ</td>
-                    <td class="center date1" id="nv6_off1"></td>
-                    <td class="center date2" id="nv6_off2"></td>
-                    <td class="center date3" id="nv6_off3"></td>
-                    <td class="center date4" id="nv6_off4"></td>
-                    <td class="center date5" id="nv6_off5"></td>
-                    <td class="center date6" id="nv6_off6"></td>
-                    <td class="center date7" id="nv6_off7"></td>
-                    <td class="center date8" id="nv6_off8"></td>
-                    <td class="center date9" id="nv6_off9"></td>
-                    <td class="center date10" id="nv6_off10"></td>
-                    <td class="center date11" id="nv6_off11"></td>
-                    <td class="center date12" id="nv6_off12"></td>
-                    <td class="center date13" id="nv6_off13"></td>
-                    <td class="center date14" id="nv6_off14"></td>
-                    <td class="center date15" id="nv6_off15"></td>
-                    <td class="center date16" id="nv6_off16"></td>
-                    <td class="center date17" id="nv6_off17"></td>
-                    <td class="center date18" id="nv6_off18"></td>
-                    <td class="center date19" id="nv6_off19"></td>
-                    <td class="center date20" id="nv6_off20"></td>
-                    <td class="center date21" id="nv6_off21"></td>
-                    <td class="center date22" id="nv6_off22"></td>
-                    <td class="center date23" id="nv6_off23"></td>
-                    <td class="center date24" id="nv6_off24"></td>
-                    <td class="center date25" id="nv6_off25"></td>
-                    <td class="center date26" id="nv6_off26"></td>
-                    <td class="center date27" id="nv6_off27"></td>
-                    <td class="center date28" id="nv6_off28"></td>
-                    <td class="center date29" id="nv6_off29"></td>
-                    <td class="center date30" id="nv6_off30"></td>
-                    <td class="center date31" id="nv6_off31"></td>
-                    <td class=xl9518002 width=64 >0</td>
-                    <td class=xl11018002>0</td>
-                    <td class=xl11018002>0</td>
-                    <td class=xl11018002>0</td>
-                    <td class=xl11618002></td>
-                    <td class=xl9618002 align=right>0.0</td>
-                    <td class=xl9618002 align=right>0.0</td>
-                    <td class=xl9618002 align=right>0.0</td>
+                <tr class="cat6 greenClass" height=18 style='height:13.2pt' display="none">
+                    <td class="center sticky-col" rowspan=5 style="width: 0.32%;">6</td>
+                    <td rowspan=5 id="nv6_ho" style="width: 0.99%;">Nhân viên 1</td>
+                    <td rowspan=5 id="nv6_ten" style="width: 0.36%;">A</td>
+                    <td rowspan=5 id="nv6_chucdanh" style="width: 0.52%;">Nhân viên vận hành máy</td>
+                    <td id="nv6_pl" style="width: 0.23%;" >PL24/003</td>
+                    <td class=xl9218002 style="width: 1.03%;">Nghỉ</td>
+                    <td class="center date1" id="nv6_off1" style="width: 1.199%;"></td>
+                    <td class="center date2" id="nv6_off2" style="width: 1.199%;"></td>
+                    <td class="center date3" id="nv6_off3" style="width: 1.199%;"></td>
+                    <td class="center date4" id="nv6_off4" style="width: 1.199%;"></td>
+                    <td class="center date5" id="nv6_off5" style="width: 1.199%;"></td>
+                    <td class="center date6" id="nv6_off6" style="width: 1.199%;"></td>
+                    <td class="center date7" id="nv6_off7" style="width: 1.199%;"></td>
+                    <td class="center date8" id="nv6_off8" style="width: 1.199%;"></td>
+                    <td class="center date9" id="nv6_off9" style="width: 1.199%;"></td>
+                    <td class="center date10" id="nv6_off10" style="width: 1.199%;"></td>
+                    <td class="center date11" id="nv6_off11" style="width: 1.199%;"></td>
+                    <td class="center date12" id="nv6_off12" style="width: 1.199%;"></td>
+                    <td class="center date13" id="nv6_off13" style="width: 1.199%;"></td>
+                    <td class="center date14" id="nv6_off14" style="width: 1.199%;"></td>
+                    <td class="center date15" id="nv6_off15" style="width: 1.199%;"></td>
+                    <td class="center date16" id="nv6_off16" style="width: 1.199%;"></td>
+                    <td class="center date17" id="nv6_off17" style="width: 1.199%;"></td>
+                    <td class="center date18" id="nv6_off18" style="width: 1.199%;"></td>
+                    <td class="center date19" id="nv6_off19" style="width: 1.199%;"></td>
+                    <td class="center date20" id="nv6_off20" style="width: 1.199%;"></td>
+                    <td class="center date21" id="nv6_off21" style="width: 1.199%;"></td>
+                    <td class="center date22" id="nv6_off22" style="width: 1.199%;"></td>
+                    <td class="center date23" id="nv6_off23" style="width: 1.199%;"></td>
+                    <td class="center date24" id="nv6_off24" style="width: 1.199%;"></td>
+                    <td class="center date25" id="nv6_off25" style="width: 1.199%;"></td>
+                    <td class="center date26" id="nv6_off26" style="width: 1.199%;"></td>
+                    <td class="center date27" id="nv6_off27" style="width: 1.199%;"></td>
+                    <td class="center date28" id="nv6_off28" style="width: 1.199%;"></td>
+                    <td class="center date29" id="nv6_off29" style="width: 1.199%;"></td>
+                    <td class="center date30" id="nv6_off30" style="width: 1.199%;"></td>
+                    <td class="center date31" id="nv6_off31" style="width: 1.199%;"></td>
+                    <td class=xl9518002 style="width: 10%;">0</td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;"></td>
+                    <td style="width: 2.90%;">0.0</td>
+                    <td style="width: 2.90%;">0.0</td>
+                    <td style="width: 2.90%;">0.0</td>
                 </tr>
-                <tr class="greenClass" height=18 style='height:13.2pt' display="none">
+                <tr class="cat6 greenClass" height=18 style='height:13.2pt' display="none">
                     <td></td>
                     <td>Vào</td>
                     <td class=date1 id="nv6_vao1"></td>
@@ -1192,7 +1206,7 @@
                     <td class=date30 id="nv6_vao30"></td>
                     <td class=date31 id="nv6_vao31"></td>
                 </tr>
-                <tr class="greenClass" height=18 style='height:13.2pt' display="none">
+                <tr class="cat6 greenClass" height=18 style='height:13.2pt' display="none">
                     <td></td>
                     <td>Ra</td>
                     <td class=date1 id="nv6_ra1"></td>
@@ -1228,7 +1242,7 @@
                     <td class=date31 id="nv6_ra31"></td>
                     <td></td>
                 </tr>
-                <tr  class="greenClass"  height=18 style='height:13.2pt' display="none">
+                <tr class="cat6 greenClass"  height=18 style='height:13.2pt' display="none">
                     <td></td>
                     <td>Thời gian (Ra - Vào)</td>
                     <td class="date1 right" id="nv6_time1"></td>
@@ -1265,7 +1279,7 @@
                     <td class=xl11118002 width=64 style='border-top:none;border-left:none;
           width:48pt'></td>
                 </tr>
-                <tr  class="greenClass" height=18 style='height:13.2pt' display="none">
+                <tr class="cat6 greenClass" height=18 style='height:13.2pt' display="none">
                     <td></td>
                     <td>Tăng ca</td>
                     <td class=date1></td>
@@ -1302,54 +1316,54 @@
                 </tr>
                 <!--Nhân viên 6-->
                 <!--Nhân viên 7-->
-                <tr  height=18 style='height:13.2pt' display="none">
-                    <td class="center sticky-col" rowspan=5>7</td>
-                    <td rowspan=5 id="nv7_ho">Nhân viên 1</td>
-                    <td rowspan=5 id="nv7_ten">A</td>
-                    <td rowspan=5 id="nv7_chucdanh">Nhân viên vận hành máy</td>
-                    <td id=nv7_pl>PL24/003</td>
-                    <td class=xl9218002>Nghỉ</td>
-                    <td class="center date1" id="nv7_off1"></td>
-                    <td class="center date2" id="nv7_off2"></td>
-                    <td class="center date3" id="nv7_off3"></td>
-                    <td class="center date4" id="nv7_off4"></td>
-                    <td class="center date5" id="nv7_off5"></td>
-                    <td class="center date6" id="nv7_off6"></td>
-                    <td class="center date7" id="nv7_off7"></td>
-                    <td class="center date8" id="nv7_off8"></td>
-                    <td class="center date9" id="nv7_off9"></td>
-                    <td class="center date10" id="nv7_off10"></td>
-                    <td class="center date11" id="nv7_off11"></td>
-                    <td class="center date12" id="nv7_off12"></td>
-                    <td class="center date13" id="nv7_off13"></td>
-                    <td class="center date14" id="nv7_off14"></td>
-                    <td class="center date15" id="nv7_off15"></td>
-                    <td class="center date16" id="nv7_off16"></td>
-                    <td class="center date17" id="nv7_off17"></td>
-                    <td class="center date18" id="nv7_off18"></td>
-                    <td class="center date19" id="nv7_off19"></td>
-                    <td class="center date20" id="nv7_off20"></td>
-                    <td class="center date21" id="nv7_off21"></td>
-                    <td class="center date22" id="nv7_off22"></td>
-                    <td class="center date23" id="nv7_off23"></td>
-                    <td class="center date24" id="nv7_off24"></td>
-                    <td class="center date25" id="nv7_off25"></td>
-                    <td class="center date26" id="nv7_off26"></td>
-                    <td class="center date27" id="nv7_off27"></td>
-                    <td class="center date28" id="nv7_off28"></td>
-                    <td class="center date29" id="nv7_off29"></td>
-                    <td class="center date30" id="nv7_off30"></td>
-                    <td class="center date31" id="nv7_off31"></td>
-                    <td class=xl9518002 width=64 >0</td>
-                    <td class=xl11018002>0</td>
-                    <td class=xl11018002>0</td>
-                    <td class=xl11018002>0</td>
-                    <td class=xl11618002></td>
-                    <td class=xl9618002 align=right>0.0</td>
-                    <td class=xl9618002 align=right>0.0</td>
-                    <td class=xl9618002 align=right>0.0</td>
+                <tr class="cat7" height=18 style='height:13.2pt' display="none">
+                    <td class="center sticky-col" rowspan=5 style="width: 0.32%;">7</td>
+                    <td rowspan=5 id="nv7_ho" style="width: 0.99%;">Nhân viên 1</td>
+                    <td rowspan=5 id="nv7_ten" style="width: 0.36%;">A</td>
+                    <td rowspan=5 id="nv7_chucdanh" style="width: 0.52%;">Nhân viên vận hành máy</td>
+                    <td id="nv7_pl" style="width: 0.23%;" >PL24/003</td>
+                    <td class=xl9218002 style="width: 1.03%;">Nghỉ</td>
+                    <td class="center date1" id="nv7_off1" style="width: 1.199%;"></td>
+                    <td class="center date2" id="nv7_off2" style="width: 1.199%;"></td>
+                    <td class="center date3" id="nv7_off3" style="width: 1.199%;"></td>
+                    <td class="center date4" id="nv7_off4" style="width: 1.199%;"></td>
+                    <td class="center date5" id="nv7_off5" style="width: 1.199%;"></td>
+                    <td class="center date6" id="nv7_off6" style="width: 1.199%;"></td>
+                    <td class="center date7" id="nv7_off7" style="width: 1.199%;"></td>
+                    <td class="center date8" id="nv7_off8" style="width: 1.199%;"></td>
+                    <td class="center date9" id="nv7_off9" style="width: 1.199%;"></td>
+                    <td class="center date10" id="nv7_off10" style="width: 1.199%;"></td>
+                    <td class="center date11" id="nv7_off11" style="width: 1.199%;"></td>
+                    <td class="center date12" id="nv7_off12" style="width: 1.199%;"></td>
+                    <td class="center date13" id="nv7_off13" style="width: 1.199%;"></td>
+                    <td class="center date14" id="nv7_off14" style="width: 1.199%;"></td>
+                    <td class="center date15" id="nv7_off15" style="width: 1.199%;"></td>
+                    <td class="center date16" id="nv7_off16" style="width: 1.199%;"></td>
+                    <td class="center date17" id="nv7_off17" style="width: 1.199%;"></td>
+                    <td class="center date18" id="nv7_off18" style="width: 1.199%;"></td>
+                    <td class="center date19" id="nv7_off19" style="width: 1.199%;"></td>
+                    <td class="center date20" id="nv7_off20" style="width: 1.199%;"></td>
+                    <td class="center date21" id="nv7_off21" style="width: 1.199%;"></td>
+                    <td class="center date22" id="nv7_off22" style="width: 1.199%;"></td>
+                    <td class="center date23" id="nv7_off23" style="width: 1.199%;"></td>
+                    <td class="center date24" id="nv7_off24" style="width: 1.199%;"></td>
+                    <td class="center date25" id="nv7_off25" style="width: 1.199%;"></td>
+                    <td class="center date26" id="nv7_off26" style="width: 1.199%;"></td>
+                    <td class="center date27" id="nv7_off27" style="width: 1.199%;"></td>
+                    <td class="center date28" id="nv7_off28" style="width: 1.199%;"></td>
+                    <td class="center date29" id="nv7_off29" style="width: 1.199%;"></td>
+                    <td class="center date30" id="nv7_off30" style="width: 1.199%;"></td>
+                    <td class="center date31" id="nv7_off31" style="width: 1.199%;"></td>
+                    <td class=xl9518002 style="width: 10%;">0</td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;">0</td>
+                    <td style="width: 2.90%;"></td>
+                    <td style="width: 2.90%;">0.0</td>
+                    <td style="width: 2.90%;">0.0</td>
+                    <td style="width: 2.90%;">0.0</td>
                 </tr>
-                <tr  height=18 style='height:13.2pt' display="none">
+                <tr class="cat7" height=18 style='height:13.2pt' display="none">
                     <td></td>
                     <td>Vào</td>
                     <td class=date1 id="nv7_vao1"></td>
@@ -1384,7 +1398,7 @@
                     <td class=date30 id="nv7_vao30"></td>
                     <td class=date31 id="nv7_vao31"></td>
                 </tr>
-                <tr  height=18 style='height:13.2pt' display="none">
+                <tr class="cat7" height=18 style='height:13.2pt' display="none">
                     <td></td>
                     <td>Ra</td>
                     <td class=date1 id="nv7_ra1"></td>
@@ -1420,7 +1434,7 @@
                     <td class=date31 id="nv7_ra31"></td>
                     <td></td>
                 </tr>
-                <tr    height=18 style='height:13.2pt' display="none">
+                <tr class="cat7" height=18 style='height:13.2pt' display="none">
                     <td></td>
                     <td>Thời gian (Ra - Vào)</td>
                     <td class="date1 right" id="nv7_time1"></td>
@@ -1457,7 +1471,7 @@
                     <td class=xl11118002 width=64 style='border-top:none;border-left:none;
           width:48pt'></td>
                 </tr>
-                <tr   height=18 style='height:13.2pt' display="none">
+                <tr class="cat7" height=18 style='height:13.2pt' display="none">
                     <td></td>
                     <td>Tăng ca</td>
                     <td class=date1></td>

@@ -325,3 +325,28 @@ function caculateDurationTime(ra, vao) {
 
 }
 
+$(document).ready(function(){
+  $(".toggler").click(function(e){
+    $('.cat'+1).hide();
+  });
+});
+
+$(document).ready(function() {
+  $("#select_NV").change(function() {
+    if ($(this).val() == "0") {
+      for (var i = 0; i < 8; i++) {
+        $('.cat'+i).show();
+      }
+    } else {
+      for (var i = 1; i < 8; i++) {
+        if (i == Number($(this).val())){
+          $('.cat'+i).show();
+          continue;
+        } else{
+          $('.cat'+i).hide();
+        }
+      }
+      
+    }
+  });
+});
