@@ -30,6 +30,7 @@ document.addEventListener("readystatechange", (event) => {
   } else if (event.target.readyState === "complete") {
     
   //asyncCall();
+  setTableColumnWidths();
     changeMonth();
     //   alert(message);
   }
@@ -350,3 +351,19 @@ $(document).ready(function() {
     }
   });
 });
+
+function setTableColumnWidths() {
+  var table = document.getElementById("mytTable");
+  var arrayColumnWidths = [];
+  for (let a = 1; a < 40 ; ++a) {
+    const element = document.getElementById('cot'+a);
+    const width = element.offsetWidth;
+    arrayColumnWidths.push(width);
+  }
+  for (let i = 4; i < table.rows.length; ++i) {
+      for (let j = 0; j < table.rows[i].cells.length; ++j) {
+          const width2 = arrayColumnWidths[j] || 0;
+          table.rows[i].cells[j].style.width = width2.toString() + "px";
+      }
+  }
+}
