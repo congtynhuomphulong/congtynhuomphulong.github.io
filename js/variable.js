@@ -58,12 +58,12 @@ function loadJson(jsonFile) {
           var date = entry.date;
           var vao = nhanVien + "_vao" + date;
           document.getElementById(vao).innerHTML = entry.in;
-          if (entry.in == "Ko dữ liệu") {
+          if (entry.in.includes("Ko dữ liệu")) {
             document.getElementById(vao).style.color = "#ff0000";
           }
           var ra = nhanVien + "_ra" + date;
           document.getElementById(ra).innerHTML = entry.out;
-          if (entry.out == "Ko dữ liệu") {
+          if (entry.out.includes("Ko dữ liệu")) {
             document.getElementById(ra).style.color = "#ff0000";
           }
           var off = nhanVien + "_off" + date;
