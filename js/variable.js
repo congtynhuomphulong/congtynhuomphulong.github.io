@@ -19,6 +19,7 @@ console.log(multiplyNumbers(3, 4)); // 12
 console.log(multiplyNumbers(5, 8)); // 4
 
 var startIndex = 4;
+var numberOfStaff = 8;
 var oldHolidayMap = new Map();
 var oldLastDayMap = new Map();
 var orgColorDayInWeekMap = new Map();
@@ -44,7 +45,7 @@ function loadJson(jsonFile) {
       const obj = JSON.parse(text);
       // document.getElementById("nv1_ho").innerHTML = obj.nv1.fristName;
       //document.getElementById("nv1_ten").innerHTML = obj.nv1.lastName;
-      for (let i = 1; i < 9; i++) {
+      for (let i = 1; i <= numberOfStaff; i++) {
         var nhanVien = "nv" + i;
         var ho = nhanVien + "_ho";
         var ten = nhanVien + "_ten";
@@ -335,11 +336,11 @@ $(document).ready(function(){
 $(document).ready(function() {
   $("#select_NV").change(function() {
     if ($(this).val() == "0") {
-      for (var i = 0; i < 8; i++) {
+      for (var i = 0; i <= numberOfStaff; i++) {
         $('.cat'+i).show();
       }
     } else {
-      for (var i = 1; i < 8; i++) {
+      for (var i = 1; i <= numberOfStaff; i++) {
         if (i == Number($(this).val())){
           $('.cat'+i).show();
           continue;
