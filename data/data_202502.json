@@ -3,7 +3,7 @@
         "fristName": "Hà Thị",
         "lastName": "Hằng",
         "job": "NV đóng gói",
-        "contract":"PL24/001",
+        "contract": "PL24/001",
         "data": [
             {
                 "date": 1,
@@ -197,7 +197,7 @@
         "fristName": "Trịnh Hoài",
         "lastName": "Hậu",
         "job": "NV Vận hành máy",
-        "contract":"PL24/-",
+        "contract": "PL24/-",
         "data": [
             {
                 "date": 1,
@@ -386,13 +386,12 @@
                 "off": "L"
             }
         ]
-    }
-    ,
+    },
     "nv3": {
         "fristName": "Phan Thành",
         "lastName": "Huy",
         "job": "NV vận hành máy",
-        "contract":"PL24/004",
+        "contract": "PL24/004",
         "data": [
             {
                 "date": 1,
@@ -586,7 +585,7 @@
         "fristName": "Ngô Minh",
         "lastName": "Tiền",
         "job": "NV Vận hành máy",
-        "contract":"PL24/-",
+        "contract": "PL24/-",
         "data": [
             {
                 "date": 1,
@@ -780,7 +779,7 @@
         "fristName": "Hà Thị",
         "lastName": "Nga",
         "job": "NV đóng gói",
-        "contract":"PL24/-",
+        "contract": "PL24/-",
         "data": [
             {
                 "date": 1,
@@ -974,7 +973,7 @@
         "fristName": "Phạm Hoàng",
         "lastName": "Phong",
         "job": "NV vận hành máy",
-        "contract":"-",
+        "contract": "-",
         "data": [
             {
                 "date": 1,
@@ -1168,7 +1167,7 @@
         "fristName": "-",
         "lastName": "-",
         "job": "-",
-        "contract":"-",
+        "contract": "-",
         "data": [
             {
                 "date": 1,
@@ -1357,6 +1356,199 @@
                 "off": "-"
             }
         ]
+    },
+    "nv8": {
+        "fristName": "-",
+        "lastName": "-",
+        "job": "-",
+        "contract": "-",
+        "data": [
+            {
+                "date": 1,
+                "in": "00000",
+                "out": "111111",
+                "off": "-"
+            },
+            {
+                "date": 2,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 3,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 4,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 5,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 6,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 7,
+                "in": "-",
+                "out": "",
+                "off": "-"
+            },
+            {
+                "date": 8,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 9,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 10,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 11,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 12,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 13,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 14,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 15,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 16,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 17,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 18,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 19,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 20,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 21,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 22,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 23,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 24,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 25,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 26,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 27,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 28,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 29,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 30,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            },
+            {
+                "date": 31,
+                "in": "-",
+                "out": "-",
+                "off": "-"
+            }
+        ]
     }
-    
 }

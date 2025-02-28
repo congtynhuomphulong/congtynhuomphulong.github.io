@@ -44,7 +44,7 @@ function loadJson(jsonFile) {
       const obj = JSON.parse(text);
       // document.getElementById("nv1_ho").innerHTML = obj.nv1.fristName;
       //document.getElementById("nv1_ten").innerHTML = obj.nv1.lastName;
-      for (let i = 1; i < 8; i++) {
+      for (let i = 1; i < 9; i++) {
         var nhanVien = "nv" + i;
         var ho = nhanVien + "_ho";
         var ten = nhanVien + "_ten";
