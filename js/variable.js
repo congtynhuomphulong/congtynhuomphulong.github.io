@@ -19,7 +19,7 @@ console.log(multiplyNumbers(3, 4)); // 12
 console.log(multiplyNumbers(5, 8)); // 4
 
 var startIndex = 4;
-var numberOfStaff = 8;
+var numberOfStaff = 10;
 var oldHolidayMap = new Map();
 var oldLastDayMap = new Map();
 var orgColorDayInWeekMap = new Map();
