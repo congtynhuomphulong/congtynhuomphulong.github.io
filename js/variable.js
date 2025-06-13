@@ -82,7 +82,7 @@ function loadJson(jsonFile) {
           // }
         }
       }
-    }).catch(()=>loadJson("../data/data_org.json"));
+    }).catch();
 }
 
 function fillDateInWeek(thang, nam) {
