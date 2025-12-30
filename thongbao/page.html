@@ -1,0 +1,378 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chọn Background & Logo (Zoom BG + Drag Logo)</title>
+  <style>
+    :root {
+      --preview-w: 100%;
+      /* Chiều cao tối đa ~ màn hình 24" theo 16:9 ≈ 1130px, không vượt quá viewport */
+      --preview-max-h: min(100vh, 1000x);
+      /* Chiều cao khung hiện hành: có thể dùng tối đa */
+      --preview-h: var(--preview-max-h);
+    }
+
+    body {
+      font-family: system-ui, Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f7f7f7;
+      color: #222;
+    }
+
+    h1 { font-size: 20px; margin-bottom: 16px; }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+
+    .controls label {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .preview-wrapper {
+      border: 2px dashed #c9c9c9;
+      border-radius: 8px;
+      background: #fff;
+      overflow: auto; /* cuộn khi ảnh lớn */
+      width: var(--preview-w);
+      height: var(--preview-h);
+      max-height: var(--preview-max-h);
+      position: relative;
+    }
+
+    /* bgCanvas khớp theo kích thước ảnh gốc */
+    #bgCanvas {
+      position: relative;
+      display: inline-block;
+    }
+
+    /* Ảnh nền ở size gốc, sẽ zoom bằng transform */
+    #bgImage {
+      display: block;
+      max-width: none;
+      max-height: none;
+      transform-origin: top left; /* zoom từ góc trên trái */
+    }
+
+    /* Logo tuyệt đối bên trên */
+    #logo {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      max-width: 200px;
+      max-height: 200px;
+      cursor: grab;
+      user-select: none;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+    }
+    #logo:active { cursor: grabbing; }
+
+    .tools {
+      margin-top: 10px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .tools .group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .tools input[type="range"] { width: 160px; }
+
+    button, input[type="file"] { font-size: 14px; }
+
+    .hint {
+      font-size: 12px;
+      color: #666;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chọn Background & Logo</h1>
+  <div class="controls">
+    <label>
+      <strong>Background:</strong>
+      <input type="file" id="bgInput" accept="image/*" />
+    </label>
+    <label>
+      <strong>Logo:</strong>
+      <input type="file" id="logoInput" accept="image/*" />
+    </label>
+  </div>
+  <div class="tools">
+    <div class="group">
+      <label>
+        Kích thước logo:
+        <input type="range" id="logoScale" min="20" max="400" value="150"/>
+      </label>
+      <button id="resetLogo">Đặt lại vị trí logo</button>
+    </div>
+
+    <div class="group">
+      <strong>Zoom background:</strong>
+      <button id="zoomOut">− Thu nhỏ</button>
+      <button id="zoomIn">+ Phóng to</button>
+      <button id="zoomReset">Đặt lại</button>
+      <button id="zoomFit">Vừa khung</button>
+      <span id="zoomInfo" style="font-size:12px;color:#666;"></span>
+    </div>
+  </div>
+  <button onclick="savePreview()">Save Image</button>
+  <p class="hint">
+    • Kéo thả logo để di chuyển. Ảnh nền giữ kích thước gốc, có thể phóng/thu bằng nút.<br/>
+    • Nếu ảnh nền lớn sau khi zoom, cuộn khung để xem toàn bộ ảnh.
+  </p>
+   <div class="preview-wrapper" id="preview">
+    <div id="bgCanvas">
+      <img id="bgImage" alt="Ảnh nền" />
+      <img id="logo" alt="Logo" />
+    </div>
+  </div>
+
+  <script>
+    const bgInput = document.getElementById('bgInput');
+    const logoInput = document.getElementById('logoInput');
+    const bgImage = document.getElementById('bgImage');
+    const logo = document.getElementById('logo');
+    const bgCanvas = document.getElementById('bgCanvas');
+    const preview = document.getElementById('preview');
+
+    const logoScale = document.getElementById('logoScale');
+    const resetLogoBtn = document.getElementById('resetLogo');
+
+    const zoomOutBtn = document.getElementById('zoomOut');
+    const zoomInBtn = document.getElementById('zoomIn');
+    const zoomResetBtn = document.getElementById('zoomReset');
+    const zoomFitBtn = document.getElementById('zoomFit');
+    const zoomInfo = document.getElementById('zoomInfo');
+
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let logoStartLeft = 20;
+    let logoStartTop = 20;
+
+    // Trạng thái zoom cho background
+    let bgScale = 1;           // tỉ lệ hiện tại
+    const ZOOM_STEP = 0.1;     // bước tăng/giảm
+    const ZOOM_MIN = 0.1;      // tối thiểu
+    const ZOOM_MAX = 5;        // tối đa
+
+    function applyBgScale() {
+      bgImage.style.transform = `scale(${bgScale})`;
+      // Cập nhật kích thước khối canvas theo ảnh đã scale, để hệ toạ độ đúng
+      bgCanvas.style.width = `${bgImage.naturalWidth * bgScale}px`;
+      bgCanvas.style.height = `${bgImage.naturalHeight * bgScale}px`;
+      zoomInfo.textContent = `Zoom: ${(bgScale * 100).toFixed(0)}%`;
+    }
+
+    function zoomReset() {
+      bgScale = 1;
+      applyBgScale();
+      // Đưa scroll về góc trên trái
+      preview.scrollLeft = 0;
+      preview.scrollTop = 0;
+    }
+
+    function zoomIn() {
+      bgScale = Math.min(bgScale + ZOOM_STEP, ZOOM_MAX);
+      applyBgScale();
+    }
+
+    function zoomOut() {
+      bgScale = Math.max(bgScale - ZOOM_STEP, ZOOM_MIN);
+      applyBgScale();
+    }
+
+    // Vừa khung: tính scale sao cho chiều rộng hoặc chiều cao ảnh (sau zoom) vừa khung preview
+    function zoomFit() {
+      if (!bgImage.naturalWidth || !bgImage.naturalHeight) return;
+      const pw = preview.clientWidth;
+      const ph = preview.clientHeight;
+
+      const scaleX = pw / bgImage.naturalWidth;
+      const scaleY = ph / bgImage.naturalHeight;
+      bgScale = Math.min(scaleX, scaleY);
+      bgScale = Math.max(Math.min(bgScale, ZOOM_MAX), ZOOM_MIN);
+      applyBgScale();
+
+      // Căn giữa nhẹ (tuỳ chọn): cuộn để thấy trung tâm
+      preview.scrollLeft = Math.max(0, (bgCanvas.scrollWidth - pw) / 2);
+      preview.scrollTop = Math.max(0, (bgCanvas.scrollHeight - ph) / 2);
+    }
+
+    // Load background (giữ kích thước gốc)
+    bgInput.addEventListener('change', function () {
+      const file = this.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        bgImage.src = e.target.result;
+        bgImage.onload = () => {
+          // reset scale mỗi lần đổi ảnh
+          zoomReset();
+        };
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Zoom buttons
+    zoomInBtn.addEventListener('click', zoomIn);
+    zoomOutBtn.addEventListener('click', zoomOut);
+    zoomResetBtn.addEventListener('click', zoomReset);
+    zoomFitBtn.addEventListener('click', zoomFit);
+
+    // Load logo & đặt kích thước theo slider
+    logoInput.addEventListener('change', function () {
+      const file = this.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        logo.src = e.target.result;
+        logo.onload = () => {
+          logo.style.width = `${logoScale.value}px`;
+          logo.style.left = '20px';
+          logo.style.top = '20px';
+        };
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Đổi kích thước logo theo slider
+    logoScale.addEventListener('input', () => {
+      logo.style.width = `${logoScale.value}px`;
+    });
+
+    // Đặt lại vị trí logo
+    resetLogoBtn.addEventListener('click', () => {
+      logo.style.left = '20px';
+      logo.style.top = '20px';
+    });
+
+    // Helper: giới hạn logo trong vùng bgCanvas (theo kích thước sau zoom)
+    function clampLogoPosition(left, top) {
+      const canvasRect = bgCanvas.getBoundingClientRect();
+      const logoRect = logo.getBoundingClientRect();
+
+      const maxLeft = canvasRect.width - logoRect.width;
+      const maxTop  = canvasRect.height - logoRect.height;
+
+      const clampedLeft = Math.min(Math.max(left, 0), Math.max(0, maxLeft));
+      const clampedTop  = Math.min(Math.max(top, 0), Math.max(0, maxTop));
+      return { left: clampedLeft, top: clampedTop };
+    }
+
+    // Toạ độ trang → toạ độ tương đối trong bgCanvas
+    function pageToCanvasCoords(pageX, pageY) {
+      const rect = bgCanvas.getBoundingClientRect();
+      return {
+        x: pageX - rect.left,
+        y: pageY - rect.top
+      };
+    }
+
+    // Kéo thả – chuột
+    logo.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      isDragging = true;
+
+      const { x, y } = pageToCanvasCoords(e.pageX, e.pageY);
+      dragStartX = x;
+      dragStartY = y;
+
+      logoStartLeft = parseFloat(getComputedStyle(logo).left) || 0;
+      logoStartTop  = parseFloat(getComputedStyle(logo).top)  || 0;
+
+      logo.style.cursor = 'grabbing';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const { x, y } = pageToCanvasCoords(e.pageX, e.pageY);
+      const deltaX = x - dragStartX;
+      const deltaY = y - dragStartY;
+
+      const targetLeft = logoStartLeft + deltaX;
+      const targetTop  = logoStartTop  + deltaY;
+
+      const { left, top } = clampLogoPosition(targetLeft, targetTop);
+      logo.style.left = `${left}px`;
+      logo.style.top  = `${top}px`;
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      logo.style.cursor = 'grab';
+    });
+
+    // Kéo thả – cảm ứng
+    logo.addEventListener('touchstart', (e) => {
+      if (e.touches.length !== 1) return;
+      const t = e.touches[0];
+      const { x, y } = pageToCanvasCoords(t.pageX, t.pageY);
+
+      isDragging = true;
+      dragStartX = x;
+      dragStartY = y;
+
+      logoStartLeft = parseFloat(getComputedStyle(logo).left) || 0;
+      logoStartTop  = parseFloat(getComputedStyle(logo).top)  || 0;
+    }, { passive: true });
+
+    document.addEventListener('touchmove', (e) => {
+      if (!isDragging || e.touches.length !== 1) return;
+      const t = e.touches[0];
+      const { x, y } = pageToCanvasCoords(t.pageX, t.pageY);
+      const deltaX = x - dragStartX;
+      const deltaY = y - dragStartY;
+
+      const targetLeft = logoStartLeft + deltaX;
+      const targetTop  = logoStartTop  + deltaY;
+
+      const { left, top } = clampLogoPosition(targetLeft, targetTop);
+      logo.style.left = `${left}px`;
+      logo.style.top  = `${top}px`;
+    }, { passive: true });
+
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script>
+function savePreview() {
+  const preview = document.getElementById("bgCanvas");
+
+  const rect = preview.getBoundingClientRect();
+  const scale = window.devicePixelRatio || 1;
+
+  html2canvas(preview, {
+    backgroundColor: null,
+    scale: scale,
+    width: rect.width,
+    height: rect.height,
+    useCORS: true
+  }).then(canvas => {
+    const link = document.createElement("a");
+    link.download = "PL_thongbao.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  });
+}
+</script>
+</body>
+</html>
