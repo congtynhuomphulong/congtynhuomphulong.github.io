@@ -368,3 +368,10 @@ function setTableColumnWidths() {
       }
   }
 }
+
+document.querySelectorAll(".toggle").forEach(btn => {
+  btn.onclick = () => {
+    const sub = btn.nextElementSibling;
+    sub.style.display = sub.style.display === "none" ? "block" : "none";
+  };
+});

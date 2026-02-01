@@ -58,3 +58,8 @@ body {
 	tr > *:is(:nth-child(38), :nth-child(39),:nth-child(40), :nth-child(41), :nth-child(43), :nth-child(44), :nth-child(45)) {
 		display: none;
 	}
+
+.sub {
+  display: none;
+  margin-left: 20px;
+}
