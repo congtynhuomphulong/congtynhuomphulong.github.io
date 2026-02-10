@@ -96,7 +96,7 @@
 		async function load() {
 
 			const employees = await Promise.all(
-				employeeFiles.map(f => fetch("data/2026/t2/"+f).then(r => r.json()))
+				employeeFiles.map(f => fetch("data/2026/t2/" + f).then(r => r.json()))
 			);
 
 			document.getElementById("month").textContent = employees[0].month;
@@ -129,6 +129,9 @@
 
 			/* ===== Body ===== */
 			days.forEach((d, i) => {
+				if (d < 10) {
+						d = "0" + d;
+					}
 				let row = `
         <tr>
             <td class="freeze col-holiday"></td>
@@ -136,7 +139,8 @@
             <td class="freeze col-ngay">${d}</td>
         `;
 
-				employees.forEach((e, idx )=> {
+				employees.forEach((e, idx) => {
+					
 					const r = e.data[d] || {};
 					row += `
                 <td class="emp-${idx}">${r.in || ""}</td>
