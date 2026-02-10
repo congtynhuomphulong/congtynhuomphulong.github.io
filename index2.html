@@ -1,0 +1,2139 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+			<script type="module" src="js/readTxtFile.js"></script>
+<script type="module" src="js/module.js"></script>
+<script type="module" src="js/variable.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+		</head>
+		<img src="./image/banner-bg-img.png" />
+		<body>
+			<h1>CTY CỔ PHẦN DỆT NHUỘM PHÚ LONG</h1>
+			<p>MST: 0317900391</p>
+			<p>Địa chỉ : 37/8D đường Nguyễn Thị Sáu, ấp 7, xã Xuân Thới Thượng, huyện Hóc Môn, Thành phố Hồ Chí Minh, Việt Nam</p>
+			<h2 id="bangchamcong">BẢNG CHẤM CÔNG - Tháng 5 năm 2024</h2>
+	<ul class="menu">
+  <li>
+    <button class="toggle">Bấm vào đây để lấy link của các mẫu đơn</button>
+    <ul class="sub">
+		<li>
+			<a href="./editTime/DonHieuChinhChamCong.pdf">Đơn hiệu chỉnh thời gian.</a>
+		</li>
+		<li>
+			<a href="./editTime/DonXinNghiPhep.pdf">Đơn xin nghỉ phép.</a>
+		</li>
+		<li>
+			<a href="./editTime/DonXinNghiViec.pdf">Đơn xin nghỉ việc.</a>
+		</li>
+		<li>
+			<a href="./editTime/GiayXacNhanThoiGianTangCa.pdf">Giấy xác nhận thời gian tăng ca.</a>
+		</li>
+		<li>
+			<a href="./thongbao/page.html">Tạo thông báo.</a>
+		</li>
+    </ul>
+  </li>
+<br>
+  <li>
+    <button class="toggle"> Bấm vào đây để tìm KPI file links</button>
+    <ul class="sub">
+      <li>
+					<a href="https://docs.google.com/spreadsheets/d/12SkPIRNb52HcLfg40rdjFTnK9kmhCnLjJrvA_CxEbdo">KPI Hà THị Hằng</a>
+				</li>
+				<li>
+					<a href="https://docs.google.com/spreadsheets/d/1DiDzU9b0KkAmcg9ES11fXxASK70qcaSRJCRMA1t-GYo">KPI Phan Thanh Huy</a>
+				</li>
+				<li>
+					<a href="https://docs.google.com/spreadsheets/d/1bCK-cp9KXrKQuFLxNv5dp4Blv-qxIjmhUsKMr0x6Ztg">KPI Ngô Minh Tiền</a>
+				</li>
+				<li>
+					<a href="https://docs.google.com/spreadsheets/d/1s1VX2H1UQ6-7TRjdKDbnMYsvHM3EA4XxjBVNj6cM4W0">KPI Hà Thị Nga</a>
+				</li>
+				<li>
+					<a href="https://docs.google.com/spreadsheets/d/16Ngcih8VUpImD-n6RMiwn_dGa-KFy0nclAqZojuXp24">KPI Phan Minh Tiến Thành</a>
+				</li>
+				<li>
+					<a href="https://docs.google.com/spreadsheets/d/16h2DHcKqe8_W3AIwLpDiwRbcrk7iiqpnawn_-3gDXI0">KPI Phan Huỳnh Tri</a>
+				</li>
+				<li>
+					<a href="https://docs.google.com/spreadsheets/d/1BQGzHCfH0t6ICf4eNp8Q0C9Cnp0LwoPs7TsVdph13fs">KPI Ngô Thanh Bình</a>
+				</li>
+				<li>
+					<a href="https://docs.google.com/spreadsheets/d/1UrfBja4ndzdZeJKAGCo2OlRkiSSuNMAy0Dys6T1PJKw">KPI Nguyễn Văn Luân</a>
+				</li>
+				<li>
+					<a href="https://docs.google.com/spreadsheets/d/10b0y4FuvxYUOQXQ6a3S1_gSF-ILE8BoMAx8qOazMw78">KPI Nguyễn Đức Quỳnh Chi</a>
+				</li>
+    </ul>
+  </li>
+</ul>
+				<p style="display:inline-block;">
+					<b>Tháng:</b>
+				</p>
+				<select id="thang" style="display:inline-block;" onchange="changeMonth()">
+				</select>
+				<p style="display:inline-block;">
+					<b>Chọn nhân viên:</b>
+				</p>
+				<select id="select_NV" name="Select Staff" class="widget">
+					<option value="0" selected="selected">All</option>
+					<option value="1">Hà Thị Hằng</option>
+					<option value="2">Trịnh Hoài Hậu</option>
+					<option value="3">Phan Thành Huy</option>
+					<option value="4">Ngô Minh Tiền</option>
+					<option value="5">Hà Thị Nga</option>
+					<option value="6">Phạm Hoàng Phong</option>
+					<option value="7">Nguyễn Văn Luân</option>
+					<option value="8">Ngô Thanh Bình</option>
+					<option value="9">Phan Huỳnh Trí</option>
+					<option value="10">Phan Minh Tiến Thành</option>
+				</select>
+				<p>Hard refresh: Ctrl + F5 (Ctrl + Fn + F5) || Ctrl+ "Refresh" button</p>
+				<br>
+					<div class="view">
+						<div class="wrapper">
+							<table id="mytTable" style="width: 500%">
+								<tr height=18>
+								<th id="cot1" class="center sticky-col" rowspan=3 style="width: 0.3%;">STT</th>
+								<th id="cot2" class="center" rowspan=3 style="width: 1%;">Họ</th>
+								<th id="cot3" class="center" rowspan=3 style="width: 0.4%;">Tên</th>
+								<th id="cot4" class="center" rowspan=3 style="width: 0.5%;">Chức vụ / Công việc</th>
+								<th id="cot5" class="center" rowspan=3 style="width: 0.5%;">Số HĐLĐ</th>
+								<th id="cot6" class="center" style="width: 1%;">Ngày lễ (L)</th>
+								<th id="cot7" class="leColor date1" style="width: 1.2%;"/>
+								<th id="cot8" class="leColor date2" style="width: 1.2%;"/>
+								<th id="cot9" class="leColor date3" style="width: 1.2%;"/>
+								<th id="cot10" class="leColor date4" style="width: 1.2%;"/>
+								<th id="cot11" class="leColor date5" style="width: 1.2%;"/>
+								<th id="cot12" class="leColor date6" style="width: 1.2%;"/>
+								<th id="cot13" class="leColor date7" style="width: 1.2%;"/>
+								<th id="cot14" class="leColor date8" style="width: 1.2%;"/>
+								<th id="cot15" class="leColor date9" style="width: 1.2%;"/>
+								<th id="cot16" class="leColor date10" style="width: 1.2%;"/>
+								<th id="cot17" class="leColor date11" style="width: 1.2%;"/>
+								<th id="cot18" class="leColor date12" style="width: 1.2%;"/>
+								<th id="cot19" class="leColor date13" style="width: 1.2%;"/>
+								<th id="cot20" class="leColor date14" style="width: 1.2%;"/>
+								<th id="cot21" class="leColor date15" style="width: 1.2%;"/>
+								<th id="cot22" class="leColor date16" style="width: 1.2%;"/>
+								<th id="cot23" class="leColor date17" style="width: 1.2%;"/>
+								<th id="cot24" class="leColor date18" style="width: 1.2%;"/>
+								<th id="cot25" class="leColor date19" style="width: 1.2%;"/>
+								<th id="cot26" class="leColor date20" style="width: 1.2%;"/>
+								<th id="cot27" class="leColor date21" style="width: 1.2%;"/>
+								<th id="cot28" class="leColor date22" style="width: 1.2%;"/>
+								<th id="cot29" class="leColor date23" style="width: 1.2%;"/>
+								<th id="cot30" class="leColor date24" style="width: 1.2%;"/>
+								<th id="cot31" class="leColor date25" style="width: 1.2%;"/>
+								<th id="cot32" class="leColor date26" style="width: 1.2%;"/>
+								<th id="cot33" class="leColor date27" style="width: 1.2%;"/>
+								<th id="cot34" class="leColor date28" style="width: 1.2%;"/>
+								<th id="cot35" class="leColor date29" style="width: 1.2%;"/>
+								<th id="cot36" class="leColor date30" style="width: 1.2%;"/>
+								<th id="cot37" class="leColor date31" style="width: 1.2%;"/>
+								<th id="cot38" rowspan=3 style="width: 1.5%;">Tăng ca (Giờ)</th>
+								<th id="cot39" rowspan=3 style="width: 1.5%;">Công CN (Giờ)</th>
+								<th id="cot40" rowspan=3 style="width: 1.5%;">Công Ngày Lễ (Giờ)</th>
+								<th id="cot42" rowspan=3 style="width: 1.5%;">Số giờ ban đêm lãnh phụ cấp</th>
+								<th id="cot42" rowspan=3 style="width: 1.5%;">Công (ngày)</th>
+								<th id="cot43" rowspan=3 style="width: 1.5%;">Nghỉ hưởng lương (ngày)</th>
+								<th id="cot44" rowspan=3 style="width: 1.5%;">Nghỉ không lương (ngày)</th>
+								<th id="cot45" rowspan=3 style="width: 1.5%;">Tổng ngày nghỉ/Còn lại</th>
+							</tr>
+							<tr height=36 >
+								<th>Ngày</th>
+								<th class="ngayColor date1">1</th>
+								<th class="ngayColor date2">2</th>
+								<th class="ngayColor date3">3</th>
+								<th class="ngayColor date4">4</th>
+								<th class="ngayColor date5">5</th>
+								<th class="ngayColor date6">6</th>
+								<th class="ngayColor date7">7</th>
+								<th class="ngayColor date8">8</th>
+								<th class="ngayColor date9">9</th>
+								<th class="ngayColor date10">10</th>
+								<th class="ngayColor date11">11</th>
+								<th class="ngayColor date12">12</th>
+								<th class="ngayColor date13">13</th>
+								<th class="ngayColor date14">14</th>
+								<th class="ngayColor date15">15</th>
+								<th class="ngayColor date16">16</th>
+								<th class="ngayColor date17">17</th>
+								<th class="ngayColor date18">18</th>
+								<th class="ngayColor date19">19</th>
+								<th class="ngayColor date20">20</th>
+								<th class="ngayColor date21">21</th>
+								<th class="ngayColor date22">22</th>
+								<th class="ngayColor date23">23</th>
+								<th class="ngayColor date24">24</th>
+								<th class="ngayColor date25">25</th>
+								<th class="ngayColor date26">26</th>
+								<th class="ngayColor date27">27</th>
+								<th class="ngayColor date28">28</th>
+								<th class="ngayColor date29">29</th>
+								<th class="ngayColor date30">30</th>
+								<th class="ngayColor date31">31</th>
+							</tr>
+							<tr height=18 style='height:13.2pt'>
+								<th>Thứ</th>
+								<th class="thucolor date1">Th4</th>
+								<th class="thucolor date2">Th5</th>
+								<th class="thucolor date3">Th6</th>
+								<th class="thucolor date4">Th7</th>
+								<th class="thucolor date5">CN</th>
+								<th class="thucolor date6">Th2</th>
+								<th class="thucolor date7">Th3</th>
+								<th class="thucolor date8">Th4</th>
+								<th class="thucolor date9">Th5</th>
+								<th class="thucolor date10">Th6</th>
+								<th class="thucolor date11">Th7</th>
+								<th class="thucolor date12">CN</th>
+								<th class="thucolor date13">Th2</th>
+								<th class="thucolor date14">Th3</th>
+								<th class="thucolor date15">Th4</th>
+								<th class="thucolor date16">Th5</th>
+								<th class="thucolor date17">Th6</th>
+								<th class="thucolor date18">Th7</th>
+								<th class="thucolor date19">CN</th>
+								<th class="thucolor date20">Th2</th>
+								<th class="thucolor date21">Th3</th>
+								<th class="thucolor date22">Th4</th>
+								<th class="thucolor date23">Th5</th>
+								<th class="thucolor date24">Th6</th>
+								<th class="thucolor date25">Th7</th>
+								<th class="thucolor date26">CN</th>
+								<th class="thucolor date27">Th2</th>
+								<th class="thucolor date28">Th3</th>
+								<th class="thucolor date29">Th4</th>
+								<th class="thucolor date30">Th5</th>
+								<th class="thucolor date31">Th6</th>
+							</tr>
+							<!--Nhân viên 1-->
+							<tr class="cat1" height=18 style='height:13.2pt'>
+								<td class="center sticky-col" rowspan=5 style="width: 0.32%;">1</td>
+								<td rowspan=5 id="nv1_ho" style="width: 0.99%;">Nhân viên 1</td>
+								<td rowspan=5 id="nv1_ten" style="width: 0.36%;">A</td>
+								<td rowspan=5 id="nv1_chucdanh" style="width: 0.52%;">Nhân viên vận hành máy</td>
+								<td id="nv1_pl" style="width: 0.23%;">PL24/001</td>
+								<td class=xl9218002 style="width: 1.03%;">Nghỉ</td>
+								<td class="center date1" id="nv1_off1" style="width: 1.199%;"/>
+								<td class="center date2" id="nv1_off2" style="width: 1.199%;"/>
+								<td class="center date3" id="nv1_off3" style="width: 1.199%;"/>
+								<td class="center date4" id="nv1_off4" style="width: 1.199%;"/>
+								<td class="center date5" id="nv1_off5" style="width: 1.199%;"/>
+								<td class="center date6" id="nv1_off6" style="width: 1.199%;"/>
+								<td class="center date7" id="nv1_off7" style="width: 1.199%;"/>
+								<td class="center date8" id="nv1_off8" style="width: 1.199%;"/>
+								<td class="center date9" id="nv1_off9" style="width: 1.199%;"/>
+								<td class="center date10" id="nv1_off10" style="width: 1.199%;"/>
+								<td class="center date11" id="nv1_off11" style="width: 1.199%;"/>
+								<td class="center date12" id="nv1_off12" style="width: 1.199%;"/>
+								<td class="center date13" id="nv1_off13" style="width: 1.199%;"/>
+								<td class="center date14" id="nv1_off14" style="width: 1.199%;"/>
+								<td class="center date15" id="nv1_off15" style="width: 1.199%;"/>
+								<td class="center date16" id="nv1_off16" style="width: 1.199%;"/>
+								<td class="center date17" id="nv1_off17" style="width: 1.199%;"/>
+								<td class="center date18" id="nv1_off18" style="width: 1.199%;"/>
+								<td class="center date19" id="nv1_off19" style="width: 1.199%;"/>
+								<td class="center date20" id="nv1_off20" style="width: 1.199%;"/>
+								<td class="center date21" id="nv1_off21" style="width: 1.199%;"/>
+								<td class="center date22" id="nv1_off22" style="width: 1.199%;"/>
+								<td class="center date23" id="nv1_off23" style="width: 1.199%;"/>
+								<td class="center date24" id="nv1_off24" style="width: 1.199%;"/>
+								<td class="center date25" id="nv1_off25" style="width: 1.199%;"/>
+								<td class="center date26" id="nv1_off26" style="width: 1.199%;"/>
+								<td class="center date27" id="nv1_off27" style="width: 1.199%;"/>
+								<td class="center date28" id="nv1_off28" style="width: 1.199%;"/>
+								<td class="center date29" id="nv1_off29" style="width: 1.199%;"/>
+								<td class="center date30" id="nv1_off30" style="width: 1.199%;"/>
+								<td class="center date31" id="nv1_off31" style="width: 1.199%;"/>
+								<td class=dateclass style="width: 10%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;"/>
+								<td class=xl9618002 style="width: 2.90%;">0.0</td>
+								<td class=xl9618002 style="width: 2.90%;">0.0</td>
+								<td class=xl9618002 style="width: 2.90%;">0.0</td>
+							</tr>
+							<tr class="cat1" height=18 style='height:13.2pt'>
+								<td/>
+								<td>Vào</td>
+								<td class=date1 id="nv1_vao1"/>
+								<td class=date2 id="nv1_vao2"/>
+								<td class=date3 id="nv1_vao3"/>
+								<td class=date4 id="nv1_vao4"/>
+								<td class=date5 id="nv1_vao5"/>
+								<td class=date6 id="nv1_vao6"/>
+								<td class=date7 id="nv1_vao7"/>
+								<td class=date8 id="nv1_vao8"/>
+								<td class=date9 id="nv1_vao9"/>
+								<td class=date10 id="nv1_vao10"/>
+								<td class=date11 id="nv1_vao11"/>
+								<td class=date12 id="nv1_vao12"/>
+								<td class=date13 id="nv1_vao13"/>
+								<td class=date14 id="nv1_vao14"/>
+								<td class=date15 id="nv1_vao15"/>
+								<td class=date16 id="nv1_vao16"/>
+								<td class=date17 id="nv1_vao17"/>
+								<td class=date18 id="nv1_vao18"/>
+								<td class=date19 id="nv1_vao19"/>
+								<td class=date20 id="nv1_vao20"/>
+								<td class=date21 id="nv1_vao21"/>
+								<td class=date22 id="nv1_vao22"/>
+								<td class=date23 id="nv1_vao23"/>
+								<td class=date24 id="nv1_vao24"/>
+								<td class=date25 id="nv1_vao25"/>
+								<td class=date26 id="nv1_vao26"/>
+								<td class=date27 id="nv1_vao27"/>
+								<td class=date28 id="nv1_vao28"/>
+								<td class=date29 id="nv1_vao29"/>
+								<td class=date30 id="nv1_vao30"/>
+								<td class=date31 id="nv1_vao31"/>
+							</tr>
+							<tr class="cat1" height=18 style='height:13.2pt'>
+								<td/>
+								<td>Ra</td>
+								<td class=date1 id="nv1_ra1"/>
+								<td class=date2 id="nv1_ra2"/>
+								<td class=date3 id="nv1_ra3"/>
+								<td class=date4 id="nv1_ra4"/>
+								<td class=date5 id="nv1_ra5"/>
+								<td class=date6 id="nv1_ra6"/>
+								<td class=date7 id="nv1_ra7"/>
+								<td class=date8 id="nv1_ra8"/>
+								<td class=date9 id="nv1_ra9"/>
+								<td class=date10 id="nv1_ra10"/>
+								<td class=date11 id="nv1_ra11"/>
+								<td class=date12 id="nv1_ra12"/>
+								<td class=date13 id="nv1_ra13"/>
+								<td class=date14 id="nv1_ra14"/>
+								<td class=date15 id="nv1_ra15"/>
+								<td class=date16 id="nv1_ra16"/>
+								<td class=date17 id="nv1_ra17"/>
+								<td class=date18 id="nv1_ra18"/>
+								<td class=date19 id="nv1_ra19"/>
+								<td class=date20 id="nv1_ra20"/>
+								<td class=date21 id="nv1_ra21"/>
+								<td class=date22 id="nv1_ra22"/>
+								<td class=date23 id="nv1_ra23"/>
+								<td class=date24 id="nv1_ra24"/>
+								<td class=date25 id="nv1_ra25"/>
+								<td class=date26 id="nv1_ra26"/>
+								<td class=date27 id="nv1_ra27"/>
+								<td class=date28 id="nv1_ra28"/>
+								<td class=date29 id="nv1_ra29"/>
+								<td class=date30 id="nv1_ra30"/>
+								<td class=date31 id="nv1_ra31"/>
+								<td/>
+							</tr>
+							<tr class="cat1" height=18 style='height:13.2pt'>
+								<td/>
+								<td>Thời gian (Ra - Vào)</td>
+								<td class="date1 right" id="nv1_time1"/>
+								<td class="date2 right" id="nv1_time2"/>
+								<td class="date3 right" id="nv1_time3"/>
+								<td class="date4 right" id="nv1_time4"/>
+								<td class="date5 right" id="nv1_time5"/>
+								<td class="date6 right" id="nv1_time6"/>
+								<td class="date7 right" id="nv1_time7"/>
+								<td class="date8 right" id="nv1_time8"/>
+								<td class="date9 right" id="nv1_time9"/>
+								<td class="date10 right" id="nv1_time10"/>
+								<td class="date11 right" id="nv1_time11"/>
+								<td class="date12 right" id="nv1_time12"/>
+								<td class="date13 right" id="nv1_time13"/>
+								<td class="date14 right" id="nv1_time14"/>
+								<td class="date15 right" id="nv1_time15"/>
+								<td class="date16 right" id="nv1_time16"/>
+								<td class="date17 right" id="nv1_time17"/>
+								<td class="date18 right" id="nv1_time18"/>
+								<td class="date19 right" id="nv1_time19"/>
+								<td class="date20 right" id="nv1_time20"/>
+								<td class="date21 right" id="nv1_time21"/>
+								<td class="date22 right" id="nv1_time22"/>
+								<td class="date23 right" id="nv1_time23"/>
+								<td class="date24 right" id="nv1_time24"/>
+								<td class="date25 right" id="nv1_time25"/>
+								<td class="date26 right" id="nv1_time26"/>
+								<td class="date27 right" id="nv1_time27"/>
+								<td class="date28 right" id="nv1_time28"/>
+								<td class="date29 right" id="nv1_time29"/>
+								<td class="date30 right" id="nv1_time30"/>
+								<td class="date31 right" id="nv1_time31"/>
+								<td class=xl11118002 width=64 style='border-top:none;border-left:none;
+          width:48pt'/>
+							</tr>
+							<tr class="cat1" height=18 style='height:13.2pt'>
+								<td/>
+								<td>Tăng ca</td>
+								<td class=date1></td>
+								<td class=date2></td>
+								<td class=date3></td>
+								<td class=date4></td>
+								<td class=date5></td>
+								<td class=date6></td>
+								<td class=date7></td>
+								<td class=date8></td>
+								<td class=date9></td>
+								<td class=date10></td>
+								<td class=date11></td>
+								<td class=date12></td>
+								<td class=date13></td>
+								<td class=date14></td>
+								<td class=date15></td>
+								<td class=date16></td>
+								<td class=date17></td>
+								<td class=date18></td>
+								<td class=date19></td>
+								<td class=date20></td>
+								<td class=date21></td>
+								<td class=date22></td>
+								<td class=date23></td>
+								<td class=date24></td>
+								<td class=date25></td>
+								<td class=date26></td>
+								<td class=date27></td>
+								<td class=date28></td>
+								<td class=date29></td>
+								<td class=date30></td>
+								<td class=date31></td>
+							</tr>
+							<!--Nhân viên 1-->
+							<!--Nhân viên 2-->
+							<tr class="cat2 greenclass" height=18 style='height:13.2pt'>
+								<td class="center sticky-col" rowspan=5 style="width: 0.32%;">2</td>
+								<td rowspan=5 id="nv2_ho" style="width: 0.99%;">Nhân viên 2</td>
+								<td rowspan=5 id="nv2_ten" style="width: 0.36%;">A</td>
+								<td rowspan=5 id="nv2_chucdanh" style="width: 0.52%;">Nhân viên vận hành máy</td>
+								<td id="nv2_pl" style="width: 0.23%;">PL24/002</td>
+								<td style="width: 1.03%;">Nghỉ</td>
+								<td class="center date1" id="nv2_off1" style="width: 1.199%;"/>
+								<td class="center date2" id="nv2_off2" style="width: 1.199%;"/>
+								<td class="center date3" id="nv2_off3" style="width: 1.199%;"/>
+								<td class="center date4" id="nv2_off4" style="width: 1.199%;"/>
+								<td class="center date5" id="nv2_off5" style="width: 1.199%;"/>
+								<td class="center date6" id="nv2_off6" style="width: 1.199%;"/>
+								<td class="center date7" id="nv2_off7" style="width: 1.199%;"/>
+								<td class="center date8" id="nv2_off8" style="width: 1.199%;"/>
+								<td class="center date9" id="nv2_off9" style="width: 1.199%;"/>
+								<td class="center date10" id="nv2_off10" style="width: 1.199%;"/>
+								<td class="center date11" id="nv2_off11" style="width: 1.199%;"/>
+								<td class="center date12" id="nv2_off12" style="width: 1.199%;"/>
+								<td class="center date13" id="nv2_off13" style="width: 1.199%;"/>
+								<td class="center date14" id="nv2_off14" style="width: 1.199%;"/>
+								<td class="center date15" id="nv2_off15" style="width: 1.199%;"/>
+								<td class="center date16" id="nv2_off16" style="width: 1.199%;"/>
+								<td class="center date17" id="nv2_off17" style="width: 1.199%;"/>
+								<td class="center date18" id="nv2_off18" style="width: 1.199%;"/>
+								<td class="center date19" id="nv2_off19" style="width: 1.199%;"/>
+								<td class="center date20" id="nv2_off20" style="width: 1.199%;"/>
+								<td class="center date21" id="nv2_off21" style="width: 1.199%;"/>
+								<td class="center date22" id="nv2_off22" style="width: 1.199%;"/>
+								<td class="center date23" id="nv2_off23" style="width: 1.199%;"/>
+								<td class="center date24" id="nv2_off24" style="width: 1.199%;"/>
+								<td class="center date25" id="nv2_off25" style="width: 1.199%;"/>
+								<td class="center date26" id="nv2_off26" style="width: 1.199%;"/>
+								<td class="center date27" id="nv2_off27" style="width: 1.199%;"/>
+								<td class="center date28" id="nv2_off28" style="width: 1.199%;"/>
+								<td class="center date29" id="nv2_off29" style="width: 1.199%;"/>
+								<td class="center date30" id="nv2_off30" style="width: 1.199%;"/>
+								<td class="center date31" id="nv2_off31" style="width: 1.199%;"/>
+								<td style="width: 10%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;"/>
+								<td style="width: 2.90%;">0.0</td>
+								<td style="width: 2.90%;">0.0</td>
+								<td style="width: 2.90%;">0.0</td>
+							</tr>
+							<tr class="cat2 greenclass" height=18 style='height:13.2pt'>
+								<td/>
+								<td>Vào</td>
+								<td class=date1 id="nv2_vao1"/>
+								<td class=date2 id="nv2_vao2"/>
+								<td class=date3 id="nv2_vao3"/>
+								<td class=date4 id="nv2_vao4"/>
+								<td class=date5 id="nv2_vao5"/>
+								<td class=date6 id="nv2_vao6"/>
+								<td class=date7 id="nv2_vao7"/>
+								<td class=date8 id="nv2_vao8"/>
+								<td class=date9 id="nv2_vao9"/>
+								<td class=date10 id="nv2_vao10"/>
+								<td class=date11 id="nv2_vao11"/>
+								<td class=date12 id="nv2_vao12"/>
+								<td class=date13 id="nv2_vao13"/>
+								<td class=date14 id="nv2_vao14"/>
+								<td class=date15 id="nv2_vao15"/>
+								<td class=date16 id="nv2_vao16"/>
+								<td class=date17 id="nv2_vao17"/>
+								<td class=date18 id="nv2_vao18"/>
+								<td class=date19 id="nv2_vao19"/>
+								<td class=date20 id="nv2_vao20"/>
+								<td class=date21 id="nv2_vao21"/>
+								<td class=date22 id="nv2_vao22"/>
+								<td class=date23 id="nv2_vao23"/>
+								<td class=date24 id="nv2_vao24"/>
+								<td class=date25 id="nv2_vao25"/>
+								<td class=date26 id="nv2_vao26"/>
+								<td class=date27 id="nv2_vao27"/>
+								<td class=date28 id="nv2_vao28"/>
+								<td class=date29 id="nv2_vao29"/>
+								<td class=date30 id="nv2_vao30"/>
+								<td class=date31 id="nv2_vao31"/>
+							</tr>
+							<tr class="cat2 greenClass" height=18 style='height:13.2pt'>
+								<td/>
+								<td>Ra</td>
+								<td class=date1 id="nv2_ra1"/>
+								<td class=date2 id="nv2_ra2"/>
+								<td class=date3 id="nv2_ra3"/>
+								<td class=date4 id="nv2_ra4"/>
+								<td class=date5 id="nv2_ra5"/>
+								<td class=date6 id="nv2_ra6"/>
+								<td class=date7 id="nv2_ra7"/>
+								<td class=date8 id="nv2_ra8"/>
+								<td class=date9 id="nv2_ra9"/>
+								<td class=date10 id="nv2_ra10"/>
+								<td class=date11 id="nv2_ra11"/>
+								<td class=date12 id="nv2_ra12"/>
+								<td class=date13 id="nv2_ra13"/>
+								<td class=date14 id="nv2_ra14"/>
+								<td class=date15 id="nv2_ra15"/>
+								<td class=date16 id="nv2_ra16"/>
+								<td class=date17 id="nv2_ra17"/>
+								<td class=date18 id="nv2_ra18"/>
+								<td class=date19 id="nv2_ra19"/>
+								<td class=date20 id="nv2_ra20"/>
+								<td class=date21 id="nv2_ra21"/>
+								<td class=date22 id="nv2_ra22"/>
+								<td class=date23 id="nv2_ra23"/>
+								<td class=date24 id="nv2_ra24"/>
+								<td class=date25 id="nv2_ra25"/>
+								<td class=date26 id="nv2_ra26"/>
+								<td class=date27 id="nv2_ra27"/>
+								<td class=date28 id="nv2_ra28"/>
+								<td class=date29 id="nv2_ra29"/>
+								<td class=date30 id="nv2_ra30"/>
+								<td class=date31 id="nv2_ra31"/>
+								<td/>
+							</tr>
+							<tr class="cat2 greenClass" height=18 style='height:13.2pt'>
+								<td/>
+								<td>Thời gian (Ra - Vào)</td>
+								<td class="date1 right" id="nv2_time1"/>
+								<td class="date2 right" id="nv2_time2"/>
+								<td class="date3 right" id="nv2_time3"/>
+								<td class="date4 right" id="nv2_time4"/>
+								<td class="date5 right" id="nv2_time5"/>
+								<td class="date6 right" id="nv2_time6"/>
+								<td class="date7 right" id="nv2_time7"/>
+								<td class="date8 right" id="nv2_time8"/>
+								<td class="date9 right" id="nv2_time9"/>
+								<td class="date10 right" id="nv2_time10"/>
+								<td class="date11 right" id="nv2_time11"/>
+								<td class="date12 right" id="nv2_time12"/>
+								<td class="date13 right" id="nv2_time13"/>
+								<td class="date14 right" id="nv2_time14"/>
+								<td class="date15 right" id="nv2_time15"/>
+								<td class="date16 right" id="nv2_time16"/>
+								<td class="date17 right" id="nv2_time17"/>
+								<td class="date18 right" id="nv2_time18"/>
+								<td class="date19 right" id="nv2_time19"/>
+								<td class="date20 right" id="nv2_time20"/>
+								<td class="date21 right" id="nv2_time21"/>
+								<td class="date22 right" id="nv2_time22"/>
+								<td class="date23 right" id="nv2_time23"/>
+								<td class="date24 right" id="nv2_time24"/>
+								<td class="date25 right" id="nv2_time25"/>
+								<td class="date26 right" id="nv2_time26"/>
+								<td class="date27 right" id="nv2_time27"/>
+								<td class="date28 right" id="nv2_time28"/>
+								<td class="date29 right" id="nv2_time29"/>
+								<td class="date30 right" id="nv2_time30"/>
+								<td class="date31 right" id="nv2_time31"/>
+								<td class=xl11118002 width=64 style='border-top:none;border-left:none;
+          width:48pt'/>
+							</tr>
+							<tr class="cat2 greenClass" height=18 style='height:13.2pt'>
+								<td/>
+								<td>Tăng ca</td>
+								<td class=date1></td>
+								<td class=date2></td>
+								<td class=date3></td>
+								<td class=date4></td>
+								<td class=date5></td>
+								<td class=date6></td>
+								<td class=date7></td>
+								<td class=date8></td>
+								<td class=date9></td>
+								<td class=date10></td>
+								<td class=date11></td>
+								<td class=date12></td>
+								<td class=date13></td>
+								<td class=date14></td>
+								<td class=date15></td>
+								<td class=date16></td>
+								<td class=date17></td>
+								<td class=date18></td>
+								<td class=date19></td>
+								<td class=date20></td>
+								<td class=date21></td>
+								<td class=date22></td>
+								<td class=date23></td>
+								<td class=date24></td>
+								<td class=date25></td>
+								<td class=date26></td>
+								<td class=date27></td>
+								<td class=date28></td>
+								<td class=date29></td>
+								<td class=date30></td>
+								<td class=date31></td>
+							</tr>
+							<!--Nhân viên 2-->
+							<!--Nhân viên 3-->
+							<tr class="cat3" height=18 style='height:13.2pt'>
+								<td class="center sticky-col" rowspan=5 style="width: 0.32%;">3</td>
+								<td rowspan=5 id="nv3_ho" style="width: 0.99%;">Nhân viên 3</td>
+								<td rowspan=5 id="nv3_ten" style="width: 0.36%;">A</td>
+								<td rowspan=5 id="nv3_chucdanh" style="width: 0.52%;">Nhân viên vận hành máy</td>
+								<td id="nv3_pl" style="width: 0.23%;">PL24/004</td>
+								<td class=xl9218002 style="width: 1.03%;">Nghỉ</td>
+								<td class="center date1" id="nv3_off1" style="width: 1.199%;"/>
+								<td class="center date2" id="nv3_off2" style="width: 1.199%;"/>
+								<td class="center date3" id="nv3_off3" style="width: 1.199%;"/>
+								<td class="center date4" id="nv3_off4" style="width: 1.199%;"/>
+								<td class="center date5" id="nv3_off5" style="width: 1.199%;"/>
+								<td class="center date6" id="nv3_off6" style="width: 1.199%;"/>
+								<td class="center date7" id="nv3_off7" style="width: 1.199%;"/>
+								<td class="center date8" id="nv3_off8" style="width: 1.199%;"/>
+								<td class="center date9" id="nv3_off9" style="width: 1.199%;"/>
+								<td class="center date10" id="nv3_off10" style="width: 1.199%;">P</td>
+								<td class="center date11" id="nv3_off11" style="width: 1.199%;"/>
+								<td class="center date12" id="nv3_off12" style="width: 1.199%;"/>
+								<td class="center date13" id="nv3_off13" style="width: 1.199%;"/>
+								<td class="center date14" id="nv3_off14" style="width: 1.199%;"/>
+								<td class="center date15" id="nv3_off15" style="width: 1.199%;"/>
+								<td class="center date16" id="nv3_off16" style="width: 1.199%;"/>
+								<td class="center date17" id="nv3_off17" style="width: 1.199%;"/>
+								<td class="center date18" id="nv3_off18" style="width: 1.199%;"/>
+								<td class="center date19" id="nv3_off19" style="width: 1.199%;"/>
+								<td class="center date20" id="nv3_off20" style="width: 1.199%;"/>
+								<td class="center date21" id="nv3_off21" style="width: 1.199%;"/>
+								<td class="center date22" id="nv3_off22" style="width: 1.199%;"/>
+								<td class="center date23" id="nv3_off23" style="width: 1.199%;"/>
+								<td class="center date24" id="nv3_off24" style="width: 1.199%;"/>
+								<td class="center date25" id="nv3_off25" style="width: 1.199%;"/>
+								<td class="center date26" id="nv3_off26" style="width: 1.199%;"/>
+								<td class="center date27" id="nv3_off27" style="width: 1.199%;"/>
+								<td class="center date28" id="nv3_off28" style="width: 1.199%;"/>
+								<td class="center date29" id="nv3_off29" style="width: 1.199%;"/>
+								<td class="center date30" id="nv3_off30" style="width: 1.199%;"/>
+								<td class="center date31" id="nv3_off31" style="width: 1.199%;"/>
+								<td class=xl9518002 style="width: 10%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;"/>
+								<td style="width: 2.90%;">0.0</td>
+								<td style="width: 2.90%;">0.0</td>
+								<td style="width: 2.90%;">0.0</td>
+							</tr>
+							<tr class="cat3" height=18 style='height:13.2pt'>
+								<td/>
+								<td>Vào</td>
+								<td class=date1 id="nv3_vao1"/>
+								<td class=date2 id="nv3_vao2"/>
+								<td class=date3 id="nv3_vao3"/>
+								<td class=date4 id="nv3_vao4"/>
+								<td class=date5 id="nv3_vao5"/>
+								<td class=date6 id="nv3_vao6"/>
+								<td class=date7 id="nv3_vao7"/>
+								<td class=date8 id="nv3_vao8"/>
+								<td class=date9 id="nv3_vao9"/>
+								<td class=date10 id="nv3_vao10"/>
+								<td class=date11 id="nv3_vao11"/>
+								<td class=date12 id="nv3_vao12"/>
+								<td class=date13 id="nv3_vao13"/>
+								<td class=date14 id="nv3_vao14"/>
+								<td class=date15 id="nv3_vao15"/>
+								<td class=date16 id="nv3_vao16"/>
+								<td class=date17 id="nv3_vao17"/>
+								<td class=date18 id="nv3_vao18"/>
+								<td class=date19 id="nv3_vao19"/>
+								<td class=date20 id="nv3_vao20"/>
+								<td class=date21 id="nv3_vao21"/>
+								<td class=date22 id="nv3_vao22"/>
+								<td class=date23 id="nv3_vao23"/>
+								<td class=date24 id="nv3_vao24"/>
+								<td class=date25 id="nv3_vao25"/>
+								<td class=date26 id="nv3_vao26"/>
+								<td class=date27 id="nv3_vao27"/>
+								<td class=date28 id="nv3_vao28"/>
+								<td class=date29 id="nv3_vao29"/>
+								<td class=date30 id="nv3_vao30"/>
+								<td class=date31 id="nv3_vao31"/>
+							</tr>
+							<tr class="cat3" height=18 style='height:13.2pt'>
+								<td/>
+								<td>Ra</td>
+								<td class=date1 id="nv3_ra1"/>
+								<td class=date2 id="nv3_ra2"/>
+								<td class=date3 id="nv3_ra3"/>
+								<td class=date4 id="nv3_ra4"/>
+								<td class=date5 id="nv3_ra5"/>
+								<td class=date6 id="nv3_ra6"/>
+								<td class=date7 id="nv3_ra7"/>
+								<td class=date8 id="nv3_ra8"/>
+								<td class=date9 id="nv3_ra9"/>
+								<td class=date10 id="nv3_ra10"/>
+								<td class=date11 id="nv3_ra11"/>
+								<td class=date12 id="nv3_ra12"/>
+								<td class=date13 id="nv3_ra13"/>
+								<td class=date14 id="nv3_ra14"/>
+								<td class=date15 id="nv3_ra15"/>
+								<td class=date16 id="nv3_ra16"/>
+								<td class=date17 id="nv3_ra17"/>
+								<td class=date18 id="nv3_ra18"/>
+								<td class=date19 id="nv3_ra19"/>
+								<td class=date20 id="nv3_ra20"/>
+								<td class=date21 id="nv3_ra21"/>
+								<td class=date22 id="nv3_ra22"/>
+								<td class=date23 id="nv3_ra23"/>
+								<td class=date24 id="nv3_ra24"/>
+								<td class=date25 id="nv3_ra25"/>
+								<td class=date26 id="nv3_ra26"/>
+								<td class=date27 id="nv3_ra27"/>
+								<td class=date28 id="nv3_ra28"/>
+								<td class=date29 id="nv3_ra29"/>
+								<td class=date30 id="nv3_ra30"/>
+								<td class=date31 id="nv3_ra31"/>
+								<td/>
+							</tr>
+							<tr class="cat3" height=18 style='height:13.2pt'>
+								<td/>
+								<td>Thời gian (Ra - Vào)</td>
+								<td class="date1 right" id="nv3_time1"/>
+								<td class="date2 right" id="nv3_time2"/>
+								<td class="date3 right" id="nv3_time3"/>
+								<td class="date4 right" id="nv3_time4"/>
+								<td class="date5 right" id="nv3_time5"/>
+								<td class="date6 right" id="nv3_time6"/>
+								<td class="date7 right" id="nv3_time7"/>
+								<td class="date8 right" id="nv3_time8"/>
+								<td class="date9 right" id="nv3_time9"/>
+								<td class="date10 right" id="nv3_time10"/>
+								<td class="date11 right" id="nv3_time11"/>
+								<td class="date12 right" id="nv3_time12"/>
+								<td class="date13 right" id="nv3_time13"/>
+								<td class="date14 right" id="nv3_time14"/>
+								<td class="date15 right" id="nv3_time15"/>
+								<td class="date16 right" id="nv3_time16"/>
+								<td class="date17 right" id="nv3_time17"/>
+								<td class="date18 right" id="nv3_time18"/>
+								<td class="date19 right" id="nv3_time19"/>
+								<td class="date20 right" id="nv3_time20"/>
+								<td class="date21 right" id="nv3_time21"/>
+								<td class="date22 right" id="nv3_time22"/>
+								<td class="date23 right" id="nv3_time23"/>
+								<td class="date24 right" id="nv3_time24"/>
+								<td class="date25 right" id="nv3_time25"/>
+								<td class="date26 right" id="nv3_time26"/>
+								<td class="date27 right" id="nv3_time27"/>
+								<td class="date28 right" id="nv3_time28"/>
+								<td class="date29 right" id="nv3_time29"/>
+								<td class="date30 right" id="nv3_time30"/>
+								<td class="date31 right" id="nv3_time31"/>
+								<td class=xl11118002 style="width: 10%;" style='border-top:none;border-left:none;
+          width:48pt'/>
+							</tr>
+							<tr class="cat3" height=18 style='height:13.2pt'>
+								<td/>
+								<td>Tăng ca</td>
+								<td class=date1></td>
+								<td class=date2></td>
+								<td class=date3></td>
+								<td class=date4></td>
+								<td class=date5></td>
+								<td class=date6></td>
+								<td class=date7></td>
+								<td class=date8></td>
+								<td class=date9></td>
+								<td class=date10></td>
+								<td class=date11></td>
+								<td class=date12></td>
+								<td class=date13></td>
+								<td class=date14></td>
+								<td class=date15></td>
+								<td class=date16></td>
+								<td class=date17></td>
+								<td class=date18></td>
+								<td class=date19></td>
+								<td class=date20></td>
+								<td class=date21></td>
+								<td class=date22></td>
+								<td class=date23></td>
+								<td class=date24></td>
+								<td class=date25></td>
+								<td class=date26></td>
+								<td class=date27></td>
+								<td class=date28></td>
+								<td class=date29></td>
+								<td class=date30></td>
+								<td class=date31></td>
+							</tr>
+							<!--Nhân viên 3-->
+							<!--Nhân viên 4-->
+							<tr class="cat4 greenClass" height=18 style='height:13.2pt' display="none">
+								<td class="center sticky-col" rowspan=5 style="width: 0.32%;">4</td>
+								<td rowspan=5 id="nv4_ho" style="width: 0.99%;">Nhân viên 1</td>
+								<td rowspan=5 id="nv4_ten" style="width: 0.36%;">A</td>
+								<td rowspan=5 id="nv4_chucdanh" style="width: 0.52%;">Nhân viên vận hành máy</td>
+								<td id="nv4_pl" style="width: 0.23%;">PL24/003</td>
+								<td class=xl9218002 style="width: 1.03%;">Nghỉ</td>
+								<td class="center date1" id="nv4_off1" style="width: 1.199%;"/>
+								<td class="center date2" id="nv4_off2" style="width: 1.199%;"/>
+								<td class="center date3" id="nv4_off3" style="width: 1.199%;"/>
+								<td class="center date4" id="nv4_off4" style="width: 1.199%;"/>
+								<td class="center date5" id="nv4_off5" style="width: 1.199%;"/>
+								<td class="center date6" id="nv4_off6" style="width: 1.199%;"/>
+								<td class="center date7" id="nv4_off7" style="width: 1.199%;"/>
+								<td class="center date8" id="nv4_off8" style="width: 1.199%;"/>
+								<td class="center date9" id="nv4_off9" style="width: 1.199%;"/>
+								<td class="center date10" id="nv4_off10" style="width: 1.199%;"/>
+								<td class="center date11" id="nv4_off11" style="width: 1.199%;"/>
+								<td class="center date12" id="nv4_off12" style="width: 1.199%;"/>
+								<td class="center date13" id="nv4_off13" style="width: 1.199%;"/>
+								<td class="center date14" id="nv4_off14" style="width: 1.199%;"/>
+								<td class="center date15" id="nv4_off15" style="width: 1.199%;"/>
+								<td class="center date16" id="nv4_off16" style="width: 1.199%;"/>
+								<td class="center date17" id="nv4_off17" style="width: 1.199%;"/>
+								<td class="center date18" id="nv4_off18" style="width: 1.199%;"/>
+								<td class="center date19" id="nv4_off19" style="width: 1.199%;"/>
+								<td class="center date20" id="nv4_off20" style="width: 1.199%;"/>
+								<td class="center date21" id="nv4_off21" style="width: 1.199%;"/>
+								<td class="center date22" id="nv4_off22" style="width: 1.199%;"/>
+								<td class="center date23" id="nv4_off23" style="width: 1.199%;"/>
+								<td class="center date24" id="nv4_off24" style="width: 1.199%;"/>
+								<td class="center date25" id="nv4_off25" style="width: 1.199%;"/>
+								<td class="center date26" id="nv4_off26" style="width: 1.199%;"/>
+								<td class="center date27" id="nv4_off27" style="width: 1.199%;"/>
+								<td class="center date28" id="nv4_off28" style="width: 1.199%;"/>
+								<td class="center date29" id="nv4_off29" style="width: 1.199%;"/>
+								<td class="center date30" id="nv4_off30" style="width: 1.199%;"/>
+								<td class="center date31" id="nv4_off31" style="width: 1.199%;"/>
+								<td class=xl9518002 style="width: 10%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;"/>
+								<td style="width: 2.90%;">0.0</td>
+								<td style="width: 2.90%;">0.0</td>
+								<td style="width: 2.90%;">0.0</td>
+							</tr>
+							<tr class="cat4 greenClass" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Vào</td>
+								<td class=date1 id="nv4_vao1"/>
+								<td class=date2 id="nv4_vao2"/>
+								<td class=date3 id="nv4_vao3"/>
+								<td class=date4 id="nv4_vao4"/>
+								<td class=date5 id="nv4_vao5"/>
+								<td class=date6 id="nv4_vao6"/>
+								<td class=date7 id="nv4_vao7"/>
+								<td class=date8 id="nv4_vao8"/>
+								<td class=date9 id="nv4_vao9"/>
+								<td class=date10 id="nv4_vao10"/>
+								<td class=date11 id="nv4_vao11"/>
+								<td class=date12 id="nv4_vao12"/>
+								<td class=date13 id="nv4_vao13"/>
+								<td class=date14 id="nv4_vao14"/>
+								<td class=date15 id="nv4_vao15"/>
+								<td class=date16 id="nv4_vao16"/>
+								<td class=date17 id="nv4_vao17"/>
+								<td class=date18 id="nv4_vao18"/>
+								<td class=date19 id="nv4_vao19"/>
+								<td class=date20 id="nv4_vao20"/>
+								<td class=date21 id="nv4_vao21"/>
+								<td class=date22 id="nv4_vao22"/>
+								<td class=date23 id="nv4_vao23"/>
+								<td class=date24 id="nv4_vao24"/>
+								<td class=date25 id="nv4_vao25"/>
+								<td class=date26 id="nv4_vao26"/>
+								<td class=date27 id="nv4_vao27"/>
+								<td class=date28 id="nv4_vao28"/>
+								<td class=date29 id="nv4_vao29"/>
+								<td class=date30 id="nv4_vao30"/>
+								<td class=date31 id="nv4_vao31"/>
+							</tr>
+							<tr class="cat4 greenClass" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Ra</td>
+								<td class=date1 id="nv4_ra1"/>
+								<td class=date2 id="nv4_ra2"/>
+								<td class=date3 id="nv4_ra3"/>
+								<td class=date4 id="nv4_ra4"/>
+								<td class=date5 id="nv4_ra5"/>
+								<td class=date6 id="nv4_ra6"/>
+								<td class=date7 id="nv4_ra7"/>
+								<td class=date8 id="nv4_ra8"/>
+								<td class=date9 id="nv4_ra9"/>
+								<td class=date10 id="nv4_ra10"/>
+								<td class=date11 id="nv4_ra11"/>
+								<td class=date12 id="nv4_ra12"/>
+								<td class=date13 id="nv4_ra13"/>
+								<td class=date14 id="nv4_ra14"/>
+								<td class=date15 id="nv4_ra15"/>
+								<td class=date16 id="nv4_ra16"/>
+								<td class=date17 id="nv4_ra17"/>
+								<td class=date18 id="nv4_ra18"/>
+								<td class=date19 id="nv4_ra19"/>
+								<td class=date20 id="nv4_ra20"/>
+								<td class=date21 id="nv4_ra21"/>
+								<td class=date22 id="nv4_ra22"/>
+								<td class=date23 id="nv4_ra23"/>
+								<td class=date24 id="nv4_ra24"/>
+								<td class=date25 id="nv4_ra25"/>
+								<td class=date26 id="nv4_ra26"/>
+								<td class=date27 id="nv4_ra27"/>
+								<td class=date28 id="nv4_ra28"/>
+								<td class=date29 id="nv4_ra29"/>
+								<td class=date30 id="nv4_ra30"/>
+								<td class=date31 id="nv4_ra31"/>
+								<td/>
+							</tr>
+							<tr class="cat4 greenClass" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Thời gian (Ra - Vào)</td>
+								<td class="date1 right" id="nv4_time1"/>
+								<td class="date2 right" id="nv4_time2"/>
+								<td class="date3 right" id="nv4_time3"/>
+								<td class="date4 right" id="nv4_time4"/>
+								<td class="date5 right" id="nv4_time5"/>
+								<td class="date6 right" id="nv4_time6"/>
+								<td class="date7 right" id="nv4_time7"/>
+								<td class="date8 right" id="nv4_time8"/>
+								<td class="date9 right" id="nv4_time9"/>
+								<td class="date10 right" id="nv4_time10"/>
+								<td class="date11 right" id="nv4_time11"/>
+								<td class="date12 right" id="nv4_time12"/>
+								<td class="date13 right" id="nv4_time13"/>
+								<td class="date14 right" id="nv4_time14"/>
+								<td class="date15 right" id="nv4_time15"/>
+								<td class="date16 right" id="nv4_time16"/>
+								<td class="date17 right" id="nv4_time17"/>
+								<td class="date18 right" id="nv4_time18"/>
+								<td class="date19 right" id="nv4_time19"/>
+								<td class="date20 right" id="nv4_time20"/>
+								<td class="date21 right" id="nv4_time21"/>
+								<td class="date22 right" id="nv4_time22"/>
+								<td class="date23 right" id="nv4_time23"/>
+								<td class="date24 right" id="nv4_time24"/>
+								<td class="date25 right" id="nv4_time25"/>
+								<td class="date26 right" id="nv4_time26"/>
+								<td class="date27 right" id="nv4_time27"/>
+								<td class="date28 right" id="nv4_time28"/>
+								<td class="date29 right" id="nv4_time29"/>
+								<td class="date30 right" id="nv4_time30"/>
+								<td class="date31 right" id="nv4_time31"/>
+								<td class=xl11118002 width=64 style='border-top:none;border-left:none;
+          width:48pt'/>
+							</tr>
+							<tr class="cat4 greenClass" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Tăng ca</td>
+								<td class=date1></td>
+								<td class=date2></td>
+								<td class=date3></td>
+								<td class=date4></td>
+								<td class=date5></td>
+								<td class=date6></td>
+								<td class=date7></td>
+								<td class=date8></td>
+								<td class=date9></td>
+								<td class=date10></td>
+								<td class=date11></td>
+								<td class=date12></td>
+								<td class=date13></td>
+								<td class=date14></td>
+								<td class=date15></td>
+								<td class=date16></td>
+								<td class=date17></td>
+								<td class=date18></td>
+								<td class=date19></td>
+								<td class=date20></td>
+								<td class=date21></td>
+								<td class=date22></td>
+								<td class=date23></td>
+								<td class=date24></td>
+								<td class=date25></td>
+								<td class=date26></td>
+								<td class=date27></td>
+								<td class=date28></td>
+								<td class=date29></td>
+								<td class=date30></td>
+								<td class=date31></td>
+							</tr>
+							<!--Nhân viên 4-->
+							<!--Nhân viên 5-->
+							<tr class="cat5" height=18 style='height:13.2pt' display="none">
+								<td class="center sticky-col" rowspan=5 style="width: 0.32%;">5</td>
+								<td rowspan=5 id="nv5_ho" style="width: 0.99%;">Nhân viên 5</td>
+								<td rowspan=5 id="nv5_ten" style="width: 0.36%;">A</td>
+								<td rowspan=5 id="nv5_chucdanh" style="width: 0.52%;">Nhân viên vận hành máy</td>
+								<td id="nv5_pl" style="width: 0.23%;">PL24/003</td>
+								<td class=xl9218002 style="width: 1.03%;">Nghỉ</td>
+								<td class="center date1" id="nv5_off1" style="width: 1.199%;"/>
+								<td class="center date2" id="nv5_off2" style="width: 1.199%;"/>
+								<td class="center date3" id="nv5_off3" style="width: 1.199%;"/>
+								<td class="center date4" id="nv5_off4" style="width: 1.199%;"/>
+								<td class="center date5" id="nv5_off5" style="width: 1.199%;"/>
+								<td class="center date6" id="nv5_off6" style="width: 1.199%;"/>
+								<td class="center date7" id="nv5_off7" style="width: 1.199%;"/>
+								<td class="center date8" id="nv5_off8" style="width: 1.199%;"/>
+								<td class="center date9" id="nv5_off9" style="width: 1.199%;"/>
+								<td class="center date10" id="nv5_off10" style="width: 1.199%;"/>
+								<td class="center date11" id="nv5_off11" style="width: 1.199%;"/>
+								<td class="center date12" id="nv5_off12" style="width: 1.199%;"/>
+								<td class="center date13" id="nv5_off13" style="width: 1.199%;"/>
+								<td class="center date14" id="nv5_off14" style="width: 1.199%;"/>
+								<td class="center date15" id="nv5_off15" style="width: 1.199%;"/>
+								<td class="center date16" id="nv5_off16" style="width: 1.199%;"/>
+								<td class="center date17" id="nv5_off17" style="width: 1.199%;"/>
+								<td class="center date18" id="nv5_off18" style="width: 1.199%;"/>
+								<td class="center date19" id="nv5_off19" style="width: 1.199%;"/>
+								<td class="center date20" id="nv5_off20" style="width: 1.199%;"/>
+								<td class="center date21" id="nv5_off21" style="width: 1.199%;"/>
+								<td class="center date22" id="nv5_off22" style="width: 1.199%;"/>
+								<td class="center date23" id="nv5_off23" style="width: 1.199%;"/>
+								<td class="center date24" id="nv5_off24" style="width: 1.199%;"/>
+								<td class="center date25" id="nv5_off25" style="width: 1.199%;"/>
+								<td class="center date26" id="nv5_off26" style="width: 1.199%;"/>
+								<td class="center date27" id="nv5_off27" style="width: 1.199%;"/>
+								<td class="center date28" id="nv5_off28" style="width: 1.199%;"/>
+								<td class="center date29" id="nv5_off29" style="width: 1.199%;"/>
+								<td class="center date30" id="nv5_off30" style="width: 1.199%;"/>
+								<td class="center date31" id="nv5_off31" style="width: 1.199%;"/>
+								<td class=xl9518002 style="width: 10%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;"/>
+								<td style="width: 2.90%;">0.0</td>
+								<td style="width: 2.90%;">0.0</td>
+								<td style="width: 2.90%;">0.0</td>
+							</tr>
+							<tr class="cat5" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Vào</td>
+								<td class=date1 id="nv5_vao1"/>
+								<td class=date2 id="nv5_vao2"/>
+								<td class=date3 id="nv5_vao3"/>
+								<td class=date4 id="nv5_vao4"/>
+								<td class=date5 id="nv5_vao5"/>
+								<td class=date6 id="nv5_vao6"/>
+								<td class=date7 id="nv5_vao7"/>
+								<td class=date8 id="nv5_vao8"/>
+								<td class=date9 id="nv5_vao9"/>
+								<td class=date10 id="nv5_vao10"/>
+								<td class=date11 id="nv5_vao11"/>
+								<td class=date12 id="nv5_vao12"/>
+								<td class=date13 id="nv5_vao13"/>
+								<td class=date14 id="nv5_vao14"/>
+								<td class=date15 id="nv5_vao15"/>
+								<td class=date16 id="nv5_vao16"/>
+								<td class=date17 id="nv5_vao17"/>
+								<td class=date18 id="nv5_vao18"/>
+								<td class=date19 id="nv5_vao19"/>
+								<td class=date20 id="nv5_vao20"/>
+								<td class=date21 id="nv5_vao21"/>
+								<td class=date22 id="nv5_vao22"/>
+								<td class=date23 id="nv5_vao23"/>
+								<td class=date24 id="nv5_vao24"/>
+								<td class=date25 id="nv5_vao25"/>
+								<td class=date26 id="nv5_vao26"/>
+								<td class=date27 id="nv5_vao27"/>
+								<td class=date28 id="nv5_vao28"/>
+								<td class=date29 id="nv5_vao29"/>
+								<td class=date30 id="nv5_vao30"/>
+								<td class=date31 id="nv5_vao31"/>
+							</tr>
+							<tr class="cat5" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Ra</td>
+								<td class=date1 id="nv5_ra1"/>
+								<td class=date2 id="nv5_ra2"/>
+								<td class=date3 id="nv5_ra3"/>
+								<td class=date4 id="nv5_ra4"/>
+								<td class=date5 id="nv5_ra5"/>
+								<td class=date6 id="nv5_ra6"/>
+								<td class=date7 id="nv5_ra7"/>
+								<td class=date8 id="nv5_ra8"/>
+								<td class=date9 id="nv5_ra9"/>
+								<td class=date10 id="nv5_ra10"/>
+								<td class=date11 id="nv5_ra11"/>
+								<td class=date12 id="nv5_ra12"/>
+								<td class=date13 id="nv5_ra13"/>
+								<td class=date14 id="nv5_ra14"/>
+								<td class=date15 id="nv5_ra15"/>
+								<td class=date16 id="nv5_ra16"/>
+								<td class=date17 id="nv5_ra17"/>
+								<td class=date18 id="nv5_ra18"/>
+								<td class=date19 id="nv5_ra19"/>
+								<td class=date20 id="nv5_ra20"/>
+								<td class=date21 id="nv5_ra21"/>
+								<td class=date22 id="nv5_ra22"/>
+								<td class=date23 id="nv5_ra23"/>
+								<td class=date24 id="nv5_ra24"/>
+								<td class=date25 id="nv5_ra25"/>
+								<td class=date26 id="nv5_ra26"/>
+								<td class=date27 id="nv5_ra27"/>
+								<td class=date28 id="nv5_ra28"/>
+								<td class=date29 id="nv5_ra29"/>
+								<td class=date30 id="nv5_ra30"/>
+								<td class=date31 id="nv5_ra31"/>
+								<td/>
+							</tr>
+							<tr class="cat5" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Thời gian (Ra - Vào)</td>
+								<td class="date1 right" id="nv5_time1"/>
+								<td class="date2 right" id="nv5_time2"/>
+								<td class="date3 right" id="nv5_time3"/>
+								<td class="date4 right" id="nv5_time4"/>
+								<td class="date5 right" id="nv5_time5"/>
+								<td class="date6 right" id="nv5_time6"/>
+								<td class="date7 right" id="nv5_time7"/>
+								<td class="date8 right" id="nv5_time8"/>
+								<td class="date9 right" id="nv5_time9"/>
+								<td class="date10 right" id="nv5_time10"/>
+								<td class="date11 right" id="nv5_time11"/>
+								<td class="date12 right" id="nv5_time12"/>
+								<td class="date13 right" id="nv5_time13"/>
+								<td class="date14 right" id="nv5_time14"/>
+								<td class="date15 right" id="nv5_time15"/>
+								<td class="date16 right" id="nv5_time16"/>
+								<td class="date17 right" id="nv5_time17"/>
+								<td class="date18 right" id="nv5_time18"/>
+								<td class="date19 right" id="nv5_time19"/>
+								<td class="date20 right" id="nv5_time20"/>
+								<td class="date21 right" id="nv5_time21"/>
+								<td class="date22 right" id="nv5_time22"/>
+								<td class="date23 right" id="nv5_time23"/>
+								<td class="date24 right" id="nv5_time24"/>
+								<td class="date25 right" id="nv5_time25"/>
+								<td class="date26 right" id="nv5_time26"/>
+								<td class="date27 right" id="nv5_time27"/>
+								<td class="date28 right" id="nv5_time28"/>
+								<td class="date29 right" id="nv5_time29"/>
+								<td class="date30 right" id="nv5_time30"/>
+								<td class="date31 right" id="nv5_time31"/>
+								<td class=xl11118002 width=64 style='border-top:none;border-left:none;
+          width:48pt'/>
+							</tr>
+							<tr class="cat5" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Tăng ca</td>
+								<td class=date1></td>
+								<td class=date2></td>
+								<td class=date3></td>
+								<td class=date4></td>
+								<td class=date5></td>
+								<td class=date6></td>
+								<td class=date7></td>
+								<td class=date8></td>
+								<td class=date9></td>
+								<td class=date10></td>
+								<td class=date11></td>
+								<td class=date12></td>
+								<td class=date13></td>
+								<td class=date14></td>
+								<td class=date15></td>
+								<td class=date16></td>
+								<td class=date17></td>
+								<td class=date18></td>
+								<td class=date19></td>
+								<td class=date20></td>
+								<td class=date21></td>
+								<td class=date22></td>
+								<td class=date23></td>
+								<td class=date24></td>
+								<td class=date25></td>
+								<td class=date26></td>
+								<td class=date27></td>
+								<td class=date28></td>
+								<td class=date29></td>
+								<td class=date30></td>
+								<td class=date31></td>
+							</tr>
+							<!--Nhân viên 5-->
+							<!--Nhân viên 6s-->
+							<tr class="cat6 greenClass" height=18 style='height:13.2pt' display="none">
+								<td class="center sticky-col" rowspan=5 style="width: 0.32%;">6</td>
+								<td rowspan=5 id="nv6_ho" style="width: 0.99%;">Nhân viên 1</td>
+								<td rowspan=5 id="nv6_ten" style="width: 0.36%;">A</td>
+								<td rowspan=5 id="nv6_chucdanh" style="width: 0.52%;">Nhân viên vận hành máy</td>
+								<td id="nv6_pl" style="width: 0.23%;">PL24/003</td>
+								<td class=xl9218002 style="width: 1.03%;">Nghỉ</td>
+								<td class="center date1" id="nv6_off1" style="width: 1.199%;"/>
+								<td class="center date2" id="nv6_off2" style="width: 1.199%;"/>
+								<td class="center date3" id="nv6_off3" style="width: 1.199%;"/>
+								<td class="center date4" id="nv6_off4" style="width: 1.199%;"/>
+								<td class="center date5" id="nv6_off5" style="width: 1.199%;"/>
+								<td class="center date6" id="nv6_off6" style="width: 1.199%;"/>
+								<td class="center date7" id="nv6_off7" style="width: 1.199%;"/>
+								<td class="center date8" id="nv6_off8" style="width: 1.199%;"/>
+								<td class="center date9" id="nv6_off9" style="width: 1.199%;"/>
+								<td class="center date10" id="nv6_off10" style="width: 1.199%;"/>
+								<td class="center date11" id="nv6_off11" style="width: 1.199%;"/>
+								<td class="center date12" id="nv6_off12" style="width: 1.199%;"/>
+								<td class="center date13" id="nv6_off13" style="width: 1.199%;"/>
+								<td class="center date14" id="nv6_off14" style="width: 1.199%;"/>
+								<td class="center date15" id="nv6_off15" style="width: 1.199%;"/>
+								<td class="center date16" id="nv6_off16" style="width: 1.199%;"/>
+								<td class="center date17" id="nv6_off17" style="width: 1.199%;"/>
+								<td class="center date18" id="nv6_off18" style="width: 1.199%;"/>
+								<td class="center date19" id="nv6_off19" style="width: 1.199%;"/>
+								<td class="center date20" id="nv6_off20" style="width: 1.199%;"/>
+								<td class="center date21" id="nv6_off21" style="width: 1.199%;"/>
+								<td class="center date22" id="nv6_off22" style="width: 1.199%;"/>
+								<td class="center date23" id="nv6_off23" style="width: 1.199%;"/>
+								<td class="center date24" id="nv6_off24" style="width: 1.199%;"/>
+								<td class="center date25" id="nv6_off25" style="width: 1.199%;"/>
+								<td class="center date26" id="nv6_off26" style="width: 1.199%;"/>
+								<td class="center date27" id="nv6_off27" style="width: 1.199%;"/>
+								<td class="center date28" id="nv6_off28" style="width: 1.199%;"/>
+								<td class="center date29" id="nv6_off29" style="width: 1.199%;"/>
+								<td class="center date30" id="nv6_off30" style="width: 1.199%;"/>
+								<td class="center date31" id="nv6_off31" style="width: 1.199%;"/>
+								<td class=xl9518002 style="width: 10%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;"/>
+								<td style="width: 2.90%;">0.0</td>
+								<td style="width: 2.90%;">0.0</td>
+								<td style="width: 2.90%;">0.0</td>
+							</tr>
+							<tr class="cat6 greenClass" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Vào</td>
+								<td class=date1 id="nv6_vao1"/>
+								<td class=date2 id="nv6_vao2"/>
+								<td class=date3 id="nv6_vao3"/>
+								<td class=date4 id="nv6_vao4"/>
+								<td class=date5 id="nv6_vao5"/>
+								<td class=date6 id="nv6_vao6"/>
+								<td class=date7 id="nv6_vao7"/>
+								<td class=date8 id="nv6_vao8"/>
+								<td class=date9 id="nv6_vao9"/>
+								<td class=date10 id="nv6_vao10"/>
+								<td class=date11 id="nv6_vao11"/>
+								<td class=date12 id="nv6_vao12"/>
+								<td class=date13 id="nv6_vao13"/>
+								<td class=date14 id="nv6_vao14"/>
+								<td class=date15 id="nv6_vao15"/>
+								<td class=date16 id="nv6_vao16"/>
+								<td class=date17 id="nv6_vao17"/>
+								<td class=date18 id="nv6_vao18"/>
+								<td class=date19 id="nv6_vao19"/>
+								<td class=date20 id="nv6_vao20"/>
+								<td class=date21 id="nv6_vao21"/>
+								<td class=date22 id="nv6_vao22"/>
+								<td class=date23 id="nv6_vao23"/>
+								<td class=date24 id="nv6_vao24"/>
+								<td class=date25 id="nv6_vao25"/>
+								<td class=date26 id="nv6_vao26"/>
+								<td class=date27 id="nv6_vao27"/>
+								<td class=date28 id="nv6_vao28"/>
+								<td class=date29 id="nv6_vao29"/>
+								<td class=date30 id="nv6_vao30"/>
+								<td class=date31 id="nv6_vao31"/>
+							</tr>
+							<tr class="cat6 greenClass" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Ra</td>
+								<td class=date1 id="nv6_ra1"/>
+								<td class=date2 id="nv6_ra2"/>
+								<td class=date3 id="nv6_ra3"/>
+								<td class=date4 id="nv6_ra4"/>
+								<td class=date5 id="nv6_ra5"/>
+								<td class=date6 id="nv6_ra6"/>
+								<td class=date7 id="nv6_ra7"/>
+								<td class=date8 id="nv6_ra8"/>
+								<td class=date9 id="nv6_ra9"/>
+								<td class=date10 id="nv6_ra10"/>
+								<td class=date11 id="nv6_ra11"/>
+								<td class=date12 id="nv6_ra12"/>
+								<td class=date13 id="nv6_ra13"/>
+								<td class=date14 id="nv6_ra14"/>
+								<td class=date15 id="nv6_ra15"/>
+								<td class=date16 id="nv6_ra16"/>
+								<td class=date17 id="nv6_ra17"/>
+								<td class=date18 id="nv6_ra18"/>
+								<td class=date19 id="nv6_ra19"/>
+								<td class=date20 id="nv6_ra20"/>
+								<td class=date21 id="nv6_ra21"/>
+								<td class=date22 id="nv6_ra22"/>
+								<td class=date23 id="nv6_ra23"/>
+								<td class=date24 id="nv6_ra24"/>
+								<td class=date25 id="nv6_ra25"/>
+								<td class=date26 id="nv6_ra26"/>
+								<td class=date27 id="nv6_ra27"/>
+								<td class=date28 id="nv6_ra28"/>
+								<td class=date29 id="nv6_ra29"/>
+								<td class=date30 id="nv6_ra30"/>
+								<td class=date31 id="nv6_ra31"/>
+								<td/>
+							</tr>
+							<tr class="cat6 greenClass" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Thời gian (Ra - Vào)</td>
+								<td class="date1 right" id="nv6_time1"/>
+								<td class="date2 right" id="nv6_time2"/>
+								<td class="date3 right" id="nv6_time3"/>
+								<td class="date4 right" id="nv6_time4"/>
+								<td class="date5 right" id="nv6_time5"/>
+								<td class="date6 right" id="nv6_time6"/>
+								<td class="date7 right" id="nv6_time7"/>
+								<td class="date8 right" id="nv6_time8"/>
+								<td class="date9 right" id="nv6_time9"/>
+								<td class="date10 right" id="nv6_time10"/>
+								<td class="date11 right" id="nv6_time11"/>
+								<td class="date12 right" id="nv6_time12"/>
+								<td class="date13 right" id="nv6_time13"/>
+								<td class="date14 right" id="nv6_time14"/>
+								<td class="date15 right" id="nv6_time15"/>
+								<td class="date16 right" id="nv6_time16"/>
+								<td class="date17 right" id="nv6_time17"/>
+								<td class="date18 right" id="nv6_time18"/>
+								<td class="date19 right" id="nv6_time19"/>
+								<td class="date20 right" id="nv6_time20"/>
+								<td class="date21 right" id="nv6_time21"/>
+								<td class="date22 right" id="nv6_time22"/>
+								<td class="date23 right" id="nv6_time23"/>
+								<td class="date24 right" id="nv6_time24"/>
+								<td class="date25 right" id="nv6_time25"/>
+								<td class="date26 right" id="nv6_time26"/>
+								<td class="date27 right" id="nv6_time27"/>
+								<td class="date28 right" id="nv6_time28"/>
+								<td class="date29 right" id="nv6_time29"/>
+								<td class="date30 right" id="nv6_time30"/>
+								<td class="date31 right" id="nv6_time31"/>
+								<td class=xl11118002 width=64 style='border-top:none;border-left:none;
+          width:48pt'/>
+							</tr>
+							<tr class="cat6 greenClass" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Tăng ca</td>
+								<td class=date1></td>
+								<td class=date2></td>
+								<td class=date3></td>
+								<td class=date4></td>
+								<td class=date5></td>
+								<td class=date6></td>
+								<td class=date7></td>
+								<td class=date8></td>
+								<td class=date9></td>
+								<td class=date10></td>
+								<td class=date11></td>
+								<td class=date12></td>
+								<td class=date13></td>
+								<td class=date14></td>
+								<td class=date15></td>
+								<td class=date16></td>
+								<td class=date17></td>
+								<td class=date18></td>
+								<td class=date19></td>
+								<td class=date20></td>
+								<td class=date21></td>
+								<td class=date22></td>
+								<td class=date23></td>
+								<td class=date24></td>
+								<td class=date25></td>
+								<td class=date26></td>
+								<td class=date27></td>
+								<td class=date28></td>
+								<td class=date29></td>
+								<td class=date30></td>
+								<td class=date31></td>
+							</tr>
+							<!--Nhân viên 6-->
+							<!--Nhân viên 7-->
+							<tr class="cat7" height=18 style='height:13.2pt' display="none">
+								<td class="center sticky-col" rowspan=5 style="width: 0.32%;">7</td>
+								<td rowspan=5 id="nv7_ho" style="width: 0.99%;">Nhân viên 1</td>
+								<td rowspan=5 id="nv7_ten" style="width: 0.36%;">A</td>
+								<td rowspan=5 id="nv7_chucdanh" style="width: 0.52%;">Nhân viên vận hành máy</td>
+								<td id="nv7_pl" style="width: 0.23%;">PL24/003</td>
+								<td class=xl9218002 style="width: 1.03%;">Nghỉ</td>
+								<td class="center date1" id="nv7_off1" style="width: 1.199%;"/>
+								<td class="center date2" id="nv7_off2" style="width: 1.199%;"/>
+								<td class="center date3" id="nv7_off3" style="width: 1.199%;"/>
+								<td class="center date4" id="nv7_off4" style="width: 1.199%;"/>
+								<td class="center date5" id="nv7_off5" style="width: 1.199%;"/>
+								<td class="center date6" id="nv7_off6" style="width: 1.199%;"/>
+								<td class="center date7" id="nv7_off7" style="width: 1.199%;"/>
+								<td class="center date8" id="nv7_off8" style="width: 1.199%;"/>
+								<td class="center date9" id="nv7_off9" style="width: 1.199%;"/>
+								<td class="center date10" id="nv7_off10" style="width: 1.199%;"/>
+								<td class="center date11" id="nv7_off11" style="width: 1.199%;"/>
+								<td class="center date12" id="nv7_off12" style="width: 1.199%;"/>
+								<td class="center date13" id="nv7_off13" style="width: 1.199%;"/>
+								<td class="center date14" id="nv7_off14" style="width: 1.199%;"/>
+								<td class="center date15" id="nv7_off15" style="width: 1.199%;"/>
+								<td class="center date16" id="nv7_off16" style="width: 1.199%;"/>
+								<td class="center date17" id="nv7_off17" style="width: 1.199%;"/>
+								<td class="center date18" id="nv7_off18" style="width: 1.199%;"/>
+								<td class="center date19" id="nv7_off19" style="width: 1.199%;"/>
+								<td class="center date20" id="nv7_off20" style="width: 1.199%;"/>
+								<td class="center date21" id="nv7_off21" style="width: 1.199%;"/>
+								<td class="center date22" id="nv7_off22" style="width: 1.199%;"/>
+								<td class="center date23" id="nv7_off23" style="width: 1.199%;"/>
+								<td class="center date24" id="nv7_off24" style="width: 1.199%;"/>
+								<td class="center date25" id="nv7_off25" style="width: 1.199%;"/>
+								<td class="center date26" id="nv7_off26" style="width: 1.199%;"/>
+								<td class="center date27" id="nv7_off27" style="width: 1.199%;"/>
+								<td class="center date28" id="nv7_off28" style="width: 1.199%;"/>
+								<td class="center date29" id="nv7_off29" style="width: 1.199%;"/>
+								<td class="center date30" id="nv7_off30" style="width: 1.199%;"/>
+								<td class="center date31" id="nv7_off31" style="width: 1.199%;"/>
+								<td class=xl9518002 style="width: 10%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;"/>
+								<td style="width: 2.90%;">0.0</td>
+								<td style="width: 2.90%;">0.0</td>
+								<td style="width: 2.90%;">0.0</td>
+							</tr>
+							<tr class="cat7" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Vào</td>
+								<td class=date1 id="nv7_vao1"/>
+								<td class=date2 id="nv7_vao2"/>
+								<td class=date3 id="nv7_vao3"/>
+								<td class=date4 id="nv7_vao4"/>
+								<td class=date5 id="nv7_vao5"/>
+								<td class=date6 id="nv7_vao6"/>
+								<td class=date7 id="nv7_vao7"/>
+								<td class=date8 id="nv7_vao8"/>
+								<td class=date9 id="nv7_vao9"/>
+								<td class=date10 id="nv7_vao10"/>
+								<td class=date11 id="nv7_vao11"/>
+								<td class=date12 id="nv7_vao12"/>
+								<td class=date13 id="nv7_vao13"/>
+								<td class=date14 id="nv7_vao14"/>
+								<td class=date15 id="nv7_vao15"/>
+								<td class=date16 id="nv7_vao16"/>
+								<td class=date17 id="nv7_vao17"/>
+								<td class=date18 id="nv7_vao18"/>
+								<td class=date19 id="nv7_vao19"/>
+								<td class=date20 id="nv7_vao20"/>
+								<td class=date21 id="nv7_vao21"/>
+								<td class=date22 id="nv7_vao22"/>
+								<td class=date23 id="nv7_vao23"/>
+								<td class=date24 id="nv7_vao24"/>
+								<td class=date25 id="nv7_vao25"/>
+								<td class=date26 id="nv7_vao26"/>
+								<td class=date27 id="nv7_vao27"/>
+								<td class=date28 id="nv7_vao28"/>
+								<td class=date29 id="nv7_vao29"/>
+								<td class=date30 id="nv7_vao30"/>
+								<td class=date31 id="nv7_vao31"/>
+							</tr>
+							<tr class="cat7" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Ra</td>
+								<td class=date1 id="nv7_ra1"/>
+								<td class=date2 id="nv7_ra2"/>
+								<td class=date3 id="nv7_ra3"/>
+								<td class=date4 id="nv7_ra4"/>
+								<td class=date5 id="nv7_ra5"/>
+								<td class=date6 id="nv7_ra6"/>
+								<td class=date7 id="nv7_ra7"/>
+								<td class=date8 id="nv7_ra8"/>
+								<td class=date9 id="nv7_ra9"/>
+								<td class=date10 id="nv7_ra10"/>
+								<td class=date11 id="nv7_ra11"/>
+								<td class=date12 id="nv7_ra12"/>
+								<td class=date13 id="nv7_ra13"/>
+								<td class=date14 id="nv7_ra14"/>
+								<td class=date15 id="nv7_ra15"/>
+								<td class=date16 id="nv7_ra16"/>
+								<td class=date17 id="nv7_ra17"/>
+								<td class=date18 id="nv7_ra18"/>
+								<td class=date19 id="nv7_ra19"/>
+								<td class=date20 id="nv7_ra20"/>
+								<td class=date21 id="nv7_ra21"/>
+								<td class=date22 id="nv7_ra22"/>
+								<td class=date23 id="nv7_ra23"/>
+								<td class=date24 id="nv7_ra24"/>
+								<td class=date25 id="nv7_ra25"/>
+								<td class=date26 id="nv7_ra26"/>
+								<td class=date27 id="nv7_ra27"/>
+								<td class=date28 id="nv7_ra28"/>
+								<td class=date29 id="nv7_ra29"/>
+								<td class=date30 id="nv7_ra30"/>
+								<td class=date31 id="nv7_ra31"/>
+								<td/>
+							</tr>
+							<tr class="cat7" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Thời gian (Ra - Vào)</td>
+								<td class="date1 right" id="nv7_time1"/>
+								<td class="date2 right" id="nv7_time2"/>
+								<td class="date3 right" id="nv7_time3"/>
+								<td class="date4 right" id="nv7_time4"/>
+								<td class="date5 right" id="nv7_time5"/>
+								<td class="date6 right" id="nv7_time6"/>
+								<td class="date7 right" id="nv7_time7"/>
+								<td class="date8 right" id="nv7_time8"/>
+								<td class="date9 right" id="nv7_time9"/>
+								<td class="date10 right" id="nv7_time10"/>
+								<td class="date11 right" id="nv7_time11"/>
+								<td class="date12 right" id="nv7_time12"/>
+								<td class="date13 right" id="nv7_time13"/>
+								<td class="date14 right" id="nv7_time14"/>
+								<td class="date15 right" id="nv7_time15"/>
+								<td class="date16 right" id="nv7_time16"/>
+								<td class="date17 right" id="nv7_time17"/>
+								<td class="date18 right" id="nv7_time18"/>
+								<td class="date19 right" id="nv7_time19"/>
+								<td class="date20 right" id="nv7_time20"/>
+								<td class="date21 right" id="nv7_time21"/>
+								<td class="date22 right" id="nv7_time22"/>
+								<td class="date23 right" id="nv7_time23"/>
+								<td class="date24 right" id="nv7_time24"/>
+								<td class="date25 right" id="nv7_time25"/>
+								<td class="date26 right" id="nv7_time26"/>
+								<td class="date27 right" id="nv7_time27"/>
+								<td class="date28 right" id="nv7_time28"/>
+								<td class="date29 right" id="nv7_time29"/>
+								<td class="date30 right" id="nv7_time30"/>
+								<td class="date31 right" id="nv7_time31"/>
+								<td class=xl11118002 width=64 style='border-top:none;border-left:none;
+          width:48pt'/>
+							</tr>
+							<tr class="cat7" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Tăng ca</td>
+								<td class=date1></td>
+								<td class=date2></td>
+								<td class=date3></td>
+								<td class=date4></td>
+								<td class=date5></td>
+								<td class=date6></td>
+								<td class=date7></td>
+								<td class=date8></td>
+								<td class=date9></td>
+								<td class=date10></td>
+								<td class=date11></td>
+								<td class=date12></td>
+								<td class=date13></td>
+								<td class=date14></td>
+								<td class=date15></td>
+								<td class=date16></td>
+								<td class=date17></td>
+								<td class=date18></td>
+								<td class=date19></td>
+								<td class=date20></td>
+								<td class=date21></td>
+								<td class=date22></td>
+								<td class=date23></td>
+								<td class=date24></td>
+								<td class=date25></td>
+								<td class=date26></td>
+								<td class=date27></td>
+								<td class=date28></td>
+								<td class=date29></td>
+								<td class=date30></td>
+								<td class=date31></td>
+							</tr>
+							<!--Nhân viên 7-->
+							<!--Nhân viên 8-->
+							<tr class="cat8 greenClass" height=18 style='height:13.2pt' display="none">
+								<td class="center sticky-col" rowspan=5 style="width: 0.32%;">8</td>
+								<td rowspan=5 id="nv8_ho" style="width: 0.99%;">Nhân viên 1</td>
+								<td rowspan=5 id="nv8_ten" style="width: 0.36%;">A</td>
+								<td rowspan=5 id="nv8_chucdanh" style="width: 0.52%;">Nhân viên vận hành máy</td>
+								<td id="nv8_pl" style="width: 0.23%;">PL24/003</td>
+								<td class=xl9218002 style="width: 1.03%;">Nghỉ</td>
+								<td class="center date1" id="nv8_off1" style="width: 1.199%;"/>
+								<td class="center date2" id="nv8_off2" style="width: 1.199%;"/>
+								<td class="center date3" id="nv8_off3" style="width: 1.199%;"/>
+								<td class="center date4" id="nv8_off4" style="width: 1.199%;"/>
+								<td class="center date5" id="nv8_off5" style="width: 1.199%;"/>
+								<td class="center date6" id="nv8_off6" style="width: 1.199%;"/>
+								<td class="center date7" id="nv8_off7" style="width: 1.199%;"/>
+								<td class="center date8" id="nv8_off8" style="width: 1.199%;"/>
+								<td class="center date9" id="nv8_off9" style="width: 1.199%;"/>
+								<td class="center date10" id="nv8_off10" style="width: 1.199%;"/>
+								<td class="center date11" id="nv8_off11" style="width: 1.199%;"/>
+								<td class="center date12" id="nv8_off12" style="width: 1.199%;"/>
+								<td class="center date13" id="nv8_off13" style="width: 1.199%;"/>
+								<td class="center date14" id="nv8_off14" style="width: 1.199%;"/>
+								<td class="center date15" id="nv8_off15" style="width: 1.199%;"/>
+								<td class="center date16" id="nv8_off16" style="width: 1.199%;"/>
+								<td class="center date17" id="nv8_off17" style="width: 1.199%;"/>
+								<td class="center date18" id="nv8_off18" style="width: 1.199%;"/>
+								<td class="center date19" id="nv8_off19" style="width: 1.199%;"/>
+								<td class="center date20" id="nv8_off20" style="width: 1.199%;"/>
+								<td class="center date21" id="nv8_off21" style="width: 1.199%;"/>
+								<td class="center date22" id="nv8_off22" style="width: 1.199%;"/>
+								<td class="center date23" id="nv8_off23" style="width: 1.199%;"/>
+								<td class="center date24" id="nv8_off24" style="width: 1.199%;"/>
+								<td class="center date25" id="nv8_off25" style="width: 1.199%;"/>
+								<td class="center date26" id="nv8_off26" style="width: 1.199%;"/>
+								<td class="center date27" id="nv8_off27" style="width: 1.199%;"/>
+								<td class="center date28" id="nv8_off28" style="width: 1.199%;"/>
+								<td class="center date29" id="nv8_off29" style="width: 1.199%;"/>
+								<td class="center date30" id="nv8_off30" style="width: 1.199%;"/>
+								<td class="center date31" id="nv8_off31" style="width: 1.199%;"/>
+								<td class=xl9518002 style="width: 10%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;"/>
+								<td style="width: 2.90%;">0.0</td>
+								<td style="width: 2.90%;">0.0</td>
+								<td style="width: 2.90%;">0.0</td>
+							</tr>
+							<tr class="cat8 greenClass" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Vào</td>
+								<td class=date1 id="nv8_vao1"/>
+								<td class=date2 id="nv8_vao2"/>
+								<td class=date3 id="nv8_vao3"/>
+								<td class=date4 id="nv8_vao4"/>
+								<td class=date5 id="nv8_vao5"/>
+								<td class=date6 id="nv8_vao6"/>
+								<td class=date7 id="nv8_vao7"/>
+								<td class=date8 id="nv8_vao8"/>
+								<td class=date9 id="nv8_vao9"/>
+								<td class=date10 id="nv8_vao10"/>
+								<td class=date11 id="nv8_vao11"/>
+								<td class=date12 id="nv8_vao12"/>
+								<td class=date13 id="nv8_vao13"/>
+								<td class=date14 id="nv8_vao14"/>
+								<td class=date15 id="nv8_vao15"/>
+								<td class=date16 id="nv8_vao16"/>
+								<td class=date17 id="nv8_vao17"/>
+								<td class=date18 id="nv8_vao18"/>
+								<td class=date19 id="nv8_vao19"/>
+								<td class=date20 id="nv8_vao20"/>
+								<td class=date21 id="nv8_vao21"/>
+								<td class=date22 id="nv8_vao22"/>
+								<td class=date23 id="nv8_vao23"/>
+								<td class=date24 id="nv8_vao24"/>
+								<td class=date25 id="nv8_vao25"/>
+								<td class=date26 id="nv8_vao26"/>
+								<td class=date27 id="nv8_vao27"/>
+								<td class=date28 id="nv8_vao28"/>
+								<td class=date29 id="nv8_vao29"/>
+								<td class=date30 id="nv8_vao30"/>
+								<td class=date31 id="nv8_vao31"/>
+							</tr>
+							<tr class="cat8 greenClass" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Ra</td>
+								<td class=date1 id="nv8_ra1"/>
+								<td class=date2 id="nv8_ra2"/>
+								<td class=date3 id="nv8_ra3"/>
+								<td class=date4 id="nv8_ra4"/>
+								<td class=date5 id="nv8_ra5"/>
+								<td class=date6 id="nv8_ra6"/>
+								<td class=date7 id="nv8_ra7"/>
+								<td class=date8 id="nv8_ra8"/>
+								<td class=date9 id="nv8_ra9"/>
+								<td class=date10 id="nv8_ra10"/>
+								<td class=date11 id="nv8_ra11"/>
+								<td class=date12 id="nv8_ra12"/>
+								<td class=date13 id="nv8_ra13"/>
+								<td class=date14 id="nv8_ra14"/>
+								<td class=date15 id="nv8_ra15"/>
+								<td class=date16 id="nv8_ra16"/>
+								<td class=date17 id="nv8_ra17"/>
+								<td class=date18 id="nv8_ra18"/>
+								<td class=date19 id="nv8_ra19"/>
+								<td class=date20 id="nv8_ra20"/>
+								<td class=date21 id="nv8_ra21"/>
+								<td class=date22 id="nv8_ra22"/>
+								<td class=date23 id="nv8_ra23"/>
+								<td class=date24 id="nv8_ra24"/>
+								<td class=date25 id="nv8_ra25"/>
+								<td class=date26 id="nv8_ra26"/>
+								<td class=date27 id="nv8_ra27"/>
+								<td class=date28 id="nv8_ra28"/>
+								<td class=date29 id="nv8_ra29"/>
+								<td class=date30 id="nv8_ra30"/>
+								<td class=date31 id="nv8_ra31"/>
+								<td/>
+							</tr>
+							<tr class="cat8 greenClass" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Thời gian (Ra - Vào)</td>
+								<td class="date1 right" id="nv8_time1"/>
+								<td class="date2 right" id="nv8_time2"/>
+								<td class="date3 right" id="nv8_time3"/>
+								<td class="date4 right" id="nv8_time4"/>
+								<td class="date5 right" id="nv8_time5"/>
+								<td class="date6 right" id="nv8_time6"/>
+								<td class="date7 right" id="nv8_time7"/>
+								<td class="date8 right" id="nv8_time8"/>
+								<td class="date9 right" id="nv8_time9"/>
+								<td class="date10 right" id="nv8_time10"/>
+								<td class="date11 right" id="nv8_time11"/>
+								<td class="date12 right" id="nv8_time12"/>
+								<td class="date13 right" id="nv8_time13"/>
+								<td class="date14 right" id="nv8_time14"/>
+								<td class="date15 right" id="nv8_time15"/>
+								<td class="date16 right" id="nv8_time16"/>
+								<td class="date17 right" id="nv8_time17"/>
+								<td class="date18 right" id="nv8_time18"/>
+								<td class="date19 right" id="nv8_time19"/>
+								<td class="date20 right" id="nv8_time20"/>
+								<td class="date21 right" id="nv8_time21"/>
+								<td class="date22 right" id="nv8_time22"/>
+								<td class="date23 right" id="nv8_time23"/>
+								<td class="date24 right" id="nv8_time24"/>
+								<td class="date25 right" id="nv8_time25"/>
+								<td class="date26 right" id="nv8_time26"/>
+								<td class="date27 right" id="nv8_time27"/>
+								<td class="date28 right" id="nv8_time28"/>
+								<td class="date29 right" id="nv8_time29"/>
+								<td class="date30 right" id="nv8_time30"/>
+								<td class="date31 right" id="nv8_time31"/>
+								<td class=xl11118002 width=64 style='border-top:none;border-left:none;
+          width:48pt'/>
+							</tr>
+							<tr class="cat8 greenClass" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Tăng ca</td>
+								<td class=date1></td>
+								<td class=date2></td>
+								<td class=date3></td>
+								<td class=date4></td>
+								<td class=date5></td>
+								<td class=date6></td>
+								<td class=date7></td>
+								<td class=date8></td>
+								<td class=date9></td>
+								<td class=date10></td>
+								<td class=date11></td>
+								<td class=date12></td>
+								<td class=date13></td>
+								<td class=date14></td>
+								<td class=date15></td>
+								<td class=date16></td>
+								<td class=date17></td>
+								<td class=date18></td>
+								<td class=date19></td>
+								<td class=date20></td>
+								<td class=date21></td>
+								<td class=date22></td>
+								<td class=date23></td>
+								<td class=date24></td>
+								<td class=date25></td>
+								<td class=date26></td>
+								<td class=date27></td>
+								<td class=date28></td>
+								<td class=date29></td>
+								<td class=date30></td>
+								<td class=date31></td>
+							</tr>
+							<!--Nhân viên 8-->
+							<!--Nhân viên 9-->
+							<tr class="cat9" height=18 style='height:13.2pt' display="none">
+								<td class="center sticky-col" rowspan=5 style="width: 0.32%;">9</td>
+								<td rowspan=5 id="nv9_ho" style="width: 0.99%;">Nhân viên 1</td>
+								<td rowspan=5 id="nv9_ten" style="width: 0.36%;">A</td>
+								<td rowspan=5 id="nv9_chucdanh" style="width: 0.52%;">Nhân viên vận hành máy</td>
+								<td id="nv9_pl" style="width: 0.23%;">PL24/003</td>
+								<td class=xl9218002 style="width: 1.03%;">Nghỉ</td>
+								<td class="center date1" id="nv9_off1" style="width: 1.199%;"/>
+								<td class="center date2" id="nv9_off2" style="width: 1.199%;"/>
+								<td class="center date3" id="nv9_off3" style="width: 1.199%;"/>
+								<td class="center date4" id="nv9_off4" style="width: 1.199%;"/>
+								<td class="center date5" id="nv9_off5" style="width: 1.199%;"/>
+								<td class="center date6" id="nv9_off6" style="width: 1.199%;"/>
+								<td class="center date7" id="nv9_off7" style="width: 1.199%;"/>
+								<td class="center date8" id="nv9_off8" style="width: 1.199%;"/>
+								<td class="center date9" id="nv9_off9" style="width: 1.199%;"/>
+								<td class="center date10" id="nv9_off10" style="width: 1.199%;"/>
+								<td class="center date11" id="nv9_off11" style="width: 1.199%;"/>
+								<td class="center date12" id="nv9_off12" style="width: 1.199%;"/>
+								<td class="center date13" id="nv9_off13" style="width: 1.199%;"/>
+								<td class="center date14" id="nv9_off14" style="width: 1.199%;"/>
+								<td class="center date15" id="nv9_off15" style="width: 1.199%;"/>
+								<td class="center date16" id="nv9_off16" style="width: 1.199%;"/>
+								<td class="center date17" id="nv9_off17" style="width: 1.199%;"/>
+								<td class="center date18" id="nv9_off18" style="width: 1.199%;"/>
+								<td class="center date19" id="nv9_off19" style="width: 1.199%;"/>
+								<td class="center date20" id="nv9_off20" style="width: 1.199%;"/>
+								<td class="center date21" id="nv9_off21" style="width: 1.199%;"/>
+								<td class="center date22" id="nv9_off22" style="width: 1.199%;"/>
+								<td class="center date23" id="nv9_off23" style="width: 1.199%;"/>
+								<td class="center date24" id="nv9_off24" style="width: 1.199%;"/>
+								<td class="center date25" id="nv9_off25" style="width: 1.199%;"/>
+								<td class="center date26" id="nv9_off26" style="width: 1.199%;"/>
+								<td class="center date27" id="nv9_off27" style="width: 1.199%;"/>
+								<td class="center date28" id="nv9_off28" style="width: 1.199%;"/>
+								<td class="center date29" id="nv9_off29" style="width: 1.199%;"/>
+								<td class="center date30" id="nv9_off30" style="width: 1.199%;"/>
+								<td class="center date31" id="nv9_off31" style="width: 1.199%;"/>
+								<td class=xl9518002 style="width: 10%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;"/>
+								<td style="width: 2.90%;">0.0</td>
+								<td style="width: 2.90%;">0.0</td>
+								<td style="width: 2.90%;">0.0</td>
+							</tr>
+							<tr class="cat9" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Vào</td>
+								<td class=date1 id="nv9_vao1"/>
+								<td class=date2 id="nv9_vao2"/>
+								<td class=date3 id="nv9_vao3"/>
+								<td class=date4 id="nv9_vao4"/>
+								<td class=date5 id="nv9_vao5"/>
+								<td class=date6 id="nv9_vao6"/>
+								<td class=date7 id="nv9_vao7"/>
+								<td class=date8 id="nv9_vao8"/>
+								<td class=date9 id="nv9_vao9"/>
+								<td class=date10 id="nv9_vao10"/>
+								<td class=date11 id="nv9_vao11"/>
+								<td class=date12 id="nv9_vao12"/>
+								<td class=date13 id="nv9_vao13"/>
+								<td class=date14 id="nv9_vao14"/>
+								<td class=date15 id="nv9_vao15"/>
+								<td class=date16 id="nv9_vao16"/>
+								<td class=date17 id="nv9_vao17"/>
+								<td class=date18 id="nv9_vao18"/>
+								<td class=date19 id="nv9_vao19"/>
+								<td class=date20 id="nv9_vao20"/>
+								<td class=date21 id="nv9_vao21"/>
+								<td class=date22 id="nv9_vao22"/>
+								<td class=date23 id="nv9_vao23"/>
+								<td class=date24 id="nv9_vao24"/>
+								<td class=date25 id="nv9_vao25"/>
+								<td class=date26 id="nv9_vao26"/>
+								<td class=date27 id="nv9_vao27"/>
+								<td class=date28 id="nv9_vao28"/>
+								<td class=date29 id="nv9_vao29"/>
+								<td class=date30 id="nv9_vao30"/>
+								<td class=date31 id="nv9_vao31"/>
+							</tr>
+							<tr class="cat9" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Ra</td>
+								<td class=date1 id="nv9_ra1"/>
+								<td class=date2 id="nv9_ra2"/>
+								<td class=date3 id="nv9_ra3"/>
+								<td class=date4 id="nv9_ra4"/>
+								<td class=date5 id="nv9_ra5"/>
+								<td class=date6 id="nv9_ra6"/>
+								<td class=date7 id="nv9_ra7"/>
+								<td class=date8 id="nv9_ra8"/>
+								<td class=date9 id="nv9_ra9"/>
+								<td class=date10 id="nv9_ra10"/>
+								<td class=date11 id="nv9_ra11"/>
+								<td class=date12 id="nv9_ra12"/>
+								<td class=date13 id="nv9_ra13"/>
+								<td class=date14 id="nv9_ra14"/>
+								<td class=date15 id="nv9_ra15"/>
+								<td class=date16 id="nv9_ra16"/>
+								<td class=date17 id="nv9_ra17"/>
+								<td class=date18 id="nv9_ra18"/>
+								<td class=date19 id="nv9_ra19"/>
+								<td class=date20 id="nv9_ra20"/>
+								<td class=date21 id="nv9_ra21"/>
+								<td class=date22 id="nv9_ra22"/>
+								<td class=date23 id="nv9_ra23"/>
+								<td class=date24 id="nv9_ra24"/>
+								<td class=date25 id="nv9_ra25"/>
+								<td class=date26 id="nv9_ra26"/>
+								<td class=date27 id="nv9_ra27"/>
+								<td class=date28 id="nv9_ra28"/>
+								<td class=date29 id="nv9_ra29"/>
+								<td class=date30 id="nv9_ra30"/>
+								<td class=date31 id="nv9_ra31"/>
+								<td/>
+							</tr>
+							<tr class="cat9" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Thời gian (Ra - Vào)</td>
+								<td class="date1 right" id="nv9_time1"/>
+								<td class="date2 right" id="nv9_time2"/>
+								<td class="date3 right" id="nv9_time3"/>
+								<td class="date4 right" id="nv9_time4"/>
+								<td class="date5 right" id="nv9_time5"/>
+								<td class="date6 right" id="nv9_time6"/>
+								<td class="date7 right" id="nv9_time7"/>
+								<td class="date8 right" id="nv9_time8"/>
+								<td class="date9 right" id="nv9_time9"/>
+								<td class="date10 right" id="nv9_time10"/>
+								<td class="date11 right" id="nv9_time11"/>
+								<td class="date12 right" id="nv9_time12"/>
+								<td class="date13 right" id="nv9_time13"/>
+								<td class="date14 right" id="nv9_time14"/>
+								<td class="date15 right" id="nv9_time15"/>
+								<td class="date16 right" id="nv9_time16"/>
+								<td class="date17 right" id="nv9_time17"/>
+								<td class="date18 right" id="nv9_time18"/>
+								<td class="date19 right" id="nv9_time19"/>
+								<td class="date20 right" id="nv9_time20"/>
+								<td class="date21 right" id="nv9_time21"/>
+								<td class="date22 right" id="nv9_time22"/>
+								<td class="date23 right" id="nv9_time23"/>
+								<td class="date24 right" id="nv9_time24"/>
+								<td class="date25 right" id="nv9_time25"/>
+								<td class="date26 right" id="nv9_time26"/>
+								<td class="date27 right" id="nv9_time27"/>
+								<td class="date28 right" id="nv9_time28"/>
+								<td class="date29 right" id="nv9_time29"/>
+								<td class="date30 right" id="nv9_time30"/>
+								<td class="date31 right" id="nv9_time31"/>
+								<td class=xl11118002 width=64 style='border-top:none;border-left:none;
+          width:48pt'/>
+							</tr>
+							<tr class="cat9" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Tăng ca</td>
+								<td class=date1></td>
+								<td class=date2></td>
+								<td class=date3></td>
+								<td class=date4></td>
+								<td class=date5></td>
+								<td class=date6></td>
+								<td class=date7></td>
+								<td class=date8></td>
+								<td class=date9></td>
+								<td class=date10></td>
+								<td class=date11></td>
+								<td class=date12></td>
+								<td class=date13></td>
+								<td class=date14></td>
+								<td class=date15></td>
+								<td class=date16></td>
+								<td class=date17></td>
+								<td class=date18></td>
+								<td class=date19></td>
+								<td class=date20></td>
+								<td class=date21></td>
+								<td class=date22></td>
+								<td class=date23></td>
+								<td class=date24></td>
+								<td class=date25></td>
+								<td class=date26></td>
+								<td class=date27></td>
+								<td class=date28></td>
+								<td class=date29></td>
+								<td class=date30></td>
+								<td class=date31></td>
+							</tr>
+							<!--Nhân viên 9-->
+							<!--Nhân viên 10-->
+							<tr class="cat10 greenClass" height=18 style='height:13.2pt' display="none">
+								<td class="center sticky-col" rowspan=5 style="width: 0.32%;">10</td>
+								<td rowspan=5 id="nv10_ho" style="width: 0.99%;">Nhân viên 1</td>
+								<td rowspan=5 id="nv10_ten" style="width: 0.36%;">A</td>
+								<td rowspan=5 id="nv10_chucdanh" style="width: 0.52%;">Nhân viên vận hành máy</td>
+								<td id="nv10_pl" style="width: 0.23%;">PL24/003</td>
+								<td class=xl9218002 style="width: 1.03%;">Nghỉ</td>
+								<td class="center date1" id="nv10_off1" style="width: 1.199%;"/>
+								<td class="center date2" id="nv10_off2" style="width: 1.199%;"/>
+								<td class="center date3" id="nv10_off3" style="width: 1.199%;"/>
+								<td class="center date4" id="nv10_off4" style="width: 1.199%;"/>
+								<td class="center date5" id="nv10_off5" style="width: 1.199%;"/>
+								<td class="center date6" id="nv10_off6" style="width: 1.199%;"/>
+								<td class="center date7" id="nv10_off7" style="width: 1.199%;"/>
+								<td class="center date8" id="nv10_off8" style="width: 1.199%;"/>
+								<td class="center date9" id="nv10_off9" style="width: 1.199%;"/>
+								<td class="center date10" id="nv10_off10" style="width: 1.199%;"/>
+								<td class="center date11" id="nv10_off11" style="width: 1.199%;"/>
+								<td class="center date12" id="nv10_off12" style="width: 1.199%;"/>
+								<td class="center date13" id="nv10_off13" style="width: 1.199%;"/>
+								<td class="center date14" id="nv10_off14" style="width: 1.199%;"/>
+								<td class="center date15" id="nv10_off15" style="width: 1.199%;"/>
+								<td class="center date16" id="nv10_off16" style="width: 1.199%;"/>
+								<td class="center date17" id="nv10_off17" style="width: 1.199%;"/>
+								<td class="center date18" id="nv10_off18" style="width: 1.199%;"/>
+								<td class="center date19" id="nv10_off19" style="width: 1.199%;"/>
+								<td class="center date20" id="nv10_off20" style="width: 1.199%;"/>
+								<td class="center date21" id="nv10_off21" style="width: 1.199%;"/>
+								<td class="center date22" id="nv10_off22" style="width: 1.199%;"/>
+								<td class="center date23" id="nv10_off23" style="width: 1.199%;"/>
+								<td class="center date24" id="nv10_off24" style="width: 1.199%;"/>
+								<td class="center date25" id="nv10_off25" style="width: 1.199%;"/>
+								<td class="center date26" id="nv10_off26" style="width: 1.199%;"/>
+								<td class="center date27" id="nv10_off27" style="width: 1.199%;"/>
+								<td class="center date28" id="nv10_off28" style="width: 1.199%;"/>
+								<td class="center date29" id="nv10_off29" style="width: 1.199%;"/>
+								<td class="center date30" id="nv10_off30" style="width: 1.199%;"/>
+								<td class="center date31" id="nv10_off31" style="width: 1.199%;"/>
+								<td class=xl9518002 style="width: 10%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;">0</td>
+								<td style="width: 2.90%;"/>
+								<td style="width: 2.90%;">0.0</td>
+								<td style="width: 2.90%;">0.0</td>
+								<td style="width: 2.90%;">0.0</td>
+							</tr>
+							<tr class="cat10 greenClass" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Vào</td>
+								<td class=date1 id="nv10_vao1"/>
+								<td class=date2 id="nv10_vao2"/>
+								<td class=date3 id="nv10_vao3"/>
+								<td class=date4 id="nv10_vao4"/>
+								<td class=date5 id="nv10_vao5"/>
+								<td class=date6 id="nv10_vao6"/>
+								<td class=date7 id="nv10_vao7"/>
+								<td class=date8 id="nv10_vao8"/>
+								<td class=date9 id="nv10_vao9"/>
+								<td class=date10 id="nv10_vao10"/>
+								<td class=date11 id="nv10_vao11"/>
+								<td class=date12 id="nv10_vao12"/>
+								<td class=date13 id="nv10_vao13"/>
+								<td class=date14 id="nv10_vao14"/>
+								<td class=date15 id="nv10_vao15"/>
+								<td class=date16 id="nv10_vao16"/>
+								<td class=date17 id="nv10_vao17"/>
+								<td class=date18 id="nv10_vao18"/>
+								<td class=date19 id="nv10_vao19"/>
+								<td class=date20 id="nv10_vao20"/>
+								<td class=date21 id="nv10_vao21"/>
+								<td class=date22 id="nv10_vao22"/>
+								<td class=date23 id="nv10_vao23"/>
+								<td class=date24 id="nv10_vao24"/>
+								<td class=date25 id="nv10_vao25"/>
+								<td class=date26 id="nv10_vao26"/>
+								<td class=date27 id="nv10_vao27"/>
+								<td class=date28 id="nv10_vao28"/>
+								<td class=date29 id="nv10_vao29"/>
+								<td class=date30 id="nv10_vao30"/>
+								<td class=date31 id="nv10_vao31"/>
+							</tr>
+							<tr class="cat10 greenClass" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Ra</td>
+								<td class=date1 id="nv10_ra1"/>
+								<td class=date2 id="nv10_ra2"/>
+								<td class=date3 id="nv10_ra3"/>
+								<td class=date4 id="nv10_ra4"/>
+								<td class=date5 id="nv10_ra5"/>
+								<td class=date6 id="nv10_ra6"/>
+								<td class=date7 id="nv10_ra7"/>
+								<td class=date8 id="nv10_ra8"/>
+								<td class=date9 id="nv10_ra9"/>
+								<td class=date10 id="nv10_ra10"/>
+								<td class=date11 id="nv10_ra11"/>
+								<td class=date12 id="nv10_ra12"/>
+								<td class=date13 id="nv10_ra13"/>
+								<td class=date14 id="nv10_ra14"/>
+								<td class=date15 id="nv10_ra15"/>
+								<td class=date16 id="nv10_ra16"/>
+								<td class=date17 id="nv10_ra17"/>
+								<td class=date18 id="nv10_ra18"/>
+								<td class=date19 id="nv10_ra19"/>
+								<td class=date20 id="nv10_ra20"/>
+								<td class=date21 id="nv10_ra21"/>
+								<td class=date22 id="nv10_ra22"/>
+								<td class=date23 id="nv10_ra23"/>
+								<td class=date24 id="nv10_ra24"/>
+								<td class=date25 id="nv10_ra25"/>
+								<td class=date26 id="nv10_ra26"/>
+								<td class=date27 id="nv10_ra27"/>
+								<td class=date28 id="nv10_ra28"/>
+								<td class=date29 id="nv10_ra29"/>
+								<td class=date30 id="nv10_ra30"/>
+								<td class=date31 id="nv10_ra31"/>
+								<td/>
+							</tr>
+							<tr class="cat10 greenClass" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Thời gian (Ra - Vào)</td>
+								<td class="date1 right" id="nv10_time1"/>
+								<td class="date2 right" id="nv10_time2"/>
+								<td class="date3 right" id="nv10_time3"/>
+								<td class="date4 right" id="nv10_time4"/>
+								<td class="date5 right" id="nv10_time5"/>
+								<td class="date6 right" id="nv10_time6"/>
+								<td class="date7 right" id="nv10_time7"/>
+								<td class="date8 right" id="nv10_time8"/>
+								<td class="date9 right" id="nv10_time9"/>
+								<td class="date10 right" id="nv10_time10"/>
+								<td class="date11 right" id="nv10_time11"/>
+								<td class="date12 right" id="nv10_time12"/>
+								<td class="date13 right" id="nv10_time13"/>
+								<td class="date14 right" id="nv10_time14"/>
+								<td class="date15 right" id="nv10_time15"/>
+								<td class="date16 right" id="nv10_time16"/>
+								<td class="date17 right" id="nv10_time17"/>
+								<td class="date18 right" id="nv10_time18"/>
+								<td class="date19 right" id="nv10_time19"/>
+								<td class="date20 right" id="nv10_time20"/>
+								<td class="date21 right" id="nv10_time21"/>
+								<td class="date22 right" id="nv10_time22"/>
+								<td class="date23 right" id="nv10_time23"/>
+								<td class="date24 right" id="nv10_time24"/>
+								<td class="date25 right" id="nv10_time25"/>
+								<td class="date26 right" id="nv10_time26"/>
+								<td class="date27 right" id="nv10_time27"/>
+								<td class="date28 right" id="nv10_time28"/>
+								<td class="date29 right" id="nv10_time29"/>
+								<td class="date30 right" id="nv10_time30"/>
+								<td class="date31 right" id="nv10_time31"/>
+								<td class=xl11118002 width=64 style='border-top:none;border-left:none;
+          width:48pt'/>
+							</tr>
+							<tr class="cat10 greenClass" height=18 style='height:13.2pt' display="none">
+								<td/>
+								<td>Tăng ca</td>
+								<td class=date1></td>
+								<td class=date2></td>
+								<td class=date3></td>
+								<td class=date4></td>
+								<td class=date5></td>
+								<td class=date6></td>
+								<td class=date7></td>
+								<td class=date8></td>
+								<td class=date9></td>
+								<td class=date10></td>
+								<td class=date11></td>
+								<td class=date12></td>
+								<td class=date13></td>
+								<td class=date14></td>
+								<td class=date15></td>
+								<td class=date16></td>
+								<td class=date17></td>
+								<td class=date18></td>
+								<td class=date19></td>
+								<td class=date20></td>
+								<td class=date21></td>
+								<td class=date22></td>
+								<td class=date23></td>
+								<td class=date24></td>
+								<td class=date25></td>
+								<td class=date26></td>
+								<td class=date27></td>
+								<td class=date28></td>
+								<td class=date29></td>
+								<td class=date30></td>
+								<td class=date31></td>
+							</tr>
+							<!--Nhân viên 10-->
+						</table>
+					</div>
+					<br>
+					</div>
+					<!----------------------------->
+					<!--END OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD-->
+					<!----------------------------->
+				</body>
+			</html>

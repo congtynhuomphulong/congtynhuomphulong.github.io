@@ -1,0 +1,11 @@
+<style>
+table { width:100%; border-collapse: collapse;}
+th,td { padding:8px; border:2px solid #555;}
+th { background:#000; color:#fff;}
+</style>
+
+<table>
+<tr><th>Loại</th><th>Số lượng</th><th>Ghi chú</th></tr>
+<tr><td>A</td><td>10</td><td>-</td></tr>
+<tr><td>B</td><td>20</td><td>-</td></tr>
+</table>
