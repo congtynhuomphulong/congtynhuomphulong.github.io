@@ -1,0 +1,171 @@
+<!-- <link rel="stylesheet" type="text/css" href="../css/style2.css"> -->
+<!-- <section id="about"> -->
+<div>
+    <p style="display:inline-block;">
+        <b>Chọn nhân viên:</b>
+    </p>
+    <select id="select_NV" name="Select Staff" class="widget">
+        <option id="select_all" value="-1" selected="selected">All</option>
+        <option id="select_NV0" value="0"></option>
+        <option id="select_NV1" value="1"></option>
+        <option id="select_NV2" value="2"></option>
+        <option id="select_NV3" value="3"></option>
+        <option id="select_NV4" value="4"></option>
+        <option id="select_NV5" value="5"></option>
+        <option id="select_NV6" value="6"></option>
+        <option id="select_NV7" value="7"></option>
+        <option id="select_NV8" value="8"></option>
+        <option id="select_NV9" value="9"></option>
+    </select>
+    <p>Hard refresh: Ctrl + F5 (Ctrl + Fn + F5) || Ctrl+ "Refresh" button</p>
+    <h2>Bảng chấm công tháng <span id="month"></span></h2>
+</div>
+<table>
+    <colgroup>
+        <col style="width:70px">
+        <col style="width:70px">
+        <col style="width:70px">
+        <col class="w120">
+        <col class="w120">
+        <col class="w120">
+        <col class="w120">
+        <col class="w120">
+        <col class="w120">
+        <col class="w120">
+        <col class="w120">
+        <col class="w120">
+        <col class="w120">
+        <col class="w120">
+        <col class="w120">
+        <col class="w120">
+        <col class="w120">
+        <col class="w120">
+        <col class="w120">
+        <col class="w120">
+        <col class="w120">
+        <col class="w120">
+        <col class="w120">
+    </colgroup>
+    <thead id="thead">
+        <tr>
+            <th colspan="3">Tháng</th>
+            <th colspan="3">Nhân viên 1</th>
+            <th colspan="3">Nhân viên 2</th>
+        </tr>
+        <tr>
+            <th>Ngày Lễ</th>
+            <th>Thứ</th>
+            <th>Ngày</th>
+            <th>Giờ Vào</th>
+            <th>Giờ Ra</th>
+            <th>Tăng ca</th>
+            <th>Giờ Vào</th>
+            <th>Giờ Ra</th>
+            <th>Tăng ca</th>
+        </tr>
+    </thead>
+
+    <tbody id="tbody"></tbody>
+</table>
+
+<script>
+    
+    // const days = [26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
+    // const thu = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
+
+    /* 👉 chỉ cần thêm/xóa tên file ở đây */
+    const employeeFiles = [
+        "nv1.json", "nv2.json", "nv3.json", "nv4.json", "nv5.json",
+        "nv6.json", "nv7.json", "nv8.json", "nv9.json", "nv10.json"
+    ];
+
+    async function load() {
+
+
+
+        const text = await loadMonths();
+        var months = text.split('\n');
+        var mPath = months[months.length - 1];
+        var noPath = mPath.split('t');
+        console.log("######:" + noPath[noPath.length - 1]);
+        document.getElementById("month").textContent = noPath[noPath.length - 1]+"/"+ mPath.split('/')[0];
+        const {days, thu} = getSalaryCycle(noPath[noPath.length - 1], mPath.split('/')[0]);
+
+        const employees = await Promise.all(
+            employeeFiles.map(f => fetch("../data/" + mPath + "/" + f).then(r => r.json()))
+        );
+
+        const thead = document.getElementById("thead");
+        const tbody = document.getElementById("tbody");
+
+        /* ===== Header ===== */
+        let row1 = `<tr>
+        <th class="fix_cell col-holiday">Ngày lễ</th>
+        <th class="fix_cell col-thu">Thứ</th>
+        <th class="fix_cell col-ngay">Ngày</th>`;
+
+        employees.forEach((e, idx) => {
+            row1 += `<th colspan="3" class="emp-${idx}">${e.name}</th>`;
+            document.getElementById("select_NV" + idx).textContent = idx + 1 + " - " + e.name;
+
+        });
+        row1 += "</tr>";
+
+        let row2 = `<tr>
+        <th class="fix_cell col-holiday">A</th>
+        <th class="fix_cell col-thu">B</th>
+        <th class="fix_cell col-ngay">C</th>`;
+
+        employees.forEach((e, idx) => {
+            row2 += `<th class="emp-${idx}">Giờ vào</th><th class="emp-${idx}">Giờ ra</th><th class="emp-${idx}">Tăng ca</th>`;
+        });
+        row2 += "</tr>";
+
+        thead.innerHTML = row1 + row2;
+
+        /* ===== Body ===== */
+        var dayStr = "";
+        days.forEach((d, i) => {
+            if (d < 10) {
+                d = "0" + d;
+            }
+            dayStr = d;
+            if (25 <= d) {
+                dayStr = dayStr + "/" + (noPath[noPath.length - 1] - 1)
+            } else {
+                dayStr = dayStr + "/" + (noPath[noPath.length - 1])
+            }
+            let row = `
+        <tr>
+            <td class="freeze col-holiday"></td>
+            <td class="freeze  col-thu">${thu[i % 7]}</td>
+            <td class="freeze col-ngay">${dayStr}</td>
+        `;
+
+            employees.forEach((e, idx) => {
+
+                const r = e.data[d] || {};
+                row += `
+                <td class="emp-${idx}">${r.in || ""}</td>
+                <td class="emp-${idx}">${r.out || ""}</td>
+                <td class="emp-${idx}">${r.ot || ""}</td>
+            `;
+            });
+
+            row += "</tr>";
+            tbody.innerHTML += row;
+        });
+    }
+
+    function loadMonths() {
+        return fetch("../data/months.txt")
+            .then((res) => res.text())
+            .then((text) => {
+                return text;
+            }).catch((e) => console.error(e));
+    }
+
+    load();
+
+</script>
+<!-- </section> -->
