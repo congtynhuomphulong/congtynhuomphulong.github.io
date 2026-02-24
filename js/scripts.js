@@ -95,3 +95,21 @@ function getSalaryCycle(month, year){
 
     return {days, thu};
 }
+
+async function loadHolidayMap() {
+    let holidayMap = new Map();
+    const res = await fetch("../data/holiday.json");
+    const data = await res.json();
+
+    for (const year in data) {
+        for (const month in data[year]) {
+            const days = data[year][month].split(',');
+
+            days.forEach(day => {
+                const key = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                holidayMap.set(key, true);
+            });
+        }
+    }
+    return holidayMap;
+}

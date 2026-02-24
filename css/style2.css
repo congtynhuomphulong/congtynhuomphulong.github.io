@@ -33,6 +33,9 @@ th {
     background: #f2f2f2;
 }
 
+.tr-holiday > td {
+   background: hwb(73 1% 2% / 0.499) !important;
+}
 /* chiều rộng cột */
 .w70 {
     width: 70px;

@@ -124,7 +124,7 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
 }
 
 h1, .h1 {
-  font-size: calc(3.3vw);
+  font-size: calc(1.375rem + 1.5vw);
 }
 @media (min-width: 1200px) {
   h1, .h1 {
@@ -8255,6 +8255,11 @@ textarea.form-control-lg {
   color: #DC3545 !important;
 }
 
+.text-blue-100 {
+  --bs-text-opacity: 1;
+  color: rgba(0, 0, 255, 1) !important;
+}
+
 .text-reset {
   --bs-text-opacity: 1;
   color: inherit !important;
@@ -10986,7 +10991,7 @@ body {
 
 #mainNav {
   min-height: 3.5rem;
-  background-color: #fff;
+  background-color: #fff !important;
 }
 #mainNav .navbar-toggler {
   font-size: 80%;
@@ -11003,7 +11008,7 @@ body {
   padding: 0.9rem 0;
 }
 #mainNav .navbar-nav .nav-item:hover {
-  color: fade(#fff, 80%);
+  color: fade(#d63384, 80%);
   outline: none;
   background-color: transparent;
 }
@@ -11029,10 +11034,10 @@ body {
     color: rgba(0, 0, 0, 1);
   }
   #mainNav .nav-link:hover {
-    color: #fff;
+    color: #467370;
   }
   #mainNav .nav-link:active {
-    color: #fff;
+    color: #467370;
   }
   #mainNav.navbar-shrink {
     background-color: #fff;
@@ -11046,7 +11051,7 @@ body {
     border-bottom: 0.25rem solid transparent;
   }
   #mainNav.navbar-shrink .nav-link:hover {
-    color: #64a19d;
+    color: #467370;
   }
   #mainNav.navbar-shrink .nav-link:active {
     color: #467370;
@@ -11082,8 +11087,8 @@ body {
 }
 .masthead h1, .masthead .h1 {
   font-family: "Varela Round", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  font-size: clamp(20px, 1.6vw + 21px, 40px);
-  line-height: calc(clamp(20px, 1.6vw + 21px, 40px) + 0.5rem);
+  font-size: 2.5rem;
+  line-height: calc(2.5rem + 0.5rem);
   letter-spacing: 0.8rem;
   background: linear-gradient(rgba(255, 0, 1), rgba(255, 191, 0, 0.5));
   -webkit-text-fill-color: transparent;
@@ -11092,7 +11097,7 @@ body {
 }
 .masthead h2, .masthead .h2 {
   max-width: 40rem;
-  font-size: 1rem;
+  font-size: 2rem;
 }
 @media (min-width: 768px) {
   .masthead h1, .masthead .h1 {
@@ -11147,7 +11152,7 @@ body {
 }
 
 .signup-section {
-  padding: 10rem 0;
+  padding: 8rem 0;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: scroll;
@@ -11205,4 +11210,12 @@ body {
 
 .footer {
   padding: 5rem 0;
+}
+
+#mastheadId {
+  background: url("../assets/img/windowCloud.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  background-size: cover;
 }

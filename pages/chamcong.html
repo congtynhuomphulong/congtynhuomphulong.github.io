@@ -78,18 +78,17 @@
         "nv1.json", "nv2.json", "nv3.json", "nv4.json", "nv5.json",
         "nv6.json", "nv7.json", "nv8.json", "nv9.json", "nv10.json"
     ];
-
+    var holidayMap = new Map();
     async function load() {
-
-
-
         const text = await loadMonths();
         var months = text.split('\n');
         var mPath = months[months.length - 1];
         var noPath = mPath.split('t');
-        console.log("######:" + noPath[noPath.length - 1]);
-        document.getElementById("month").textContent = noPath[noPath.length - 1]+"/"+ mPath.split('/')[0];
-        const {days, thu} = getSalaryCycle(noPath[noPath.length - 1], mPath.split('/')[0]);
+        var thang = noPath[noPath.length - 1];
+        var nam = mPath.split('/')[0];
+        document.getElementById("month").textContent = thang +"/"+ nam;
+        const {days, thu} = getSalaryCycle(thang, nam);
+        holidayMap = await loadHolidayMap();
 
         const employees = await Promise.all(
             employeeFiles.map(f => fetch("../data/" + mPath + "/" + f).then(r => r.json()))
@@ -135,9 +134,15 @@
             } else {
                 dayStr = dayStr + "/" + (noPath[noPath.length - 1])
             }
+            let tr_holiday = "tr-normal";
+            let isHol = isHoliday(nam, thang, d);
+            let le = isHol ? "Lễ": "";
+            if ((thu[i % 7].trim() === "CN") ||isHol ) {
+                tr_holiday = "tr-holiday";
+            }
             let row = `
-        <tr>
-            <td class="freeze col-holiday"></td>
+        <tr class=${tr_holiday}>
+            <td class="freeze col-holiday">${le}</td>
             <td class="freeze  col-thu">${thu[i % 7]}</td>
             <td class="freeze col-ngay">${dayStr}</td>
         `;
@@ -158,14 +163,20 @@
     }
 
     function loadMonths() {
-        return fetch("../data/months.txt")
-            .then((res) => res.text())
-            .then((text) => {
-                return text;
-            }).catch((e) => console.error(e));
-    }
+            return fetch("../data/months.txt")
+                .then((res) => res.text())
+                .then((text) => {
+                    return text;
+                }).catch((e) => console.error(e));
+        }
 
-    load();
+
+        function isHoliday(y, m, d) {
+            const key = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            return holidayMap.has(key);
+        }
+
+        load();
 
 </script>
 <!-- </section> -->
