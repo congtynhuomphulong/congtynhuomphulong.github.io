@@ -136,12 +136,16 @@
             }
             let tr_holiday = "tr-normal";
             let isHol = isHoliday(nam, thang, d);
+            if (d > 25) {
+                isHol = isHoliday(nam, thang - 1, d);
+            }
+            //console.log("####"+nam+":"+":"+thang+":"+d+ "ishol:"+isHol);
             let le = isHol ? "Lễ": "";
             if ((thu[i % 7].trim() === "CN") ||isHol ) {
                 tr_holiday = "tr-holiday";
             }
             let row = `
-        <tr class=${tr_holiday}>
+            <tr class=${tr_holiday}>
             <td class="freeze col-holiday">${le}</td>
             <td class="freeze  col-thu">${thu[i % 7]}</td>
             <td class="freeze col-ngay">${dayStr}</td>
