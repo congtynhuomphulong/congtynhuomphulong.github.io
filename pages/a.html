@@ -1,0 +1,160 @@
+<style>
+#clock{
+    font-size:22px;
+    color:#facc15;
+    margin-top:10px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
+
+.card{
+    background:#1f2937;
+    border-left:6px solid #3b82f6;
+    margin-bottom:18px;
+    border-radius:10px;
+    padding:18px;
+    box-shadow:0 5px 15px rgba(0,0,0,.25);
+}
+
+.title{
+    font-size:24px;
+    font-weight:bold;
+    margin-bottom:8px;
+}
+
+.date{
+    color:#9ca3af;
+    margin-bottom:12px;
+}
+
+.countdown{
+    font-size:28px;
+    color:#22c55e;
+    font-weight:bold;
+}
+
+.over{
+    color:#ef4444;
+}
+
+footer{
+    text-align:center;
+    color:#9ca3af;
+    margin:40px;
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>🎉 Remaining Major Events of 2026</h1>
+<div id="clock"></div>
+</header>
+
+<div class="container" id="events"></div>
+
+<footer>
+2026 Countdown
+</footer>
+
+<script>
+
+const events = [
+
+{
+name:"Halloween",
+date:"2026-10-31T00:00:00"
+},
+
+{
+name:"Thanksgiving (US)",
+date:"2026-11-26T00:00:00"
+},
+
+{
+name:"Christmas Eve",
+date:"2026-12-24T00:00:00"
+},
+
+{
+name:"Christmas",
+date:"2026-12-25T00:00:00"
+},
+
+{
+name:"New Year's Eve",
+date:"2026-12-31T00:00:00"
+}
+
+];
+
+events.sort((a,b)=>new Date(a.date)-new Date(b.date));
+
+const container=document.getElementById("events");
+
+events.forEach(e=>{
+
+const div=document.createElement("div");
+div.className="card";
+
+div.innerHTML=`
+<div class="title">${e.name}</div>
+<div class="date">${new Date(e.date).toLocaleString()}</div>
+<div class="countdown" id="${e.name.replace(/\s/g,'')}"></div>
+`;
+
+container.appendChild(div);
+
+});
+
+function updateClock(){
+
+const now=new Date();
+
+document.getElementById("clock").innerHTML=
+now.toLocaleString();
+
+events.forEach(e=>{
+
+const target=new Date(e.date);
+
+const diff=target-now;
+
+const id=e.name.replace(/\s/g,'');
+
+const el=document.getElementById(id);
+
+if(diff<=0){
+
+el.innerHTML="<span class='over'>✔ Event has passed</span>";
+return;
+
+}
+
+const days=Math.floor(diff/86400000);
+
+const hours=Math.floor(diff%86400000/3600000);
+
+const mins=Math.floor(diff%3600000/60000);
+
+const secs=Math.floor(diff%60000/1000);
+
+el.innerHTML=
+`${days} days ${hours} h ${mins} m ${secs} s`;
+
+});
+
+}
+
+updateClock();
+
+setInterval(updateClock,1000);
+
+</script>
+
+</body>
+</html>

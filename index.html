@@ -30,6 +30,11 @@
                 Menu
                 <i class="fas fa-bars"></i>
             </button>
+            <!-- Combo chọn ngôn ngữ -->
+            <select id="langSelect" title="Chọn ngôn ngữ:" onchange="changeLang(this.value)">
+            <option value="vi">🇻🇳 Tiếng Việt</option>
+            <option value="en">🇬🇧 English</option>
+            </select>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto">
 
@@ -48,14 +53,18 @@
             <div class="row gx-0 mb-4 mb-lg-5 align-items-center">
                 <div class="col-xl-4 col-lg-5">
                     <div class="featured-text text-center text-lg-left">
-                        <h2 class="text-red-50 mb-50 m-1">Thông báo nghỉ lễ 2026</h2>
-                        <h4 class="text-blue-100 mb-0">Năm mới - Khởi đầu mới - Thành công mới!</h4>
-                        <p class="text-red-50 mb-0 m-1">Chúc toàn thể anh chị em nhân viên một năm tràn đầy năng
+                        <h2 id="thongbao" class="text-red-50 mb-50 m-1">Thông báo nghỉ lễ 2026</h2>
+                        <h4 id="slogan" class="text-blue-100 mb-0">Năm mới - Khởi đầu mới - Thành công mới!</h4>
+                        <p id="loichuc" class="text-red-50 mb-0 m-1">Chúc toàn thể anh chị em nhân viên một năm tràn đầy năng
                         lượng, nhiều cơ hội bứt phá và đạt được những mục tiêu đã đề ra.</p>
                     </div>
                 </div>
-                <div class="col-xl-8 col-lg-7"><img class="img-fluid mb-3 mb-lg-0" src="assets/img/gioto.jpg"
-                        alt="..." /></div>
+                <div class="col-xl-8 col-lg-7">
+				    <img class="img-fluid mb-3 mb-lg-0" src="assets/img/Quockhanh2026.png" 
+                        alt="..." />
+				<!--<section id="a" class="img-fluid mb-3 mb-lg-0" ></section> -->
+				
+				</div>
             </div>
     </section>
     <!-- <header class="masthead">
@@ -203,6 +212,9 @@
                 .then(res => res.text())
                 .then(data => {
                     const el = document.getElementById(id);
+                    if (!el){
+                        return;
+                    }
                     el.innerHTML = data;
 
                     // chạy lại script
@@ -223,7 +235,8 @@
         }
 
         const includes = [
-            ["about", "pages/chamcong.html"],
+			["a", "pages/a.html"],
+			["about", "pages/chamcong.html"],
             // ["footer", "footer.html"],
             // ["menu", "menu.html"],
             // ["sidebar", "sidebar.html"]
@@ -234,6 +247,9 @@
             includeHTML(item[0], item[1]);
         });
     </script>
+        <!-- Languages-->
+    <script src="https://unpkg.com/i18next@latest/dist/umd/i18next.min.js"></script>
+    <script src="js/lang.js"></script>
 </body>
 
 </html>
