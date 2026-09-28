@@ -11219,3 +11219,7 @@ body {
   background-attachment: scroll;
   background-size: cover;
 }
+
+.left {
+	 text-align: left;
+}
