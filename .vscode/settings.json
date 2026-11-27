@@ -1,3 +1,6 @@
 {
-    "liveServer.settings.port": 5051
+    "liveServer.settings.port": 5051,
+    "[json]": {
+        "editor.formatOnSave": false
+    }
 }

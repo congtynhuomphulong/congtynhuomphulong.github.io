@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nhập chấm công tháng</title>
+<script src="lib/exceljs.min.js"></script>
+<script src="lib/jszip.min.js"></script>
+<script>
+  if (!window.ExcelJS) document.write('<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"><\/script>');
+  if (!window.JSZip) document.write('<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"><\/script>');
+</script>
+<script src="lib/banluong-core.js"></script>
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #fff; --text: #1d2330; --muted: #667085; --line: #e3e6eb;
+    --accent: #1f6feb; --hdr: #ddebf7; --inp: #fffbe6; --sun: #fce4d6; --off: #c9c9c9;
+    --ok: #1a7f37; --ok-weak: #e6f4ea; --warn: #9a6700; --warn-weak: #fff4d6; --err: #c62828; --err-weak: #fde7e7;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.45 "Segoe UI", system-ui, sans-serif; }
+  header { background: #16325c; color: #fff; padding: 12px 24px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+  header h1 { margin: 0; font-size: 19px; font-weight: 600; }
+  header .period { display: flex; align-items: center; gap: 8px; font-size: 15px; }
+  header select { font: inherit; font-weight: 700; padding: 4px 8px; border-radius: 6px; border: 0; background: #ffe699; color: #c00000; min-width: 230px; }
+  header .src { font-size: 13px; opacity: .85; }
+  main { padding: 16px 24px 60px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; margin-bottom: 16px; }
+  .card h2 { margin: 0 0 10px; font-size: 16px; display: flex; align-items: center; gap: 8px; }
+  .step { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 13px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .status { font-size: 13px; color: var(--muted); }
+  .status.ok { color: var(--ok); } .status.err { color: var(--err); }
+  button { font: inherit; border: 1px solid #c9d0da; background: #fff; color: var(--text); padding: 5px 12px; border-radius: 6px; cursor: pointer; }
+  button:hover { background: #f0f3f7; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.primary:hover { background: #1a5fd0; }
+  button.big { padding: 8px 22px; font-size: 15px; }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  .muted { color: var(--muted); }
+  .hidden { display: none !important; }
+  .notes { margin: 6px 0 0; padding: 0; list-style: none; font-size: 13px; }
+  .notes li { padding: 3px 8px; border-left: 3px solid #e0b84a; background: var(--warn-weak); margin-bottom: 3px; }
+  .codemap { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; margin-top: 8px; padding: 8px 10px; background: #f6f8fb; border-radius: 6px; font-size: 13px; }
+  .codemap select { font: inherit; padding: 2px 6px; }
+  /* palette */
+  .palette { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+  .palette button { min-width: 38px; padding: 4px 8px; font-weight: 600; }
+  .palette button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .palette .sep { width: 10px; }
+  /* grid */
+  .gwrap { overflow: auto; border: 1px solid #b9c3cf; border-radius: 6px; max-height: 72vh; background: #fff; }
+  table.grid { border-collapse: separate; border-spacing: 0; font-size: 13px; font-family: "Times New Roman", serif; }
+  .grid th, .grid td { border-right: 1px solid #d3d9e0; border-bottom: 1px solid #d3d9e0; padding: 0; text-align: center; white-space: nowrap; height: 26px; }
+  .grid thead th { background: var(--hdr); position: sticky; z-index: 2; font-weight: 700; padding: 2px 4px; }
+  .grid thead tr:nth-child(1) th { top: 0; }
+  .grid thead tr:nth-child(2) th { top: 28px; font-weight: 400; font-size: 12px; }
+  .grid .s0, .grid .s1, .grid .s2 { position: sticky; z-index: 1; background: #fff; }
+  .grid thead .s0, .grid thead .s1, .grid thead .s2 { z-index: 3; background: var(--hdr); }
+  .grid .s0 { left: 0; min-width: 34px; }
+  .grid .s1 { left: 34px; min-width: 128px; }
+  .grid .s2 { left: 162px; min-width: 176px; border-right: 2px solid #9aa7b6; }
+  .grid td.info input { width: 100%; border: 0; background: var(--inp); font: inherit; padding: 3px 5px; height: 26px; }
+  .grid td.info.s1 input { text-align: center; }
+  .grid td.cv input { width: 120px; font-size: 12px; text-align: center; }
+  .grid td.ro { padding: 0 6px; text-align: left; }
+  .grid td.s2.note input, .grid td.s2.note { box-shadow: inset 3px 0 0 #e0b84a; }
+  .grid th.d, .grid td.d { width: 30px; min-width: 30px; }
+  .grid td.d { position: relative; }
+  .grid td.d input { width: 30px; height: 26px; border: 0; background: var(--inp); text-align: center; font: inherit; padding: 0; }
+  .grid .sun, .grid td.d.sun input { background: var(--sun); }
+  .grid th.off { background: var(--off) !important; color: transparent; }
+  .grid td.d.off input { background: var(--off); cursor: not-allowed; }
+  .grid td.d.flag::after { content: ''; position: absolute; top: 0; right: 0; border-style: solid; border-width: 0 7px 7px 0; border-color: transparent #e8590c transparent transparent; pointer-events: none; }
+  .grid td.d input.bad, .grid td.info input.bad { background: #ffb3b3 !important; color: #8b0000; font-weight: 700; }
+  .grid td.d input:focus, .grid td.info input:focus { outline: 2px solid var(--accent); outline-offset: -2px; background: #fff; }
+  .grid td.t { min-width: 58px; padding: 0 6px; font-weight: 600; background: #f6f8fb; font-variant-numeric: tabular-nums; }
+  .grid th.t { min-width: 58px; max-width: 76px; white-space: normal; font-size: 12px; line-height: 1.2; }
+  .grid td.t.inp { background: var(--inp); padding: 0; }
+  .grid td.t.inp input { width: 58px; height: 26px; border: 0; background: transparent; text-align: center; font: inherit; font-weight: 600; }
+  .grid td.act { padding: 0 4px; background: #fff; }
+  .grid td.act button { padding: 0 6px; font-size: 12px; line-height: 20px; }
+  .grid.painting td.d input { cursor: cell; }
+  .legend { font-size: 12.5px; color: var(--muted); margin-top: 8px; }
+  .legend code { background: #eef0f3; padding: 0 5px; border-radius: 4px; color: var(--text); font-weight: 600; }
+  .flagdemo { display: inline-block; width: 0; height: 0; border-style: solid; border-width: 0 8px 8px 0; border-color: transparent #e8590c transparent transparent; vertical-align: middle; }
+  /* salary preview */
+  table.sal { border-collapse: collapse; font-size: 13px; width: 100%; }
+  .sal th, .sal td { border-bottom: 1px solid var(--line); padding: 4px 8px; text-align: left; white-space: nowrap; }
+  .sal th { background: #f0f3f7; }
+  .sal td.num, .sal th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .sal tr.total td { font-weight: 700; background: #eef3fb; }
+  .tag { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; }
+  .tag.ok { background: var(--ok-weak); color: var(--ok); } .tag.warn { background: var(--warn-weak); color: var(--warn); } .tag.err { background: var(--err-weak); color: var(--err); }
+  /* export */
+  .modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 10px; margin: 12px 0; }
+  .mode { border: 1.5px solid var(--line); border-radius: 8px; padding: 10px 12px; cursor: pointer; display: flex; gap: 10px; align-items: flex-start; }
+  .mode:has(input:checked) { border-color: var(--accent); background: #f1f6ff; }
+  .mode b { display: block; }
+  .mode span { font-size: 13px; color: var(--muted); }
+  .opts { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 6px 0 10px; }
+  .opts label { display: flex; gap: 6px; align-items: center; }
+  .oldfiles { border: 1.5px dashed #b8c0cc; border-radius: 8px; padding: 12px; background: #fafbfc; margin-bottom: 12px; }
+  .oldfiles .files { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; margin-bottom: 8px; }
+  .oldfiles b { display: block; margin-bottom: 6px; }
+  .log { font-size: 13px; margin: 10px 0 0; padding: 0; list-style: none; }
+  .log li { padding: 4px 8px; border-left: 3px solid var(--line); margin-bottom: 3px; background: #fafbfc; }
+  .log li.warn { border-color: #e0b84a; background: var(--warn-weak); }
+  .log li.err { border-color: var(--err); background: var(--err-weak); }
+  .log li.ok { border-color: var(--ok); background: var(--ok-weak); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Bảng chấm công tháng</h1>
+  <div class="period">Tháng / năm <select id="selPeriod"></select></div>
+  <span class="src" id="srcInfo"></span>
+</header>
+<main>
+
+<section class="card">
+  <h2><span class="step">1</span> Dữ liệu</h2>
+  <div class="row">
+    <button id="btnData" class="primary">📂 Cho phép đọc thư mục banLuong…</button>
+    <button id="btnDataAgain" class="hidden primary"></button>
+    <button id="btnRescan" class="hidden" title="Đọc lại ./data và ./lib/nhanvien (khi có file mới)">↻ Đọc lại ./data</button>
+    <input type="file" id="fData" webkitdirectory multiple class="hidden">
+    <span class="status" id="stData">Trang luôn đọc chấm công ở <code>./data/&lt;năm&gt;/t&lt;tháng&gt;/</code> và số HĐLĐ, lương ở <code>./lib/nhanvien/</code>.
+      Trình duyệt cần bạn cấp quyền thư mục <b>banLuong</b> (thư mục chứa chamcong.html) một lần; các lần sau trang tự đọc.</span>
+  </div>
+  <div class="row">
+    <button id="btnReload" title="Bỏ các chỉnh sửa, đọc lại dữ liệu máy chấm công của tháng này">↻ Nạp lại từ dữ liệu</button>
+    <button id="btnClearDraft">Xóa bản nháp tháng này</button>
+    <span class="muted" id="draftInfo"></span>
+  </div>
+  <div id="codeMap" class="codemap hidden"></div>
+  <ul class="notes" id="notes"></ul>
+</section>
+
+<section class="card">
+  <h2><span class="step">2</span> <span id="ttlMain">Bảng chấm công</span></h2>
+  <div class="row"><div class="palette" id="palette"></div></div>
+  <div class="row">
+    <button id="btnFillAll" title="Điền + vào mọi ô ngày thường (không phải Chủ nhật) đang trống">Điền “+” ngày thường còn trống (mọi người)</button>
+    <button id="btnClearAll">Xóa hết ký hiệu</button>
+    <span style="width:14px"></span>
+    <button id="btnAddRow">+ Thêm dòng</button>
+    <select id="selAddJson" class="hidden"></select><button id="btnAddJson" class="hidden">Thêm nhân viên</button>
+  </div>
+  <div class="gwrap"><table class="grid" id="gMain"></table></div>
+  <div class="legend">
+    Ký hiệu: <code>+</code> lương thời gian ngày · <code>Đ</code> đêm (gõ <code>d</code> cũng được) · <code>L</code> nghỉ lễ (tính công) · <code>P</code> phép · <code>K</code> không lương ·
+    <code>Om</code> ốm · <code>Co</code> con ốm · <code>Ts</code> thai sản · <code>Ss</code> sau sản · <code>Tl</code> thai lưu · <code>Ks</code> khám thai · <code>Cd</code> chế độ.<br>
+    Từ dữ liệu máy: có giờ vào/ra → <code>+</code>; vào từ 15:00 hoặc làm qua đêm → <code>Đ</code>; Chủ nhật có đi làm → ghi sang bảng tăng ca.
+    Ô có dấu <span class="flagdemo"></span> cần xem lại (thiếu giờ vào/ra…) — rê chuột lên ô để xem giờ vào/ra. Cột xám: ngày không có trong tháng.
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="step">3</span> <span id="ttlOt">Bảng chấm công tăng ca</span></h2>
+  <div class="gwrap"><table class="grid" id="gOt"></table></div>
+  <div class="legend">Ngày thường: nhập số ngày tăng ca (<code>1</code> hoặc <code>0.xxx</code>). Chủ nhật: <code>+</code> tăng ca ban ngày, <code>Đ</code> ban đêm. Cột “TT tăng ca ban đêm” nhập tay.</div>
+</section>
+
+<section class="card">
+  <h2><span class="step">4</span> Xuất ra Excel</h2>
+  <div id="salBox" class="muted">Cần các file JSON trong <code>./lib/nhanvien/</code> (số HĐLĐ, lương từng người) để xem trước bảng lương.</div>
+
+  <div class="modes">
+    <label class="mode"><input type="radio" name="mode" value="new" checked>
+      <div><b>Tạo file chấm công mới và bảng lương mới</b><span>Tải về 2 file riêng của tháng này: <i id="lblNewFiles"></i></span></div></label>
+    <label class="mode"><input type="radio" name="mode" value="append">
+      <div><b>Ghi thêm sheet vào file cũ</b><span>Thêm sheet <i id="lblSheets"></i> vào BANG CHAM CONG 2026 và BANG LUONG 2026</span></div></label>
+  </div>
+  <div class="opts">
+    <label><input type="checkbox" id="optCC" checked> Bảng chấm công</label>
+    <label><input type="checkbox" id="optBL" checked> Bảng lương tháng</label>
+    <label><input type="checkbox" id="optPersonal"> Kèm sheet lương cá nhân từng người</label>
+  </div>
+
+  <div class="oldfiles hidden" id="oldFiles">
+    <div class="files">
+      <div>
+        <b>File chấm công gốc (BANG CHAM CONG 2026.xlsx)</b>
+        <button id="btnCC">📂 Chọn file…</button><input type="file" id="fCC" accept=".xlsx" class="hidden">
+        <div class="status" id="stCC">Chưa chọn.</div>
+      </div>
+      <div>
+        <b>File bảng lương gốc (BANG LUONG 2026.xlsx)</b>
+        <button id="btnBL">📂 Chọn file…</button><input type="file" id="fBL" accept=".xlsx" class="hidden">
+        <div class="status" id="stBL">Chưa chọn.</div>
+      </div>
+    </div>
+    <div class="opts">
+      <label><input type="checkbox" id="optOver"> Ghi đè nếu sheet của tháng này đã có</label>
+      <label><input type="checkbox" id="optInPlace"> Ghi thẳng vào file gốc (Edge/Chrome, nhớ đóng file trong Excel). Không tích: tải về bản sao.</label>
+    </div>
+  </div>
+
+  <button class="primary big" id="btnExport">⬇ Xuất</button>
+  <ul class="log" id="log"></ul>
+</section>
+</main>
+
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const h = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const fmt = n => (n == null || n === '') ? '' : Math.round(n).toLocaleString('vi-VN');
+  const fmtD = n => (n == null || n === '') ? '' : (Math.round(n * 1000) / 1000).toLocaleString('vi-VN');
+  const pad2 = n => String(n).padStart(2, '0');
+  const ND = 31;
+  const XLSX_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+  const NOW = new Date();
+
+  const S = {
+    data: {}, dataRoot: null, models: [], config: BL.clone(BL.DEFAULT_CONFIG),
+    cc: null, bl: null,                 // file gốc (chế độ ghi thêm): { name, buf, wb, handle }
+    month: null, year: null, days: [], people: [], giamDoc: null,
+    codeMap: loadCodeMap(), rawCodes: {}, paint: null, painting: false, prefill: {}
+  };
+  const cfg = () => S.config;
+  const monthKey = () => `${S.year}-${pad2(S.month)}`;
+  const mode = () => document.querySelector('input[name=mode]:checked').value;
+
+  function log(msg, type = '') { const li = document.createElement('li'); li.className = type; li.textContent = msg; $('log').appendChild(li); }
+  function download(data, name) {
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([data], { type: XLSX_TYPE })); a.download = name;
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 3000);
+  }
+  const blank = () => Array(ND).fill('');
+  const emptyPerson = () => ({ soHDLD: '', hoTen: '', chucVu: '', codes: blank(), ot: blank(), ttDem: '', times: blank(), flags: blank(), src: blank(), note: '' });
+  function fixPerson(p) {
+    const q = Object.assign(emptyPerson(), p);
+    for (const f of ['codes', 'ot', 'times', 'flags', 'src']) q[f] = Array.from({ length: ND }, (_, k) => (p[f] || [])[k] ?? '');
+    return q;
+  }
+  function loadCodeMap() { try { return JSON.parse(localStorage.getItem('chamcong-codemap') || '{}'); } catch (e) { return {}; } }
+  function saveCodeMap() { try { localStorage.setItem('chamcong-codemap', JSON.stringify(S.codeMap)); } catch (e) { /* */ } }
+
+  // ---------------- nhớ thư mục dữ liệu (IndexedDB) ----------------
+  const idb = {
+    open: () => new Promise((res, rej) => { const r = indexedDB.open('chamcong', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }),
+    async get(k) { const db = await this.open(); return new Promise(res => { const t = db.transaction('kv').objectStore('kv').get(k); t.onsuccess = () => res(t.result); t.onerror = () => res(null); }); },
+    async set(k, v) { const db = await this.open(); return new Promise(res => { const t = db.transaction('kv', 'readwrite').objectStore('kv').put(v, k); t.onsuccess = () => res(); t.onerror = () => res(); }); }
+  };
+
+  // ---------------- 1. luôn đọc ./data (chấm công) và ./lib/nhanvien (số HĐLĐ, lương) ----------------
+  const DATA_DIR = 'data', NV_DIR = ['lib', 'nhanvien'];
+  const subDir = async (dir, parts) => { let d = dir; for (const p of parts) d = await d.getDirectoryHandle(p); return d; };
+  // root = thư mục banLuong (chứa chamcong.html). Trả về [{path, text}] chỉ của data/** và lib/nhanvien/*.json
+  async function readProject(root) {
+    let data = null, nv = null;
+    try { data = await subDir(root, [DATA_DIR]); } catch (e) { /* thiếu */ }
+    try { nv = await subDir(root, NV_DIR); } catch (e) { /* thiếu */ }
+    if (!data && !nv) throw new Error(`Thư mục “${root.name}” không có ./data và ./lib/nhanvien — hãy chọn thư mục chứa chamcong.html (banLuong).`);
+    const files = [];
+    const walk = async (d, rel, depth) => {
+      for await (const [name, hd] of d.entries()) {
+        if (hd.kind === 'directory') { if (depth < 3) await walk(hd, rel + '/' + name, depth + 1); }
+        else if (name.toLowerCase().endsWith('.json')) files.push({ path: rel + '/' + name, text: await (await hd.getFile()).text() });
+      }
+    };
+    if (data) await walk(data, DATA_DIR, 0);
+    if (nv) for await (const [name, hd] of nv.entries()) if (hd.kind === 'file' && name.toLowerCase().endsWith('.json')) files.push({ path: NV_DIR.join('/') + '/' + name, text: await (await hd.getFile()).text() });
+    return { files, hasData: !!data, hasNv: !!nv };
+  }
+  // prefer = tháng đang chọn trong combo (giữ nguyên sau khi đọc thư mục)
+  function ingestData({ files, hasData, hasNv }, rootName, prefer) {
+    // chỉ nhận chấm công trong ./data, nhân viên trong ./lib/nhanvien
+    const att = files.filter(f => f.path.startsWith(DATA_DIR + '/'));
+    const nvf = files.filter(f => f.path.startsWith(NV_DIR.join('/') + '/'));
+    const scanA = BL.scanDataFiles(att, NOW.getFullYear());
+    const scanN = BL.scanDataFiles(nvf, NOW.getFullYear());
+    S.data = scanA.months; S.dataRoot = rootName;
+    S.config = scanN.config ? BL.deepMerge(BL.DEFAULT_CONFIG, scanN.config) : BL.clone(BL.DEFAULT_CONFIG);
+    S.models = scanN.models;
+    const ms = Object.keys(S.data).sort();
+    const errs = [...scanA.errors, ...scanN.errors];
+    if (!hasData) errs.push('Không thấy thư mục ./data');
+    if (!hasNv) errs.push('Không thấy thư mục ./lib/nhanvien — sẽ không có số HĐLĐ và lương');
+    $('stData').className = 'status ' + (ms.length && S.models.length ? 'ok' : 'err');
+    $('stData').innerHTML = `✓ “${h(rootName)}” · <code>./data</code>: ${ms.length ? ms.map(k => `<b>${k.slice(5)}/${k.slice(0, 4)}</b> (${S.data[k].length} người)`).join(', ') : '<b>chưa có tháng nào</b>'}`
+      + ` · <code>./lib/nhanvien</code>: <b>${S.models.length}</b> nhân viên` + (errs.length ? `<br><span class="status err">${errs.map(h).join('<br>')}</span>` : '');
+    $('btnRescan').classList.remove('hidden');
+    const keep = prefer || (S.month && S.data[monthKey()] ? monthKey() : null);
+    buildPeriodOptions(keep || (ms.length ? ms[ms.length - 1] : null));
+    renderPalette();
+    loadMonth(true);
+  }
+  async function openRoot(root, prefer) {
+    try { const proj = await readProject(root); S.root = root; ingestData(proj, root.name, prefer); $('btnDataAgain').classList.add('hidden'); return true; }
+    catch (e) { $('stData').className = 'status err'; $('stData').textContent = '✗ ' + e.message; return false; }
+  }
+  // Xin quyền đọc thư mục banLuong: dùng lại thư mục đã nhớ, chưa có thì mở hộp chọn (cần thao tác của người dùng)
+  let accessPending = null;
+  function ensureAccess(prefer) {
+    if (S.root) return Promise.resolve(true);
+    if (accessPending) return accessPending;
+    accessPending = (async () => {
+      try {
+        const dir = await idb.get('rootDir').catch(() => null);
+        if (dir) {
+          let st = dir.queryPermission ? await dir.queryPermission({ mode: 'read' }) : 'granted';
+          if (st !== 'granted') st = await dir.requestPermission({ mode: 'read' });
+          if (st === 'granted') return await openRoot(dir, prefer);
+        } else if (window.showDirectoryPicker) {
+          const d = await window.showDirectoryPicker({ id: 'chamcong-root' });
+          if (await openRoot(d, prefer)) { idb.set('rootDir', d).catch(() => {}); return true; }
+        }
+      } catch (e) { if (e.name !== 'AbortError') console.warn(e); }
+      return false;
+    })().finally(() => { accessPending = null; });
+    return accessPending;
+  }
+  $('btnData').onclick = async () => {
+    if (window.showDirectoryPicker) {
+      try {
+        const dir = await window.showDirectoryPicker({ id: 'chamcong-root' });
+        if (await openRoot(dir, S.month ? monthKey() : null)) idb.set('rootDir', dir).catch(() => {});
+        return;
+      } catch (e) { if (e.name === 'AbortError') return; console.warn(e); }
+    }
+    $('fData').click();
+  };
+  $('btnRescan').onclick = async () => {
+    if (S.root && !S.root.offline) return openRoot(S.root, monthKey());
+    $('fData').click();
+  };
+  // trình duyệt không hỗ trợ File System Access: chọn thư mục banLuong qua hộp chọn thư mục
+  $('fData').onchange = async e => {
+    const all = [...e.target.files];
+    const root = all.length ? (all[0].webkitRelativePath || '').split('/')[0] : '';
+    const rel = f => (f.webkitRelativePath || f.name).split('/').slice(1).join('/');
+    const fs = all.filter(f => f.name.toLowerCase().endsWith('.json') && (rel(f).startsWith(DATA_DIR + '/') || rel(f).startsWith(NV_DIR.join('/') + '/')));
+    const files = await Promise.all(fs.map(async f => ({ path: rel(f), text: await f.text() })));
+    ingestData({ files, hasData: files.some(f => f.path.startsWith(DATA_DIR + '/')), hasNv: files.some(f => f.path.startsWith(NV_DIR.join('/') + '/')) }, root || 'thư mục', S.month ? monthKey() : null);
+    S.root = S.root || { offline: true };
+    e.target.value = '';
+  };
+  // mỗi lần mở trang: tự đọc lại thư mục đã cấp quyền; nếu trình duyệt bắt hỏi lại thì xin quyền ở lần bấm đầu tiên trên trang
+  (async () => {
+    try {
+      const dir = await idb.get('rootDir');
+      if (!dir) {
+        // lần đầu dùng: bấm vào combo tháng sẽ mở hộp chọn thư mục banLuong
+        $('selPeriod').addEventListener('pointerdown', () => { if (!S.root) ensureAccess(S.month ? monthKey() : null); }, { once: true });
+        return;
+      }
+      if (dir.queryPermission && (await dir.queryPermission({ mode: 'read' })) === 'granted') { await openRoot(dir, null); return; }
+      const b = $('btnDataAgain'); b.textContent = `↺ Đọc ./data trong “${dir.name}”`; b.classList.remove('hidden');
+      $('btnData').classList.remove('primary'); $('btnData').textContent = '📂 Chọn thư mục khác…';
+      b.onclick = () => ensureAccess(S.month ? monthKey() : null);
+      document.addEventListener('pointerdown', e => {
+        if (S.root || e.target.closest('#btnData, #btnDataAgain, #fData')) return;
+        ensureAccess(S.month ? monthKey() : null);
+      }, { capture: true, once: true });
+    } catch (e) { /* trình duyệt không hỗ trợ */ }
+  })();
+
+  // ---------------- combobox tháng/năm ----------------
+  function buildPeriodOptions(select) {
+    const years = new Set([NOW.getFullYear()]);
+    Object.keys(S.data).forEach(k => years.add(+k.slice(0, 4)));
+    const opts = [];
+    [...years].sort().forEach(y => { for (let m = 1; m <= 12; m++) opts.push(`${y}-${pad2(m)}`); });
+    const cur = select || (S.month ? monthKey() : `${NOW.getFullYear()}-${pad2(NOW.getMonth() + 1)}`);
+    $('selPeriod').innerHTML = opts.map(k => {
+      const n = S.data[k] ? S.data[k].length : 0;
+      return `<option value="${k}">Tháng ${k.slice(5)}/${k.slice(0, 4)}${n ? ` — có dữ liệu (${n} người)` : ''}</option>`;
+    }).join('');
+    $('selPeriod').value = cur;
+    [S.year, S.month] = cur.split('-').map(Number);
+  }
+  $('selPeriod').onchange = async () => {
+    saveDraftNow();
+    [S.year, S.month] = $('selPeriod').value.split('-').map(Number);
+    // chưa đọc được ./data thì xin quyền rồi đọc luôn tháng vừa chọn
+    if (!S.root && await ensureAccess(monthKey())) return;
+    loadMonth(true);
+  };
+
+  // ---------------- bản nháp ----------------
+  const draftKey = () => `chamcong-nhap-${monthKey()}`;
+  function readDraft() { try { const s = localStorage.getItem(draftKey()); return s ? JSON.parse(s) : null; } catch (e) { return null; } }
+  let draftTimer = null;
+  function saveDraft() { clearTimeout(draftTimer); draftTimer = setTimeout(saveDraftNow, 400); }
+  function saveDraftNow() {
+    clearTimeout(draftTimer);
+    if (!S.month || !S.dirty) return;
+    try { localStorage.setItem(draftKey(), JSON.stringify({ savedAt: new Date().toISOString(), people: S.people, giamDoc: S.giamDoc })); $('draftInfo').textContent = `Đã lưu nháp lúc ${new Date().toLocaleTimeString('vi-VN')}`; } catch (e) { /* */ }
+  }
+  const touch = () => { S.dirty = true; saveDraft(); scheduleSalary(); };
+
+  // ---------------- nạp dữ liệu cho tháng ----------------
+  function employees() {
+    return BL.sortByHD(S.models.filter(m => m.trangThai !== 'nghi_viec')).map(m => ({ soHDLD: m.soHDLD, hoTen: m.hoTen, chucVu: m.chucVu || '' }));
+  }
+  function loadMonth(preferDraft) {
+    S.days = BL.ccDays(S.month, S.year); S.dirty = false;
+    let src = '', notes = [];
+    const draft = preferDraft ? readDraft() : null;
+    const recs = S.data[monthKey()];
+    S.rawCodes = {};
+    if (draft) {
+      S.people = draft.people.map(fixPerson); S.giamDoc = draft.giamDoc || null;
+      src = `Bản nháp đã chỉnh lúc ${new Date(draft.savedAt).toLocaleString('vi-VN')}`;
+      S.people.forEach(p => p.src.forEach(c => { if (c) S.rawCodes[c] = (S.rawCodes[c] || 0) + 1; }));
+    } else if (recs) {
+      const r = BL.attendanceToSheet(recs, S.month, S.year, employees(), cfg(), S.codeMap);
+      S.people = r.people.map(fixPerson); S.rawCodes = r.rawCodes; notes = r.notes;
+      src = `Dữ liệu máy chấm công: ${S.dataRoot || ''}/…/${recs[0].path.split('/').slice(-2, -1)[0]} (${recs.length} file)`;
+    } else {
+      const raw = S.cc ? BL.readChamCongRaw(S.cc.wb, monthKey(), cfg()) : null;
+      if (raw) { S.people = raw.people.map(fixPerson); src = `Dữ liệu từ sheet “${raw.sheetName.trim()}” trong file chấm công`; }
+      else if (S.models.length) { S.people = employees().map(fixPerson); src = 'Không có dữ liệu máy chấm công tháng này — nhập tay (danh sách từ ./lib/nhanvien)'; }
+      else { S.people = Array.from({ length: 5 }, emptyPerson); src = ''; }
+    }
+    S.people.forEach(p => S.days.forEach((d, k) => { if (!d) { p.codes[k] = ''; p.ot[k] = ''; } }));
+    // ghi chú từng người
+    S.people.forEach(p => { if (p.note) notes.push(`${p.hoTen || '(chưa có tên)'}: ${p.note}`); });
+    const nf = S.people.reduce((n, p) => n + p.flags.filter(Boolean).length, 0);
+    if (nf) notes.push(`${nf} ô có dấu cam cần xem lại (thiếu giờ vào/ra, làm Chủ nhật…)`);
+    $('notes').innerHTML = notes.map(n => `<li>${h(n)}</li>`).join('');
+    $('srcInfo').textContent = src;
+    $('draftInfo').textContent = draft ? 'Đang dùng bản nháp (tự lưu khi chỉnh).' : '';
+    renderCodeMap(); render();
+  }
+  $('btnReload').onclick = () => {
+    if (S.dirty || readDraft()) { if (!confirm('Bỏ các chỉnh sửa (bản nháp) và đọc lại dữ liệu của tháng này?')) return; }
+    try { localStorage.removeItem(draftKey()); } catch (e) { /* */ }
+    loadMonth(false);
+  };
+  $('btnClearDraft').onclick = () => {
+    if (!confirm('Xóa bản nháp đã lưu của tháng này?')) return;
+    try { localStorage.removeItem(draftKey()); } catch (e) { /* */ }
+    S.dirty = false; $('draftInfo').textContent = 'Đã xóa bản nháp.';
+  };
+
+  // ---------------- quy đổi mã nghỉ của máy chấm công ----------------
+  function renderCodeMap() {
+    const all = BL.ccCodes(cfg()).all;
+    // mã trùng ký hiệu sẵn có (P, K, Om…) thì không cần quy đổi
+    const codes = Object.keys(S.rawCodes).sort().filter(c => !all.some(x => x.toUpperCase() === c));
+    const box = $('codeMap');
+    if (!codes.length) { box.classList.add('hidden'); return; }
+    box.classList.remove('hidden');
+    box.innerHTML = '<b>Quy đổi mã nghỉ trong dữ liệu:</b>' + codes.map(c => {
+      const cur = BL.mapRawCode(c, cfg(), S.codeMap);
+      const known = all.includes(cur);
+      return `<label>“${h(c)}” <span class="muted">(${S.rawCodes[c]} ô)</span> → <select data-raw="${h(c)}">`
+        + `<option value=""${known ? '' : ' selected'}>— chưa chọn (giữ “${h(c)}”) —</option>`
+        + all.map(x => `<option value="${h(x)}"${known && x === cur ? ' selected' : ''}>${h(x)}</option>`).join('') + '</select></label>';
+    }).join('') + '<span class="muted">Mã chưa quy đổi bị tô đỏ và không được tính công.</span>';
+  }
+  $('codeMap').onchange = e => {
+    const sel = e.target.closest('select[data-raw]'); if (!sel) return;
+    const raw = sel.dataset.raw; const before = BL.mapRawCode(raw, cfg(), S.codeMap);
+    S.codeMap[raw] = sel.value; saveCodeMap();
+    const after = BL.mapRawCode(raw, cfg(), S.codeMap);
+    S.people.forEach(p => p.src.forEach((c, k) => { if (c === raw && p.codes[k] === before) p.codes[k] = after; }));
+    render(); touch();
+  };
+
+  // ---------------- 2/3. vẽ bảng ----------------
+  const MAIN_T = [['cong', 'Công thực tế làm việc'], ['nghiTL', 'Nghỉ tính lương'], ['tongNghi', 'Tổng nghỉ'], ['dem', 'Tổng ngày làm đêm'], ['bhxh', 'BHXH']];
+  const OT_T = [['ttNgay', 'Số ngày TT tăng ca ban ngày'], ['ttDem', 'Số ngày TT tăng ca ban đêm'], ['ctNgay', 'Số ngày CT tăng ca ban ngày'], ['ctDem', 'Số ngày CT tăng ca đêm'], ['otBhxh', 'BHXH']];
+  const dcls = d => 'd' + (!d ? ' off' : d.wd === 'CN' ? ' sun' : '');
+  function dayHead() {
+    return [S.days.map(d => `<th class="${dcls(d)}">${d ? d.day : ''}</th>`).join(''), S.days.map(d => `<th class="${dcls(d)}">${d ? d.wd : ''}</th>`).join('')];
+  }
+  function sttOf(i) { let n = 0; for (let j = 0; j <= i; j++) if (S.people[j].hoTen.trim()) n++; return S.people[i].hoTen.trim() ? n : ''; }
+  function tip(p, k, extra) { return [p.times[k], p.flags[k], p.src[k] ? `Mã máy: ${p.src[k]}` : '', extra].filter(Boolean).join(' · '); }
+  function render() {
+    const [r1, r2] = dayHead();
+    const lbl = `${pad2(S.month)}/${S.year}`;
+    $('ttlMain').textContent = `Bảng chấm công tháng ${lbl}`;
+    $('ttlOt').textContent = `Bảng chấm công tăng ca theo giờ tháng ${lbl}`;
+    let hm = `<thead><tr><th class="s0" rowspan="2">STT</th><th class="s1" rowspan="2">Số HĐLĐ</th><th class="s2" rowspan="2">Họ và tên</th><th rowspan="2">Chức vụ/Bộ phận</th>${r1}`
+      + MAIN_T.map(([, t]) => `<th class="t" rowspan="2">${t}</th>`).join('') + `<th rowspan="2"></th></tr><tr>${r2}</tr></thead><tbody>`;
+    S.people.forEach((p, i) => {
+      const hdBad = p.hoTen.trim() && (!p.soHDLD.trim() || isDupHD(i));
+      hm += `<tr data-r="${i}"><td class="s0" id="stt-${i}">${sttOf(i)}</td>`
+        + `<td class="info s1"><input data-f="soHDLD" value="${h(p.soHDLD)}"${hdBad ? ' class="bad"' : ''} title="${p.soHDLD ? '' : 'Thiếu Số HĐLĐ — cần để khớp với lương'}"></td>`
+        + `<td class="info s2${p.note ? ' note' : ''}" title="${h(p.note)}"><input data-f="hoTen" value="${h(p.hoTen)}"></td>`
+        + `<td class="info cv"><input data-f="chucVu" value="${h(p.chucVu)}"></td>`
+        + S.days.map((d, k) => {
+          const v = p.codes[k]; const bad = !BL.ccValidCode(v, cfg()); const flag = d && p.flags[k] && !p.ot[k];
+          return `<td class="${dcls(d)}${flag ? ' flag' : ''}" title="${h(tip(p, k))}"><input data-g="m" data-k="${k}" maxlength="3" value="${h(v)}"${!d ? ' disabled' : ''}${bad ? ' class="bad"' : ''}></td>`;
+        }).join('')
+        + MAIN_T.map(([key]) => `<td class="t" id="m-${i}-${key}"></td>`).join('')
+        + `<td class="act"><button data-act="fill" title="Điền + các ngày thường còn trống">+</button> <button data-act="del" title="Xóa dòng">×</button></td></tr>`;
+    });
+    $('gMain').innerHTML = hm + '</tbody>';
+    let ho = `<thead><tr><th class="s0" rowspan="2">STT</th><th class="s1" rowspan="2">Số HĐLĐ</th><th class="s2" rowspan="2">Họ và tên</th>${r1}`
+      + OT_T.map(([, t]) => `<th class="t" rowspan="2">${t}</th>`).join('') + `</tr><tr>${r2}</tr></thead><tbody>`;
+    S.people.forEach((p, i) => {
+      ho += `<tr data-r="${i}"><td class="s0" id="ostt-${i}">${sttOf(i)}</td><td class="s1 ro" id="ohd-${i}">${h(p.soHDLD)}</td><td class="s2 ro" id="oten-${i}">${h(p.hoTen)}</td>`
+        + S.days.map((d, k) => {
+          const v = p.ot[k]; const bad = !BL.ccValidOt(v, cfg()); const flag = d && p.flags[k] && p.ot[k] !== '';
+          return `<td class="${dcls(d)}${flag ? ' flag' : ''}" title="${h(flag ? tip(p, k) : '')}"><input data-g="o" data-k="${k}" maxlength="6" value="${h(v === '' ? '' : String(v))}"${!d ? ' disabled' : ''}${bad ? ' class="bad"' : ''}></td>`;
+        }).join('')
+        + OT_T.map(([key]) => key === 'ttDem'
+          ? `<td class="t inp"><input data-f="ttDem" value="${h(p.ttDem === '' ? '' : String(p.ttDem))}"></td>`
+          : `<td class="t" id="o-${i}-${key}"></td>`).join('') + '</tr>';
+    });
+    $('gOt').innerHTML = ho + '</tbody>';
+    S.people.forEach((p, i) => updateRow(i));
+    renderAddJson(); refreshLabels(); updateSalary();
+  }
+  function updateRow(i) {
+    const p = S.people[i]; const t = BL.ccTotals(p, cfg()); const has = !!p.hoTen.trim();
+    MAIN_T.forEach(([key]) => { const el = $(`m-${i}-${key}`); if (el) el.textContent = has ? fmtD(t[key]) : ''; });
+    OT_T.forEach(([key]) => { const el = $(`o-${i}-${key}`); if (el) el.textContent = has ? fmtD(t[key]) : ''; });
+  }
+  function updateNames() {
+    S.people.forEach((p, i) => {
+      const s = sttOf(i); $(`stt-${i}`).textContent = s; $(`ostt-${i}`).textContent = s;
+      $(`ohd-${i}`).textContent = p.soHDLD; $(`oten-${i}`).textContent = p.hoTen; updateRow(i);
+    });
+  }
+  function renderAddJson() {
+    const have = new Set(S.people.map(p => BL.keyHD(p.soHDLD)));
+    const miss = BL.sortByHD(S.models.filter(m => m.trangThai !== 'nghi_viec' && !have.has(BL.keyHD(m.soHDLD))));
+    $('selAddJson').classList.toggle('hidden', !miss.length); $('btnAddJson').classList.toggle('hidden', !miss.length);
+    $('selAddJson').innerHTML = miss.map(m => `<option value="${h(m.soHDLD)}">${h(m.hoTen)} — ${h(m.soHDLD)}</option>`).join('');
+  }
+  function refreshLabels() {
+    const lbl = BL.monthLabel(monthKey());
+    $('lblNewFiles').textContent = `BANG CHAM CONG T${lbl}.xlsx, BANG LUONG T${lbl}.xlsx`;
+    $('lblSheets').textContent = `${BL.ccSheetName(S.month, S.year)} / ${lbl}`;
+  }
+
+  // ---------------- nhập liệu ----------------
+  function renderPalette() {
+    $('palette').innerHTML = '<span class="muted">Điền nhanh:</span> <button data-code="__off" class="on" title="Gõ tay từng ô">✎ Gõ tay</button><span class="sep"></span>'
+      + BL.ccCodes(cfg()).all.map(c => `<button data-code="${h(c)}">${h(c)}</button>`).join('') + '<span class="sep"></span><button data-code="">⌫ Xóa ô</button>';
+    S.paint = null;
+  }
+  renderPalette();
+  $('palette').onclick = e => {
+    const b = e.target.closest('button'); if (!b) return;
+    S.paint = b.dataset.code === '__off' ? null : b.dataset.code;
+    [...$('palette').querySelectorAll('button')].forEach(x => x.classList.toggle('on', x === b));
+    $('gMain').classList.toggle('painting', S.paint != null); $('gOt').classList.toggle('painting', S.paint != null);
+  };
+  function setCell(inp, raw, final) {
+    const i = +inp.closest('tr').dataset.r; const k = +inp.dataset.k; const p = S.people[i];
+    if (inp.dataset.g === 'm') {
+      const v = BL.normCode(raw, cfg()); p.codes[k] = v;
+      if (v !== raw || final) inp.value = v;
+      inp.classList.toggle('bad', !BL.ccValidCode(v, cfg()));
+    } else {
+      const v = BL.normOt(raw, cfg()); p.ot[k] = v;
+      if (final) inp.value = v === '' ? '' : String(v);
+      inp.classList.toggle('bad', !BL.ccValidOt(v, cfg()));
+    }
+    if (p.flags[k]) { p.flags[k] = ''; inp.parentElement.classList.remove('flag'); }  // đã xem lại
+    updateRow(i); touch();
+  }
+  function isDupHD(i) { const k = BL.keyHD(S.people[i].soHDLD); return !!k && S.people.some((p, j) => j !== i && BL.keyHD(p.soHDLD) === k); }
+  function onGridInput(e) {
+    const inp = e.target; if (inp.tagName !== 'INPUT') return;
+    const i = +inp.closest('tr').dataset.r; const p = S.people[i];
+    if (inp.dataset.k != null) return setCell(inp, inp.value, false);
+    const f = inp.dataset.f;
+    if (f === 'ttDem') { const n = Number(inp.value.replace(',', '.')); p.ttDem = inp.value.trim() === '' ? '' : (isFinite(n) ? n : inp.value); inp.classList.toggle('bad', p.ttDem !== '' && typeof p.ttDem !== 'number'); updateRow(i); }
+    else {
+      p[f] = inp.value;
+      if (f === 'soHDLD') inp.classList.toggle('bad', !!p.hoTen.trim() && (!p.soHDLD.trim() || isDupHD(i)));
+      updateNames(); renderAddJson();
+    }
+    touch();
+  }
+  function onGridChange(e) { const inp = e.target; if (inp.dataset.k != null) setCell(inp, inp.value, true); }
+  function focusCell(table, r, k) {
+    const inp = table.querySelector(`tr[data-r="${r}"] input[data-k="${k}"]`);
+    if (inp && !inp.disabled) { inp.focus(); inp.select(); return true; }
+    return false;
+  }
+  function onGridKey(e) {
+    const inp = e.target; if (inp.dataset.k == null) { if (e.key === 'Enter') inp.blur(); return; }
+    const table = inp.closest('table'); const r = +inp.closest('tr').dataset.r; const k = +inp.dataset.k;
+    const mv = { ArrowUp: [-1, 0], ArrowDown: [1, 0], Enter: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }[e.key];
+    if (!mv) return;
+    e.preventDefault();
+    let rr = r + mv[0], kk = k + mv[1];
+    while (rr >= 0 && rr < S.people.length && kk >= 0 && kk < ND) { if (focusCell(table, rr, kk)) break; rr += mv[0]; kk += mv[1]; }
+  }
+  function paintAt(inp) {
+    if (S.paint == null || inp.disabled || inp.dataset.k == null) return;
+    if (inp.dataset.g === 'o' && S.paint !== '' && !BL.ccValidOt(S.paint, cfg())) return;
+    inp.value = S.paint; setCell(inp, S.paint, true);
+  }
+  for (const id of ['gMain', 'gOt']) {
+    const t = $(id);
+    t.addEventListener('input', onGridInput);
+    t.addEventListener('change', onGridChange);
+    t.addEventListener('keydown', onGridKey);
+    t.addEventListener('focusin', e => { if (e.target.dataset.k != null) e.target.select(); });
+    t.addEventListener('mousedown', e => { const inp = e.target.closest('input[data-k]'); if (S.paint != null && inp) { e.preventDefault(); S.painting = true; paintAt(inp); } });
+    t.addEventListener('mouseover', e => { if (S.painting) { const inp = e.target.closest('input[data-k]'); if (inp) paintAt(inp); } });
+    t.addEventListener('click', e => {
+      const b = e.target.closest('button[data-act]'); if (!b) return;
+      const i = +b.closest('tr').dataset.r;
+      if (b.dataset.act === 'fill') { fillRow(i); render(); touch(); }
+      if (b.dataset.act === 'del') {
+        const p = S.people[i];
+        if ((p.hoTen || p.codes.some(v => v)) && !confirm(`Xóa dòng “${p.hoTen || p.soHDLD}”?`)) return;
+        S.people.splice(i, 1); render(); touch();
+      }
+    });
+  }
+  document.addEventListener('mouseup', () => { S.painting = false; });
+  function fillRow(i) { const p = S.people[i]; S.days.forEach((d, k) => { if (d && d.wd !== 'CN' && !p.codes[k]) p.codes[k] = '+'; }); }
+  $('btnFillAll').onclick = () => { S.people.forEach((p, i) => { if (p.hoTen.trim()) fillRow(i); }); render(); touch(); };
+  $('btnClearAll').onclick = () => {
+    if (!confirm('Xóa toàn bộ ký hiệu chấm công và tăng ca của tháng này?')) return;
+    S.people.forEach(p => { p.codes.fill(''); p.ot.fill(''); p.ttDem = ''; p.flags.fill(''); }); render(); touch();
+  };
+  $('btnAddRow').onclick = () => { S.people.push(emptyPerson()); render(); const inp = $('gMain').querySelector(`tr[data-r="${S.people.length - 1}"] input[data-f="soHDLD"]`); if (inp) inp.focus(); };
+  $('btnAddJson').onclick = () => {
+    const m = S.models.find(x => x.soHDLD === $('selAddJson').value); if (!m) return;
+    const blankRow = S.people.findIndex(p => !p.hoTen.trim() && !p.soHDLD.trim());
+    const np = fixPerson({ soHDLD: m.soHDLD, hoTen: m.hoTen, chucVu: m.chucVu || '' });
+    if (blankRow >= 0) S.people[blankRow] = np; else S.people.push(np);
+    render(); touch();
+  };
+
+  // ---------------- xem trước lương ----------------
+  let salTimer = null;
+  function scheduleSalary() { clearTimeout(salTimer); salTimer = setTimeout(updateSalary, 300); }
+  function currentSheet() {
+    return { month: S.month, year: S.year, giamDoc: S.giamDoc, people: S.people.map(p => ({ soHDLD: p.soHDLD, hoTen: p.hoTen, chucVu: p.chucVu, codes: p.codes.slice(), ot: p.ot.slice(), ttDem: p.ttDem })) };
+  }
+  function computeSalary() {
+    const ccData = BL.chamCongToCcData(currentSheet(), cfg());
+    const models = [];
+    for (const p of ccData.people) {
+      let m = S.models.find(x => BL.keyHD(x.soHDLD) === BL.keyHD(p.soHDLD)) || S.models.find(x => BL.keyName(x.hoTen) === BL.keyName(p.hoTen));
+      if (!m && S.bl && mode() === 'append') {
+        const key = monthKey();
+        if (!S.prefill[key]) S.prefill[key] = BL.buildPrefill(S.bl.wb, key);
+        const pre = S.prefill[key].byHD[BL.keyHD(p.soHDLD)];
+        if (pre) { m = BL.makePersonModel(p, pre, cfg()); m._tuBangLuong = S.prefill[key].sourceSheet; }
+      }
+      if (m) models.push(m);
+    }
+    const month = BL.buildMonth(ccData, models, cfg());
+    month.monthKey = monthKey();
+    return month;
+  }
+  function updateSalary() {
+    const box = $('salBox');
+    if (!S.month) return;
+    if (!S.models.length && !(S.bl && mode() === 'append')) { box.className = 'muted'; box.innerHTML = 'Cần các file JSON trong <code>./lib/nhanvien/</code> (số HĐLĐ, lương từng người) để xem trước bảng lương.'; return; }
+    const month = computeSalary();
+    const tot = { P: 0, T: 0, AA: 0, AC: 0 };
+    const rows = month.rows.map((r, i) => {
+      Object.keys(tot).forEach(k => tot[k] += r.v[k]);
+      const src = r.model._tuBangLuong ? `<span class="tag warn">từ bảng lương ${h(r.model._tuBangLuong)}</span>` : '<span class="tag ok">JSON</span>';
+      return `<tr><td>${i + 1}</td><td>${h(r.model.soHDLD)}</td><td>${h(r.model.hoTen)}</td><td class="num">${fmtD(r.cc.congThucTe)}</td><td class="num">${fmtD(r.cc.tongNghi)}</td><td class="num">${fmtD(r.cc.soNgayDem)}</td>`
+        + `<td class="num">${fmt(r.v.E)}</td><td class="num">${fmt(r.v.P)}</td><td class="num">${fmt(r.v.T)}</td><td class="num">${fmt(r.v.AA)}</td><td class="num"><b>${fmt(r.v.AC)}</b></td><td>${src}</td></tr>`;
+    }).join('');
+    box.className = '';
+    box.innerHTML = `<b>Xem trước bảng lương ${BL.monthLabel(monthKey())}</b> <span class="muted">(KPI, thưởng, tạm ứng theo JSON; muốn sửa riêng tháng này dùng banluong.html)</span>
+      <div style="overflow:auto;margin-top:6px"><table class="sal"><thead><tr><th>#</th><th>Số HĐLĐ</th><th>Họ và tên</th><th class="num">Công</th><th class="num">Nghỉ</th><th class="num">Đêm</th>
+      <th class="num">Lương BHXH</th><th class="num">Tổng thu nhập</th><th class="num">BH</th><th class="num">Thuế TNCN</th><th class="num">Thực lãnh</th><th>Nguồn lương</th></tr></thead>
+      <tbody>${rows}<tr class="total"><td></td><td></td><td>Tổng</td><td></td><td></td><td></td><td></td><td class="num">${fmt(tot.P)}</td><td class="num">${fmt(tot.T)}</td><td class="num">${fmt(tot.AA)}</td><td class="num">${fmt(tot.AC)}</td><td></td></tr></tbody></table></div>`
+      + (month.warnings.length ? '<ul class="notes">' + month.warnings.map(w => `<li>${h(w)}</li>`).join('') + '</ul>' : '');
+  }
+
+  // ---------------- 4. chế độ xuất + file gốc ----------------
+  document.querySelectorAll('input[name=mode]').forEach(r => r.onchange = () => { $('oldFiles').classList.toggle('hidden', mode() !== 'append'); updateSalary(); });
+  async function openExcel(kind) {
+    if (window.showOpenFilePicker) {
+      try {
+        const [handle] = await window.showOpenFilePicker({ id: kind === 'cc' ? 'chamcong-xlsx' : 'bangluong-xlsx', types: [{ description: 'Excel', accept: { [XLSX_TYPE]: ['.xlsx'] } }] });
+        return loadExcel(kind, await handle.getFile(), handle);
+      } catch (e) { if (e.name === 'AbortError') return; console.warn(e); }
+    }
+    $(kind === 'cc' ? 'fCC' : 'fBL').click();
+  }
+  async function loadExcel(kind, file, handle) {
+    const st = $(kind === 'cc' ? 'stCC' : 'stBL');
+    st.className = 'status'; st.textContent = 'Đang đọc…';
+    try {
+      const buf = await file.arrayBuffer();
+      const wb = new ExcelJS.Workbook(); await wb.xlsx.load(buf);
+      S[kind] = { name: file.name, buf, wb, handle: handle || null };
+      const target = kind === 'cc' ? BL.ccSheetName(S.month, S.year) : BL.monthLabel(monthKey());
+      const exists = wb.worksheets.some(w => w.name.trim().toLowerCase() === target.toLowerCase());
+      st.className = 'status ok';
+      st.innerHTML = `✓ ${h(file.name)} — ${wb.worksheets.length} sheet` + (exists ? ` · <span class="tag warn">sheet ${h(target)} đã có</span>` : ` · sẽ thêm sheet <b>${h(target)}</b>`);
+      if (kind === 'bl') { S.prefill = {}; updateSalary(); }
+    } catch (err) { st.className = 'status err'; st.textContent = '✗ ' + err.message; console.error(err); }
+  }
+  $('btnCC').onclick = () => openExcel('cc');
+  $('btnBL').onclick = () => openExcel('bl');
+  $('fCC').onchange = e => { if (e.target.files[0]) loadExcel('cc', e.target.files[0]); e.target.value = ''; };
+  $('fBL').onchange = e => { if (e.target.files[0]) loadExcel('bl', e.target.files[0]); e.target.value = ''; };
+
+  async function saveOut(fileObj, data, fallbackName) {
+    if ($('optInPlace').checked && fileObj && fileObj.handle) {
+      try {
+        if (fileObj.handle.requestPermission && (await fileObj.handle.requestPermission({ mode: 'readwrite' })) !== 'granted') throw new Error('không được cấp quyền ghi');
+        const w = await fileObj.handle.createWritable(); await w.write(data); await w.close();
+        fileObj.buf = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
+        const wb = new ExcelJS.Workbook(); await wb.xlsx.load(fileObj.buf); fileObj.wb = wb;
+        log(`✓ Đã ghi thẳng vào “${fileObj.name}”.`, 'ok'); return;
+      } catch (e) { log(`Không ghi được vào “${fileObj.name}” (${e.message}). Có thể file đang mở trong Excel — đã tải về bản sao.`, 'warn'); }
+    }
+    download(data, fallbackName); log(`✓ Đã tải về “${fallbackName}”.`, 'ok');
+  }
+  $('btnExport').onclick = async () => {
+    const btn = $('btnExport'); btn.disabled = true; $('log').innerHTML = '';
+    try {
+      const sheet = currentSheet();
+      const named = sheet.people.filter(p => p.hoTen.trim());
+      if (!named.length) { log('Chưa có nhân viên nào (cột Họ và tên trống).', 'err'); return; }
+      const dup = named.map(p => BL.keyHD(p.soHDLD)).filter((k, i, a) => k && a.indexOf(k) !== i);
+      if (dup.length) { log('Số HĐLĐ bị trùng: ' + [...new Set(dup)].join(', '), 'err'); return; }
+      const noHD = named.filter(p => !p.soHDLD.trim()).map(p => p.hoTen);
+      if (noHD.length) log('Thiếu Số HĐLĐ (không tính được lương): ' + noHD.join(', '), 'warn');
+      const bad = named.reduce((n, p) => n + p.codes.filter(v => !BL.ccValidCode(v, cfg())).length + p.ot.filter(v => !BL.ccValidOt(v, cfg())).length, 0);
+      if (bad && !confirm(`Có ${bad} ô ký hiệu không hợp lệ (tô đỏ) — các ô này không được tính công. Vẫn xuất?`)) return;
+      const label = BL.monthLabel(monthKey());
+      const isNew = mode() === 'new';
+      if (!isNew && $('optCC').checked && !S.cc) { log('Chưa chọn file chấm công gốc ở dưới.', 'err'); return; }
+      if (!isNew && $('optBL').checked && !S.bl) { log('Chưa chọn file bảng lương gốc ở dưới.', 'err'); return; }
+      const over = $('optOver').checked;
+
+      if ($('optCC').checked) {
+        const res = await BL.buildChamCongWorkbook(sheet, cfg(), isNew ? { newFile: true } : { existingNames: S.cc.wb.worksheets.map(w => w.name), overwrite: over });
+        if (!res.plan.length) log(`Sheet “${res.skipped[0]}” đã có trong file chấm công — tích “Ghi đè” nếu muốn thay.`, 'warn');
+        else {
+          const gen = await res.wb.xlsx.writeBuffer();
+          if (isNew) { download(gen, `BANG CHAM CONG T${label}.xlsx`); log(`✓ Đã tải về “BANG CHAM CONG T${label}.xlsx”.`, 'ok'); }
+          else {
+            const out = await BL.mergeIntoXlsx(S.cc.buf, gen, res.plan);
+            log(`Chấm công: ${res.plan[0].action === 'overwrite' ? 'ghi đè' : 'thêm'} sheet “${res.plan[0].finalName.trim()}”.`, 'ok');
+            await saveOut(S.cc, out.data, S.cc.name.replace(/\.xlsx$/i, '') + ` (cap nhat T${label}).xlsx`);
+          }
+        }
+      }
+      if ($('optBL').checked) {
+        const month = computeSalary();
+        month.warnings.forEach(w => log(w, 'warn'));
+        if (!month.rows.length) log('Không có ai tính được lương (cần JSON trong ./lib/nhanvien).', 'err');
+        else {
+          const res = BL.salaryWorkbookFor(isNew ? null : S.bl.wb, month, cfg(), { createMonth: true, createPersonal: $('optPersonal').checked, overwriteMonth: over, overwritePersonal: over });
+          res.warnings.forEach(w => log(w, 'warn'));
+          if (res.skipped.length) log('Bảng lương — bỏ qua vì đã có: ' + res.skipped.join(', ') + '. Tích “Ghi đè” nếu muốn thay.', 'warn');
+          if (res.plan.length) {
+            const gen = await res.wb.xlsx.writeBuffer();
+            if (isNew) { download(gen, `BANG LUONG T${label}.xlsx`); log(`✓ Đã tải về “BANG LUONG T${label}.xlsx” (${res.plan.length} sheet).`, 'ok'); }
+            else {
+              const out = await BL.mergeIntoXlsx(S.bl.buf, gen, res.plan);
+              log(`Bảng lương: ${res.plan.map(p => (p.action === 'overwrite' ? 'ghi đè ' : 'thêm ') + '“' + p.finalName.trim() + '”').join(', ')}.`, 'ok');
+              await saveOut(S.bl, out.data, S.bl.name.replace(/\.xlsx$/i, '') + ` (cap nhat T${label}).xlsx`);
+            }
+          }
+        }
+      }
+    } catch (err) { console.error(err); log('Lỗi: ' + err.message, 'err'); }
+    finally { btn.disabled = false; }
+  };
+
+  window.addEventListener('beforeunload', saveDraftNow);
+  buildPeriodOptions(null);
+  loadMonth(true);
+})();
+</script>
+</body>
+</html>
