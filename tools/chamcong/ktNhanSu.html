@@ -1,0 +1,1177 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quản lý nhân sự</title>
+  <script src="lib/banluong-core.js"></script>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --card: #fff;
+      --text: #1d2330;
+      --muted: #667085;
+      --line: #e3e6eb;
+      --accent: #1f6feb;
+      --hdr: #ddebf7;
+      --inp: #fffbe6;
+      --ok: #1a7f37;
+      --err: #c62828;
+      --warn-weak: #fff4d6;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 14px/1.45 "Segoe UI", system-ui, sans-serif;
+    }
+
+    header {
+      background: #16325c;
+      color: #fff;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 600;
+    }
+
+    header .src {
+      font-size: 13px;
+      opacity: .85;
+    }
+
+    /* thanh liên kết 3 trang */
+    header nav.pages {
+      margin-left: auto;
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    header nav.pages a,
+    header nav.pages span {
+      color: #fff;
+      text-decoration: none;
+      font-size: 13px;
+      padding: 4px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, .35);
+    }
+
+    header nav.pages a:hover {
+      background: rgba(255, 255, 255, .15);
+    }
+
+    header nav.pages span {
+      background: #fff;
+      color: #16325c;
+      font-weight: 600;
+      border-color: #fff;
+    }
+
+    @media print {
+      header nav.pages {
+        display: none;
+      }
+    }
+
+    main {
+      padding: 16px 24px 60px;
+      max-width: 1280px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card h3 {
+      margin: 16px 0 8px;
+      font-size: 14px;
+      color: #16325c;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 4px;
+    }
+
+    details.card > summary {
+      list-style: none;
+      cursor: pointer;
+    }
+
+    details.card > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details.card > summary h2 {
+      margin: 0;
+    }
+
+    details.card > summary h2::before {
+      content: '▸';
+      color: var(--muted);
+      width: 12px;
+    }
+
+    details.card[open] > summary h2::before {
+      content: '▾';
+    }
+
+    details.card[open] > summary {
+      margin-bottom: 10px;
+    }
+
+
+    .step {
+      display: inline-grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 13px;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .status {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .status.ok {
+      color: var(--ok);
+    }
+
+    .status.err {
+      color: var(--err);
+    }
+
+    button {
+      font: inherit;
+      border: 1px solid #c9d0da;
+      background: #fff;
+      color: var(--text);
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #f0f3f7;
+    }
+
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    button.primary:hover {
+      background: #1a5fd0;
+    }
+
+    button.del {
+      color: var(--err);
+    }
+
+    button.del:hover {
+      background: #fde7e7;
+      border-color: #f1a7a7;
+    }
+
+    button.small {
+      padding: 2px 8px;
+      font-size: 12.5px;
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* danh sách */
+    table.list {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 13.5px;
+    }
+
+    table.list th,
+    table.list td {
+      border-bottom: 1px solid var(--line);
+      padding: 5px 8px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    table.list th {
+      background: var(--hdr);
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+    }
+
+    table.list td.n {
+      text-align: right;
+    }
+
+    table.list tr.nghi td {
+      color: #98a2b3;
+    }
+
+    table.list tr.sel td {
+      background: #eaf2ff;
+    }
+
+    table.list tbody tr:hover td {
+      background: #f6f8fb;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0 6px;
+      border-radius: 10px;
+      font-size: 12px;
+      background: #e6f4ea;
+      color: var(--ok);
+    }
+
+    .tag.off {
+      background: #eef0f3;
+      color: var(--muted);
+    }
+
+    .tag.blue {
+      background: #e8f0fe;
+      color: var(--accent);
+    }
+
+    .scroll {
+      max-height: 420px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+    }
+
+    /* form */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 10px 16px;
+    }
+
+    label.f {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+
+    label.f.wide {
+      grid-column: span 2;
+    }
+
+    label.f b {
+      color: var(--err);
+      font-weight: 400;
+    }
+
+    label.chk {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13.5px;
+      padding-top: 18px;
+    }
+
+    input[type=text],
+    input[type=number],
+    input[type=month],
+    select {
+      font: inherit;
+      color: var(--text);
+      padding: 5px 8px;
+      border: 1px solid #c9d0da;
+      border-radius: 5px;
+      background: #fff;
+      min-width: 0;
+    }
+
+    input.money,
+    input.dec {
+      text-align: right;
+      background: var(--inp);
+    }
+
+    input.bad {
+      border-color: var(--err);
+      background: #fde7e7;
+    }
+
+    input:disabled {
+      background: #f2f3f5;
+      color: #98a2b3;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    table.mini {
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+
+    table.mini th,
+    table.mini td {
+      padding: 3px 6px;
+      text-align: left;
+    }
+
+    table.mini th {
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+
+    table.mini input {
+      width: 150px;
+    }
+
+    table.mini input.code {
+      width: 70px;
+    }
+
+    table.mini input.wide {
+      width: 260px;
+    }
+
+    .syncwarn {
+      margin: 8px 0;
+      padding: 8px 12px;
+      border: 1px solid #f1a7a7;
+      border-left: 4px solid #d32f2f;
+      border-radius: 4px;
+      background: #fdecec;
+      color: #c62828;
+      font-size: 13.5px;
+    }
+
+    .syncwarn button {
+      margin-top: 6px;
+    }
+
+    .msg {
+      margin-top: 10px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 13.5px;
+    }
+
+    .msg.ok {
+      background: #e6f4ea;
+      color: var(--ok);
+    }
+
+    .msg.err {
+      background: #fde7e7;
+      color: var(--err);
+    }
+
+    .formbar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+
+    code {
+      background: #f2f3f5;
+      padding: 0 4px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Quản lý nhân sự</h1>
+    <span class="src" id="srcInfo"></span>
+    <nav class="pages" title="Các trang kế toán">
+      <a href="ktCongCu.html">🧰 Công cụ</a>
+      <span aria-current="page">👤 Nhân sự</span>
+      <a href="ktchamcong.html" data-thang>📅 Chấm công</a>
+      <a href="ktTinhLuong.html" data-thang>💰 Bảng lương</a>
+    </nav>
+  </header>
+  <main>
+
+    <section class="card">
+      <h2><span class="step">1</span> Thư mục dữ liệu nhân viên</h2>
+      <div class="row">
+        <button id="btnDir" class="primary">📂 Chọn thư mục nhân viên…</button>
+        <button id="btnDirAgain" class="hidden primary"></button>
+        <span class="status" id="stDir">Đang đọc…</span>
+      </div>
+      <div class="syncwarn hidden" id="syncWarn">
+        <div id="syncText"></div>
+        <button id="btnSync" class="primary small">➕ Thêm vào danhsach_nhanvien.json</button>
+        <span class="status" id="stSync"></span>
+      </div>
+      <div class="hint">Thư mục <code>lib/nhanvien</code> gồm: mỗi người một file <code>&lt;HĐ&gt;_&lt;TÊN&gt;.json</code>, <code>danhsach_nhanvien.json</code> (danh sách + KPI theo tháng) và <code>_config.json</code> (chính sách). Trang ghi thẳng vào thư mục này (Chrome / Edge); trình duyệt khác thì tải file về để chép đè.</div>
+    </section>
+
+    <section class="card">
+      <h2><span class="step">2</span> Danh sách nhân sự</h2>
+      <div class="row">
+        <button id="btnNew" class="primary">➕ Tạo nhân sự mới</button>
+        <label><input type="checkbox" id="optShowNghi"> Hiện người đã nghỉ</label>
+        <span class="status" id="stList"></span>
+      </div>
+      <div class="scroll">
+        <table class="list" id="tblList">
+          <thead>
+            <tr><th>#</th><th>Số HĐLĐ</th><th>Họ và tên</th><th>Chức vụ</th><th>Bộ phận</th><th>Trạng thái</th><th style="text-align:right">Lương BHXH</th><th style="text-align:right">KPI mặc định</th><th>Ghi chú</th><th></th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card hidden" id="secForm">
+      <h2><span class="step">3</span> <span id="formTitle">Nhân sự</span></h2>
+
+      <h3>Thông tin</h3>
+      <div class="grid">
+        <label class="f">Số HĐLĐ <b>*</b>
+          <input type="text" id="fHD" placeholder="PL001-2026/HĐLĐ">
+          <span class="hint" id="hintHD"></span>
+        </label>
+        <label class="f">Họ và tên <b>*</b><input type="text" id="fTen" placeholder="Nguyễn Văn A"></label>
+        <label class="f">Chức vụ (bảng lương tháng)<input type="text" id="fCV" placeholder="Công nhân"></label>
+        <label class="f">Chức vụ trên bảng lương cá nhân<input type="text" id="fCVCN"><span class="hint">Để trống = giống chức vụ</span></label>
+        <label class="f">Bộ phận<select id="fBP"></select></label>
+        <label class="f">Mã BP (bảng lương cá nhân)<input type="text" id="fMaPB"><span class="hint" id="hintMaPB"></span></label>
+        <label class="f">Trạng thái
+          <select id="fTT">
+            <option value="dang_lam">Đang làm</option>
+            <option value="da_nghi">Đã nghỉ (không chấm công, không tính lương)</option>
+          </select>
+        </label>
+        <label class="chk" title="Không có trong bảng chấm công; mỗi tháng tự tính đủ công"><input type="checkbox" id="fKCC"> Không chấm công (tự đủ công)</label>
+      </div>
+
+      <h3>Lương, giảm trừ</h3>
+      <div class="grid">
+        <label class="f">Lương đóng BHXH <b>*</b><input type="text" class="money" id="fBHXH" inputmode="numeric"></label>
+        <label class="f">KPI mặc định (luongKPI_default)<input type="text" class="money" id="fKPI" inputmode="numeric"><span class="hint">Dùng cho tháng chưa ghi KPI riêng</span></label>
+        <label class="chk"><input type="checkbox" id="fKhongKPI"> Không có KPI (KPI luôn 0, không nhắc lưu)</label>
+        <label class="f">Số người phụ thuộc<input type="number" id="fNPT" min="0" step="1"></label>
+      </div>
+
+      <h3>KPI, thưởng theo tháng <span class="hint">(ghi vào danhsach_nhanvien.json → theoThang)</span></h3>
+      <table class="mini" id="tblTT">
+        <thead><tr><th>Tháng</th><th>KPI</th><th>Thưởng</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <button id="btnAddTT" class="small">+ Thêm tháng</button>
+
+      <div class="formbar">
+        <button id="btnSavePerson" class="primary">💾 Lưu nhân sự</button>
+        <button id="btnCancel">Đóng</button>
+        <span class="hint" id="hintFile"></span>
+      </div>
+      <div class="msg hidden" id="msgPerson"></div>
+    </section>
+
+    <details class="card" id="secCfg">
+      <summary><h2><span class="step">B</span> Chính sách lương (_config.json) <span class="hint">— bấm để mở / thu gọn</span></h2></summary>
+      <div class="hint">Áp dụng cho mọi người và mọi tháng khi tính lại trên trang Bảng lương (file Excel đã xuất trước đó không đổi). Chỉ cần sửa khi chính sách thay đổi.</div>
+
+      <h3>Công ty, chữ ký</h3>
+      <div class="grid">
+        <label class="f wide">Tên công ty<input type="text" id="cTen"></label>
+        <label class="f wide">Tên ngắn (in trên bảng lương)<input type="text" id="cTenNgan"></label>
+        <label class="f">Mã số thuế<input type="text" id="cMST"></label>
+        <label class="f wide">Địa chỉ<input type="text" id="cDiaChi"></label>
+        <label class="f">Người lập<input type="text" id="cNguoiLap"></label>
+        <label class="f">Giám đốc<input type="text" id="cGiamDoc"></label>
+        <label class="f">Ngày ký (trong tháng)<input type="number" id="cNgayKy" min="1" max="31"></label>
+      </div>
+
+      <h3>Bộ phận <span class="hint">(thứ tự = thứ tự nhóm A, B… trên bảng lương)</span></h3>
+      <table class="mini" id="tblBP">
+        <thead><tr><th>Mã</th><th>Tên bộ phận</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <button id="btnAddBP" class="small">+ Thêm bộ phận</button>
+
+      <h3>Mức mặc định</h3>
+      <div class="grid" id="gridMD"></div>
+
+      <h3>Biểu thuế TNCN lũy tiến (theo tháng)</h3>
+      <table class="mini" id="tblThue">
+        <thead><tr><th>Bậc</th><th>Thu nhập tính thuế đến (đồng)</th><th>Thuế suất (%)</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <button id="btnAddThue" class="small">+ Thêm bậc</button>
+      <div class="hint">Bậc cuối để trống ô “đến” (= trên mức bậc trước).</div>
+
+      <h3>Ký hiệu chấm công <span class="hint">(nhiều ký hiệu cách nhau bằng dấu phẩy)</span></h3>
+      <div class="grid" id="gridKH"></div>
+
+      <div class="formbar">
+        <button id="btnSaveCfg" class="primary">💾 Lưu chính sách</button>
+        <button id="btnResetCfg">Hoàn tác (đọc lại file)</button>
+      </div>
+      <div class="msg hidden" id="msgCfg"></div>
+    </details>
+  </main>
+
+  <script>
+    (() => {
+      'use strict';
+      const $ = id => document.getElementById(id);
+      const h = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      const num = BL.num;
+      const money = n => Math.round(num(n)).toLocaleString('vi-VN');
+      // "1.500.000" / "1500000" → 1500000; trống → null; sai → NaN
+      const parseMoney = s => { const t = String(s ?? '').trim().replace(/[\s.,đ₫]/gi, ''); return t === '' ? null : /^-?\d+$/.test(t) ? +t : NaN; };
+      // "1,5" / "1.5" → 1.5
+      const parseDec = s => { const t = String(s ?? '').trim().replace(',', '.'); if (t === '') return null; const n = Number(t); return isFinite(n) ? n : NaN; };
+      const pctOut = r => +(num(r) * 100).toFixed(4);           // 0.015 → 1.5
+      const pctIn = p => +(p / 100).toFixed(8);                  // 1.5 → 0.015
+      const NV_BASE = 'lib/nhanvien/';
+      const TT_KEYS = ['luongKPI', 'thuong'];
+
+      const S = {
+        dir: null, root: null, src: '',
+        people: [],          // [{ file, obj }]
+        ds: null,            // mảng danhsach_nhanvien.json
+        cfgRaw: null,        // _config.json đọc từ file
+        cfg: BL.clone(BL.DEFAULT_CONFIG),
+        editing: undefined   // undefined: form đóng; null: tạo mới; {file,obj}: đang sửa
+      };
+      const cfg = () => S.cfg;
+
+      // ---------- nhớ thư mục (dùng chung với trang Bảng lương) ----------
+      const idb = {
+        open: () => new Promise((res, rej) => { const r = indexedDB.open('tinhluong', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }),
+        async get(k) { const db = await this.open(); return new Promise(res => { const t = db.transaction('kv').objectStore('kv').get(k); t.onsuccess = () => res(t.result); t.onerror = () => res(null); }); },
+        async set(k, v) { const db = await this.open(); return new Promise(res => { const t = db.transaction('kv', 'readwrite').objectStore('kv').put(v, k); t.onsuccess = () => res(); t.onerror = () => res(); }); }
+      };
+
+      // =====================================================================
+      // 1. Đọc thư mục
+      // =====================================================================
+      function ingest(files, label) {
+        const errs = [];
+        S.people = []; S.ds = null; S.cfgRaw = null;
+        for (const f of files) {
+          let o; try { o = JSON.parse(f.text); } catch (e) { errs.push(`${f.path}: JSON lỗi (${e.message})`); continue; }
+          const n = f.path.toLowerCase();
+          if (/^_?config\.json$/.test(n)) S.cfgRaw = o;
+          else if (n === BL.DS_FILE) { if (Array.isArray(o)) S.ds = o; else errs.push(`${f.path}: phải là danh sách [ ... ]`); }
+          else if (o && o.soHDLD && o.hoTen) S.people.push({ file: f.path, obj: o });
+        }
+        S.people = BL.sortByHD(S.people.map(p => Object.assign({ soHDLD: p.obj.soHDLD }, p))).map(({ file, obj }) => ({ file, obj }));
+        S.cfg = S.cfgRaw ? BL.deepMerge(BL.DEFAULT_CONFIG, S.cfgRaw) : BL.clone(BL.DEFAULT_CONFIG);
+        S.src = label;
+        const act = S.people.filter(p => !BL.daNghi(p.obj)).length;
+        $('stDir').className = 'status ' + (S.people.length ? 'ok' : 'err');
+        $('stDir').innerHTML = (S.people.length ? `✓ ${h(label)}: <b>${act}</b> đang làm` + (S.people.length > act ? `, ${S.people.length - act} đã nghỉ` : '') : `✗ ${h(label)}: chưa có file nhân viên nào`)
+          + (S.ds ? ' · có danhsach_nhanvien.json' : ' · <span class="status err">chưa có danhsach_nhanvien.json (sẽ tạo khi lưu)</span>')
+          + (S.cfgRaw ? ' · có _config.json' : ' · <span class="status err">chưa có _config.json (đang dùng mặc định)</span>')
+          + (S.dir ? '' : ' · <span class="muted">chỉ đọc — khi lưu sẽ hỏi chọn thư mục</span>')
+          + (errs.length ? '<br><span class="status err">' + errs.map(h).join('<br>') + '</span>' : '');
+        $('srcInfo').textContent = label;
+        $('btnDirAgain').classList.add('hidden');
+        renderSync();
+        renderList();
+        fillCfgForm();
+        if (S.editing) { const again = S.people.find(p => p.file === S.editing.file); if (again) openForm(again); else closeForm(); }
+        return S.people.length > 0;
+      }
+      async function readDirFiles(d) {
+        const out = [];
+        for await (const [name, hd] of d.entries()) if (hd.kind === 'file' && name.toLowerCase().endsWith('.json')) out.push({ path: name, text: await (await hd.getFile()).text() });
+        return out;
+      }
+      const hasPeople = files => files.some(f => { try { const o = JSON.parse(f.text); return o && o.soHDLD && o.hoTen; } catch (e) { return false; } });
+      // dir = thư mục nhanvien, hoặc thư mục cha có ./nhanvien hay ./lib/nhanvien
+      async function findNvDir(root) {
+        let files = await readDirFiles(root);
+        if (hasPeople(files) || files.some(f => f.path.toLowerCase() === BL.DS_FILE)) return { dir: root, files };
+        for (const parts of [['nhanvien'], ['lib', 'nhanvien']]) {
+          try { let d = root; for (const p of parts) d = await d.getDirectoryHandle(p); return { dir: d, files: await readDirFiles(d) }; } catch (e) { /* không có */ }
+        }
+        return { dir: root, files };
+      }
+      async function readDir(root) {
+        const { dir, files } = await findNvDir(root);
+        S.dir = dir; S.root = root;
+        return ingest(files, `thư mục “${dir.name}”`);
+      }
+      async function pickDir() {
+        if (!window.showDirectoryPicker) { $('stDir').className = 'status err'; $('stDir').textContent = 'Trình duyệt này không chọn thư mục được — dùng Chrome hoặc Edge (hoặc mở trang trên máy có ./lib/nhanvien).'; return; }
+        try {
+          const root = await window.showDirectoryPicker({ id: 'tinhluong-nhanvien', mode: 'readwrite' });
+          await readDir(root); idb.set('nvDir', root).catch(() => { });
+        } catch (e) { if (e.name !== 'AbortError') { console.error(e); $('stDir').className = 'status err'; $('stDir').textContent = '✗ ' + e.message; } }
+      }
+      $('btnDir').onclick = pickDir;
+      async function tryRemembered() {
+        let dir = null;
+        try { dir = await Promise.race([idb.get('nvDir'), new Promise(res => setTimeout(() => res(null), 2000))]); } catch (e) { /* */ }
+        if (!dir) return false;
+        try { if ((dir.queryPermission ? await dir.queryPermission({ mode: 'read' }) : 'granted') === 'granted') return await readDir(dir); }
+        catch (e) { console.warn(e); return false; }
+        const b = $('btnDirAgain');
+        b.textContent = `🔓 Đọc lại thư mục “${dir.name}”`; b.classList.remove('hidden');
+        b.onclick = async () => { try { if (await dir.requestPermission({ mode: 'readwrite' }) === 'granted') await readDir(dir); } catch (e) { pickDir(); } };
+        return 'wait';
+      }
+      // dự phòng: đọc ./lib/nhanvien bằng fetch (chỉ đọc)
+      async function tryFetch() {
+        const get = async name => { try { const r = await fetch(NV_BASE + name, { cache: 'no-store' }); return r.ok ? await r.text() : null; } catch (e) { return null; } };
+        const ds = await get(BL.DS_FILE);
+        if (!ds) return false;
+        let list; try { list = JSON.parse(ds); } catch (e) { return false; }
+        if (!Array.isArray(list)) return false;
+        const names = ['_config.json', ...list.filter(x => x && x.soHDLD && x.hoTen).map(x => BL.personFileName(x))];
+        const files = (await Promise.all(names.map(async n => { const t = await get(n); return t == null ? null : { path: n, text: t }; }))).filter(Boolean);
+        files.push({ path: BL.DS_FILE, text: ds });
+        if (S.dir) return true;          // người dùng đã chọn thư mục trong lúc đang đọc → giữ thư mục đó
+        S.dir = null; S.root = null;
+        return ingest(files, './lib/nhanvien');
+      }
+
+      // quyền ghi: thư mục đang dùng, chưa có thì hỏi chọn; null = trình duyệt không ghi được (tải file về)
+      async function writableDir() {
+        if (!window.showDirectoryPicker) return null;
+        if (!S.dir) {
+          const root = await window.showDirectoryPicker({ id: 'tinhluong-nhanvien', mode: 'readwrite' });
+          const { dir } = await findNvDir(root);
+          S.dir = dir; S.root = root; idb.set('nvDir', root).catch(() => { });
+        }
+        if (S.dir.queryPermission && await S.dir.queryPermission({ mode: 'readwrite' }) !== 'granted'
+          && await S.dir.requestPermission({ mode: 'readwrite' }) !== 'granted') throw new Error('Không được cấp quyền ghi vào thư mục nhân viên.');
+        return S.dir;
+      }
+      async function readText(dir, name) { try { return await (await (await dir.getFileHandle(name)).getFile()).text(); } catch (e) { if (e.name === 'NotFoundError') return null; throw e; } }
+      async function writeText(dir, name, text) { const fh = await dir.getFileHandle(name, { create: true }); const w = await fh.createWritable(); await w.write(text); await w.close(); }
+      function download(text, name) {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([text], { type: 'application/json' })); a.download = name;
+        document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+      }
+      async function reload() { if (S.root || S.dir) await readDir(S.root || S.dir); }
+
+      // ---------- đồng bộ: file nhân viên ↔ danhsach_nhanvien.json ----------
+      const notInDs = () => S.people.filter(p => !dsOf(p.obj.soHDLD));
+      const noFile = () => (S.ds || []).filter(d => d && d.soHDLD && !S.people.some(p => BL.keyHD(p.obj.soHDLD) === BL.keyHD(d.soHDLD)));
+      function renderSync() {
+        const a = notInDs(), b = noFile();
+        $('syncWarn').classList.toggle('hidden', !a.length && !b.length);
+        $('btnSync').classList.toggle('hidden', !a.length);
+        $('stSync').textContent = '';
+        $('syncText').innerHTML = [
+          a.length ? `⚠ <b>${a.length} người có file nhưng chưa có trong danhsach_nhanvien.json</b> (trang Bảng lương / Chấm công có thể không thấy): ${a.map(p => h(p.obj.soHDLD + ' ' + p.obj.hoTen)).join(', ')}` : '',
+          b.length ? `⚠ <b>${b.length} dòng trong danhsach_nhanvien.json không có file nhân viên</b>: ${b.map(d => h(d.soHDLD + ' ' + (d.hoTen || '') + ' → ' + BL.personFileName(d))).join(', ')}. Tạo lại bằng “Tạo nhân sự mới” hoặc xóa dòng đó trong file.` : ''
+        ].filter(Boolean).join('<br>');
+      }
+      // thêm người còn thiếu vào danh sách; KPI lấy từ file riêng (nếu file cũ còn ghi)
+      const dsEntry = o => Object.assign({ soHDLD: o.soHDLD, hoTen: o.hoTen }, o.khongKPI ? { khongKPI: true } : { luongKPI_default: num(o.luongKPI_default != null ? o.luongKPI_default : o.luongKPI) });
+      $('btnSync').onclick = async () => {
+        const btn = $('btnSync'); btn.disabled = true;
+        try {
+          const dir = await writableDir();
+          const add = notInDs();
+          if (dir) {
+            const t = await readText(dir, BL.DS_FILE);
+            const cur = t ? JSON.parse(t) : [];
+            const miss = add.filter(p => !cur.some(d => d && BL.keyHD(d.soHDLD) === BL.keyHD(p.obj.soHDLD)));
+            await writeText(dir, BL.DS_FILE, BL.danhSachJsonText(BL.sortByHD([...cur, ...miss.map(p => dsEntry(p.obj))])));
+            await reload();
+            const okMsg = `✓ Đã thêm ${miss.length} người vào ${BL.DS_FILE}.`;
+            if ($('syncWarn').classList.contains('hidden')) $('stDir').insertAdjacentHTML('beforeend', ' · <b>' + h(okMsg) + '</b>');
+            else { $('stSync').className = 'status ok'; $('stSync').textContent = okMsg; }
+          } else {
+            download(BL.danhSachJsonText(BL.sortByHD([...(S.ds || []), ...add.map(p => dsEntry(p.obj))])), BL.DS_FILE);
+            $('stSync').textContent = 'Đã tải về danhsach_nhanvien.json — chép đè vào thư mục lib/nhanvien.';
+          }
+        } catch (e) { if (e.name !== 'AbortError') { console.error(e); $('stSync').className = 'status err'; $('stSync').textContent = 'Lỗi: ' + e.message; } }
+        finally { btn.disabled = false; }
+      };
+
+      // =====================================================================
+      // 2. Danh sách
+      // =====================================================================
+      const dsOf = hd => (S.ds || []).find(d => d && BL.keyHD(d.soHDLD) === BL.keyHD(hd));
+      // KPI của một người: danh sách được ưu tiên, sau đó mới tới file riêng (file cũ)
+      function kpiOf(p) {
+        const d = dsOf(p.obj.soHDLD) || {}, o = p.obj;
+        const khongKPI = !!(d.khongKPI || o.khongKPI);
+        const def = d.luongKPI_default != null ? num(d.luongKPI_default) : o.luongKPI_default != null ? num(o.luongKPI_default) : num(o.luongKPI);
+        const months = {};
+        for (const src of [o.theoThang, d.theoThang]) for (const [mk, mo] of Object.entries(src || {})) {
+          if (!mo || typeof mo !== 'object') continue;
+          for (const k of TT_KEYS) if (mo[k] != null && mo[k] !== '') (months[mk] = months[mk] || {})[k] = num(mo[k]);
+        }
+        return { khongKPI, def, months };
+      }
+      const bpName = code => (cfg().boPhan || {})[code] || code || '';
+      function renderList() {
+        const show = $('optShowNghi').checked;
+        const list = S.people.filter(p => show || !BL.daNghi(p.obj));
+        const tb = $('tblList').tBodies[0];
+        tb.innerHTML = list.length ? list.map((p, i) => {
+          const m = BL.normalizeModel(p.obj), k = kpiOf(p), nghi = BL.daNghi(p.obj);
+          const sel = S.editing && S.editing.file === p.file;
+          const notes = [m.khongChamCong ? '<span class="tag blue">không chấm công</span>' : '', k.khongKPI ? '<span class="tag off">không KPI</span>' : '',
+            Object.keys(k.months).length ? `<span class="tag blue" title="${h(Object.keys(k.months).sort().join(', '))}">${Object.keys(k.months).length} tháng KPI riêng</span>` : ''].join(' ');
+          return `<tr class="${nghi ? 'nghi' : ''} ${sel ? 'sel' : ''}" data-f="${h(p.file)}">
+            <td>${i + 1}</td><td>${h(m.soHDLD)}</td><td><b>${h(m.hoTen)}</b></td><td>${h(m.chucVu)}</td><td>${h(bpName(m.boPhan))}</td>
+            <td>${nghi ? '<span class="tag off">Đã nghỉ</span>' : '<span class="tag">Đang làm</span>'}</td>
+            <td class="n">${money(m.luongBHXH)}</td><td class="n">${k.khongKPI ? '—' : money(k.def)}</td><td>${notes}</td>
+            <td><button class="small" data-edit="${h(p.file)}">✎ Sửa</button> <button class="small del" data-del="${h(p.file)}" title="Xóa nhân sự này">🗑 Xóa</button></td></tr>`;
+        }).join('') : `<tr><td colspan="10" class="muted">${S.people.length ? 'Không có ai (bấm “Hiện người đã nghỉ”).' : 'Chưa có dữ liệu — chọn thư mục ở mục 1.'}</td></tr>`;
+        const nghi = S.people.filter(p => BL.daNghi(p.obj)).length;
+        $('stList').className = 'status';
+        $('stList').textContent = S.people.length ? `${S.people.length} người (${S.people.length - nghi} đang làm${nghi ? `, ${nghi} đã nghỉ` : ''}).` : '';
+      }
+      $('optShowNghi').onchange = renderList;
+      $('tblList').addEventListener('click', e => {
+        const b = e.target.closest('button[data-edit]');
+        if (b) { const p = S.people.find(x => x.file === b.dataset.edit); if (p) openForm(p); return; }
+        const d = e.target.closest('button[data-del]');
+        if (d) { const p = S.people.find(x => x.file === d.dataset.del); if (p) deletePerson(p, d); }
+      });
+      // xóa: bỏ file riêng + dòng trong danh sách; cất bản sao vào _daxoa/ (các trang không đọc thư mục con này)
+      async function deletePerson(p, btn) {
+        const o = p.obj, k = kpiOf(p), nMonths = Object.keys(k.months).length;
+        const ok = confirm(`Bạn có chắc muốn XÓA nhân sự này không?\n\n${o.soHDLD} — ${o.hoTen}\n\n`
+          + `Sẽ xóa:\n• file ${p.file}\n• dòng trong ${BL.DS_FILE}${nMonths ? ` (gồm KPI, thưởng của ${nMonths} tháng)` : ''}\n\n`
+          + `Người này sẽ không còn trên bảng chấm công / bảng lương (kể cả khi tính lại tháng cũ).\n`
+          + `Nếu chỉ nghỉ việc, nên bấm “Sửa” → Trạng thái “Đã nghỉ” để giữ lịch sử.\n\n`
+          + `Bản sao được cất trong thư mục _daxoa.`);
+        if (!ok) return;
+        btn.disabled = true;
+        const msg = (cls, html) => { $('stList').className = 'status ' + cls; $('stList').innerHTML = html; };
+        try {
+          const dir = await writableDir();
+          if (!dir) {
+            const ds = (S.ds || []).filter(x => !(x && BL.keyHD(x.soHDLD) === BL.keyHD(o.soHDLD)));
+            download(BL.danhSachJsonText(ds), BL.DS_FILE);
+            msg('err', `Trình duyệt này không xóa file được: đã tải về ${BL.DS_FILE} mới — chép đè vào lib/nhanvien rồi tự xóa file ${h(p.file)}.`);
+            return;
+          }
+          const dsText = await readText(dir, BL.DS_FILE);
+          const dsCur = dsText ? JSON.parse(dsText) : [];
+          const entry = dsCur.find(x => x && BL.keyHD(x.soHDLD) === BL.keyHD(o.soHDLD)) || null;
+          const personText = await readText(dir, p.file);
+          // 1) bản sao
+          const bak = await dir.getDirectoryHandle('_daxoa', { create: true });
+          const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+          await writeText(bak, p.file.replace(/\.json$/i, `_${stamp}.json`), JSON.stringify({
+            xoaLuc: new Date().toISOString(), file: p.file, nhanVien: personText ? JSON.parse(personText) : o, danhSach: entry
+          }, null, 2) + '\n');
+          // 2) danh sách, 3) file riêng
+          if (entry) await writeText(dir, BL.DS_FILE, BL.danhSachJsonText(dsCur.filter(x => x !== entry)));
+          if (personText != null) await dir.removeEntry(p.file);
+          if (S.editing && S.editing.file === p.file) closeForm();
+          await reload();
+          msg('ok', `✓ Đã xóa ${h(o.soHDLD)} — ${h(o.hoTen)} (bản sao trong lib/nhanvien/_daxoa).`);
+        } catch (e) { if (e.name !== 'AbortError') { console.error(e); msg('err', 'Lỗi khi xóa: ' + h(e.message)); } }
+        finally { btn.disabled = false; }
+      }
+
+      // =====================================================================
+      // 3. Form thêm / sửa
+      // =====================================================================
+      function nextHD() {
+        const year = new Date().getFullYear(); let max = 0;
+        for (const hd of [...S.people.map(p => p.obj.soHDLD), ...(S.ds || []).map(d => d && d.soHDLD)]) {
+          const m = String(hd || '').match(/^PL(\d+)-(\d{4})/i); if (m && +m[2] === year) max = Math.max(max, +m[1]);
+        }
+        return `PL${String(max + 1).padStart(3, '0')}-${year}/HĐLĐ`;
+      }
+      const setMoney = (id, v) => { $(id).value = v == null || v === '' ? '' : money(v); };
+      function fillBPSelect(cur) {
+        const bp = Object.assign({}, cfg().boPhan || {});
+        if (cur && !(cur in bp)) bp[cur] = cur + ' (chưa có trong _config.json)';
+        $('fBP').innerHTML = Object.entries(bp).map(([c, n]) => `<option value="${h(c)}">${h(c)} — ${h(n)}</option>`).join('');
+        $('fBP').value = cur && cur in bp ? cur : Object.keys(bp)[0] || '';
+      }
+      function openForm(p) {
+        S.editing = p || null;
+        const o = p ? p.obj : {}, k = p ? kpiOf(p) : { khongKPI: false, def: 0, months: {} };
+        $('formTitle').textContent = p ? `Sửa nhân sự: ${o.hoTen}` : 'Tạo nhân sự mới';
+        $('fHD').value = p ? o.soHDLD : nextHD();
+        $('hintHD').textContent = p ? '' : 'Đã gợi ý số tiếp theo của năm nay — sửa nếu khác.';
+        $('fTen').value = o.hoTen || '';
+        $('fCV').value = o.chucVu || '';
+        $('fCVCN').value = o.chucVuCaNhan && o.chucVuCaNhan !== o.chucVu ? o.chucVuCaNhan : '';
+        fillBPSelect(o.boPhan || 'SX');
+        $('fMaPB').value = o.maPB || '';
+        $('fTT').value = BL.daNghi(o) ? 'da_nghi' : 'dang_lam';
+        $('fKCC').checked = !!o.khongChamCong;
+        setMoney('fBHXH', p ? num(o.luongBHXH) : '');
+        setMoney('fKPI', k.khongKPI ? '' : k.def);
+        $('fKhongKPI').checked = k.khongKPI;
+        $('fNPT').value = o.soNguoiPhuThuoc ? num(o.soNguoiPhuThuoc) : '';
+        $('tblTT').tBodies[0].innerHTML = '';
+        Object.keys(k.months).sort().forEach(mk => addTTRow(mk, k.months[mk].luongKPI, k.months[mk].thuong));
+        S.formMonths = Object.keys(k.months);   // tháng có lúc mở form (tháng khác lưu thêm sau đó sẽ được giữ)
+        document.querySelectorAll('#secForm input').forEach(i => i.classList.remove('bad'));
+        $('msgPerson').classList.add('hidden');
+        formHints();
+        $('secForm').classList.remove('hidden');
+        renderList();
+        $('secForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (!p) $('fTen').focus();
+      }
+      function closeForm() { S.editing = undefined; $('secForm').classList.add('hidden'); renderList(); }
+      $('btnNew').onclick = () => openForm(null);
+      $('btnCancel').onclick = closeForm;
+      function formHints() {
+        $('hintMaPB').textContent = `Để trống = “${$('fBP').value === 'QL' ? 'Quản Lý' : 'SX'}”`;
+        $('fKPI').disabled = $('fKhongKPI').checked;
+        const hd = $('fHD').value.trim(), ten = $('fTen').value.trim();
+        if (hd && ten) {
+          const fn = BL.personFileName({ soHDLD: hd, hoTen: ten, tenSheet: S.editing && S.editing.obj.hoTen === ten ? S.editing.obj.tenSheet : undefined });
+          const ren = S.editing && S.editing.file !== fn;
+          $('hintFile').innerHTML = `File: <code>${h(fn)}</code>` + (ren ? ` <span class="status err">(đổi tên từ ${h(S.editing.file)})</span>` : '') + ` + <code>${BL.DS_FILE}</code>`;
+        } else $('hintFile').textContent = '';
+      }
+      ['fHD', 'fTen'].forEach(id => $(id).addEventListener('input', formHints));
+      $('fBP').onchange = formHints; $('fKhongKPI').onchange = formHints;
+      // ô tiền: hiện dạng 1.500.000 khi rời ô
+      document.addEventListener('focusout', e => {
+        const i = e.target; if (!i.classList || !i.classList.contains('money')) return;
+        const v = parseMoney(i.value); i.classList.toggle('bad', Number.isNaN(v));
+        if (v != null && !Number.isNaN(v)) i.value = money(v);
+      });
+      function addTTRow(mk, kpi, thuong) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td><input type="month" class="tt-m" value="${h(mk || '')}"></td>
+          <td><input type="text" class="money tt-k" inputmode="numeric" value="${kpi == null ? '' : money(kpi)}" placeholder="mặc định"></td>
+          <td><input type="text" class="money tt-t" inputmode="numeric" value="${thuong == null ? '' : money(thuong)}" placeholder="0"></td>
+          <td><button class="small" title="Xóa dòng">✕</button></td>`;
+        tr.querySelector('button').onclick = () => tr.remove();
+        $('tblTT').tBodies[0].appendChild(tr);
+        return tr;
+      }
+      $('btnAddTT').onclick = () => {
+        const d = new Date(), mk = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        const tr = addTTRow(mk); tr.querySelector('.tt-k').focus();
+      };
+
+      // đọc form → { v, errs }
+      function readForm() {
+        const errs = [], bad = id => { $(id).classList.add('bad'); };
+        document.querySelectorAll('#secForm input').forEach(i => i.classList.remove('bad'));
+        const m = id => { const v = parseMoney($(id).value); if (Number.isNaN(v) || (v != null && v < 0)) { bad(id); errs.push(`Ô “${$(id).closest('label').firstChild.textContent.trim()}” phải là số tiền.`); return null; } return v; };
+        const v = {
+          soHDLD: $('fHD').value.trim(), hoTen: $('fTen').value.trim().replace(/\s+/g, ' '),
+          chucVu: $('fCV').value.trim(), chucVuCaNhan: $('fCVCN').value.trim(), boPhan: $('fBP').value, maPB: $('fMaPB').value.trim(),
+          trangThai: $('fTT').value, khongChamCong: $('fKCC').checked,
+          luongBHXH: m('fBHXH'), kpi: m('fKPI'), khongKPI: $('fKhongKPI').checked,
+          soNguoiPhuThuoc: $('fNPT').value === '' ? 0 : +$('fNPT').value,
+          months: {}
+        };
+        if (!v.soHDLD) { bad('fHD'); errs.push('Thiếu số HĐLĐ.'); }
+        if (!v.hoTen) { bad('fTen'); errs.push('Thiếu họ và tên.'); }
+        if (v.luongBHXH == null && !errs.length) { bad('fBHXH'); errs.push('Thiếu lương đóng BHXH (người đã nghỉ thì ghi 0).'); }
+        if (!Number.isInteger(v.soNguoiPhuThuoc) || v.soNguoiPhuThuoc < 0) { $('fNPT').classList.add('bad'); errs.push('Số người phụ thuộc phải là số nguyên ≥ 0.'); }
+        const dupHD = S.people.find(p => p !== S.editing && BL.keyHD(p.obj.soHDLD) === BL.keyHD(v.soHDLD));
+        if (v.soHDLD && dupHD) { bad('fHD'); errs.push(`Số HĐLĐ ${v.soHDLD} đã có (${dupHD.obj.hoTen}).`); }
+        for (const tr of $('tblTT').tBodies[0].rows) {
+          const mk = tr.querySelector('.tt-m').value, k = parseMoney(tr.querySelector('.tt-k').value), t = parseMoney(tr.querySelector('.tt-t').value);
+          if (k == null && t == null) continue;
+          if (!/^\d{4}-\d{2}$/.test(mk)) { tr.querySelector('.tt-m').classList.add('bad'); errs.push('Có dòng KPI theo tháng chưa chọn tháng.'); continue; }
+          if (Number.isNaN(k)) tr.querySelector('.tt-k').classList.add('bad');
+          if (Number.isNaN(t)) tr.querySelector('.tt-t').classList.add('bad');
+          if (Number.isNaN(k) || Number.isNaN(t)) { errs.push(`KPI / thưởng tháng ${mk} phải là số.`); continue; }
+          if (v.months[mk]) { tr.querySelector('.tt-m').classList.add('bad'); errs.push(`Tháng ${mk} bị nhập 2 lần.`); continue; }
+          v.months[mk] = {}; if (k != null) v.months[mk].luongKPI = k; if (t != null) v.months[mk].thuong = t;
+        }
+        return { v, errs };
+      }
+      // file riêng: thông tin cố định (KPI để ở danh sách)
+      function buildPersonObj(v, old) {
+        const o = old ? JSON.parse(JSON.stringify(old)) : {};
+        for (const k of ['luongKPI', 'luongKPI_default', 'khongKPI']) delete o[k];
+        if (o.theoThang) {
+          for (const mk of Object.keys(o.theoThang)) { const mo = o.theoThang[mk] || {}; TT_KEYS.forEach(k => delete mo[k]); if (!Object.keys(mo).length) delete o.theoThang[mk]; }
+          if (!Object.keys(o.theoThang).length) delete o.theoThang;
+        }
+        if (old && old.hoTen !== v.hoTen) delete o.tenSheet;      // đổi tên → tên file theo tên mới
+        Object.assign(o, { soHDLD: v.soHDLD, hoTen: v.hoTen, chucVu: v.chucVu, boPhan: v.boPhan, trangThai: v.trangThai, luongBHXH: num(v.luongBHXH) });
+        const opt = (k, val) => { if (val === '' || val == null || val === false || val === 0) delete o[k]; else o[k] = val; };
+        opt('chucVuCaNhan', v.chucVuCaNhan); opt('maPB', v.maPB); opt('khongChamCong', v.khongChamCong || false);
+        opt('soNguoiPhuThuoc', v.soNguoiPhuThuoc);   // giảm trừ bản thân, hưu trí, từ thiện: không sửa ở đây, giữ nguyên nếu file có
+        const out = BL.compactModel(o, cfg());
+        delete out.luongKPI_default; delete out.khongKPI;
+        return out;
+      }
+      // danh sách: cập nhật / thêm dòng của người này
+      function applyToDs(list, v, oldHD) {
+        const ds = (Array.isArray(list) ? list : []).map(d => JSON.parse(JSON.stringify(d)));
+        let d = ds.find(x => x && BL.keyHD(x.soHDLD) === BL.keyHD(oldHD || v.soHDLD)) || ds.find(x => x && BL.keyHD(x.soHDLD) === BL.keyHD(v.soHDLD));
+        if (!d) { d = {}; ds.push(d); }
+        d.soHDLD = v.soHDLD; d.hoTen = v.hoTen; delete d.luongKPI;
+        if (v.khongKPI) { d.khongKPI = true; delete d.luongKPI_default; } else { delete d.khongKPI; d.luongKPI_default = num(v.kpi); }
+        const tt = Object.assign({}, d.theoThang);
+        for (const mk of new Set([...Object.keys(tt), ...Object.keys(v.months)])) {
+          if (!(mk in v.months) && !(S.formMonths || []).includes(mk)) continue;   // tháng mới lưu từ trang khác: giữ
+          const o = Object.assign({}, tt[mk]); TT_KEYS.forEach(k => delete o[k]);
+          Object.assign(o, v.months[mk] || {});
+          if (Object.keys(o).length) tt[mk] = o; else delete tt[mk];
+        }
+        if (Object.keys(tt).length) d.theoThang = Object.fromEntries(Object.entries(tt).sort(([a], [b]) => a.localeCompare(b))); else delete d.theoThang;
+        return BL.sortByHD(ds);
+      }
+      function showMsg(id, cls, html) { const el = $(id); el.className = 'msg ' + cls; el.innerHTML = html; }
+      $('btnSavePerson').onclick = async () => {
+        const { v, errs } = readForm();
+        if (errs.length) { showMsg('msgPerson', 'err', errs.map(h).join('<br>')); return; }
+        if (!/^PL\d{3}-\d{4}\/HĐLĐ$/i.test(v.soHDLD) && !confirm(`Số HĐLĐ “${v.soHDLD}” không theo dạng PL001-2026/HĐLĐ. Vẫn lưu?`)) return;
+        const old = S.editing || null;
+        const obj = buildPersonObj(v, old && old.obj);
+        const fname = BL.personFileName(obj);
+        const clash = S.people.find(p => p !== old && p.file.toLowerCase() === fname.toLowerCase());
+        if (clash) { showMsg('msgPerson', 'err', `Tên file ${h(fname)} trùng với ${h(clash.obj.hoTen)}.`); return; }
+        const rename = old && old.file !== fname;
+        if (rename && !confirm(`Đổi số HĐLĐ / họ tên → đổi tên file:\n${old.file}\n→ ${fname}\n\nFile cũ sẽ bị xóa. Tiếp tục?`)) return;
+        const btn = $('btnSavePerson'); btn.disabled = true;
+        try {
+          const dir = await writableDir();
+          if (dir) {
+            // đọc lại danh sách ngay trước khi ghi (trang Bảng lương có thể vừa lưu KPI)
+            const dsText = await readText(dir, BL.DS_FILE);
+            const dsBefore = dsText ? JSON.parse(dsText) : (S.ds || []);
+            const isNewInDs = !dsBefore.some(d => d && BL.keyHD(d.soHDLD) === BL.keyHD((old && old.obj.soHDLD) || v.soHDLD));
+            const ds = applyToDs(dsBefore, v, old && old.obj.soHDLD);
+            await writeText(dir, BL.DS_FILE, BL.danhSachJsonText(ds));        // 1) danh sách
+            try { await writeText(dir, fname, BL.modelJsonText(obj)); }       // 2) file riêng
+            catch (e) { if (dsText != null) await writeText(dir, BL.DS_FILE, dsText).catch(() => { }); throw new Error(`Không ghi được ${fname} (${e.message}) — đã trả ${BL.DS_FILE} về như cũ.`); }
+            if (rename) { try { await dir.removeEntry(old.file); } catch (e) { console.warn(e); } }
+            S.editing = { file: fname, obj };
+            await reload();
+            showMsg('msgPerson', 'ok', `✓ Đã lưu <code>${h(fname)}</code>` + (isNewInDs ? ` và <b>thêm dòng mới</b> vào <code>${BL.DS_FILE}</code>` : ` và cập nhật <code>${BL.DS_FILE}</code>`) + (rename ? ` (đã xóa file cũ ${h(old.file)})` : '') + '. Mở lại trang Bảng lương để thấy thay đổi.');
+          } else {
+            const ds = applyToDs(S.ds || [], v, old && old.obj.soHDLD);
+            download(BL.modelJsonText(obj), fname); download(BL.danhSachJsonText(ds), BL.DS_FILE);
+            showMsg('msgPerson', 'ok', `Đã tải về ${h(fname)} và ${BL.DS_FILE} — chép đè vào thư mục lib/nhanvien` + (rename ? `, rồi xóa file cũ ${h(old.file)}` : '') + '.');
+          }
+        } catch (e) { if (e.name !== 'AbortError') { console.error(e); showMsg('msgPerson', 'err', 'Lỗi: ' + h(e.message)); } }
+        finally { btn.disabled = false; }
+      };
+
+      // =====================================================================
+      // 4. Chính sách (_config.json)
+      // =====================================================================
+      const MD_FIELDS = [
+        ['ngayCongChuan', 'Ngày công chuẩn / tháng', 'dec'],
+        ['tienComNgay', 'Tiền cơm / ngày công', 'money'],
+        ['heSoCaDem', 'Hệ số phụ cấp ca đêm', 'dec'],
+        ['heSoTangCaNgayThuong', 'Hệ số tăng ca ngày thường', 'dec'],
+        ['heSoTangCaDemThuong', 'Hệ số tăng ca đêm ngày thường', 'dec'],
+        ['heSoTangCaNgayCN', 'Hệ số tăng ca ngày chủ nhật', 'dec'],
+        ['heSoTangCaDemCN', 'Hệ số tăng ca đêm chủ nhật', 'dec'],
+        ['tyLeBHXH', 'BHXH người lao động đóng (%)', 'pct'],
+        ['tyLeBHYT', 'BHYT người lao động đóng (%)', 'pct'],
+        ['tyLeBHTN', 'BHTN người lao động đóng (%)', 'pct'],
+        ['giamTruBanThan', 'Giảm trừ gia cảnh bản thân', 'money'],
+        ['giamTruNguoiPhuThuoc', 'Giảm trừ mỗi người phụ thuộc', 'money']
+      ];
+      const KH_FIELDS = [
+        ['congNgay', 'Công ca ngày'], ['congDem', 'Công ca đêm'], ['congLe', 'Nghỉ lễ (tính công)'],
+        ['nghiHuongLuong', 'Nghỉ hưởng lương'], ['nghiBHXH', 'Nghỉ BHXH chi trả'], ['nghiKhongLuong', 'Nghỉ không lương']
+      ];
+      $('gridMD').innerHTML = MD_FIELDS.map(([k, lab, t]) => `<label class="f">${h(lab)}<input type="text" class="${t === 'money' ? 'money' : 'dec'}" id="md-${k}" inputmode="decimal"></label>`).join('');
+      $('gridKH').innerHTML = KH_FIELDS.map(([k, lab]) => `<label class="f">${h(lab)}<input type="text" id="kh-${k}"></label>`).join('');
+      function addBPRow(code, name) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td><input type="text" class="code bp-c" value="${h(code || '')}" placeholder="VD: KD"></td><td><input type="text" class="wide bp-n" value="${h(name || '')}" placeholder="Bộ phận kinh doanh"></td><td><button class="small" title="Xóa">✕</button></td>`;
+        tr.querySelector('button').onclick = () => tr.remove();
+        $('tblBP').tBodies[0].appendChild(tr);
+      }
+      function renumberThue() { [...$('tblThue').tBodies[0].rows].forEach((tr, i) => { tr.cells[0].textContent = i + 1; }); }
+      function addThueRow(lim, rate) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td></td><td><input type="text" class="money th-l" inputmode="numeric" value="${lim == null ? '' : money(lim)}" placeholder="trở lên"></td><td><input type="text" class="dec th-r" inputmode="decimal" value="${rate == null ? '' : pctOut(rate)}"></td><td><button class="small" title="Xóa">✕</button></td>`;
+        tr.querySelector('button').onclick = () => { tr.remove(); renumberThue(); };
+        $('tblThue').tBodies[0].appendChild(tr); renumberThue();
+      }
+      $('btnAddBP').onclick = () => addBPRow();
+      $('btnAddThue').onclick = () => {
+        const rows = $('tblThue').tBodies[0].rows, last = rows[rows.length - 1];
+        // thêm bậc mới trước bậc cuối (bậc cuối luôn là “trở lên”)
+        addThueRow(null, null);
+        if (last) $('tblThue').tBodies[0].insertBefore(rows[rows.length - 1], last);
+        renumberThue();
+      };
+      function fillCfgForm() {
+        const c = cfg();
+        $('cTen').value = c.congTy.ten || ''; $('cTenNgan').value = c.congTy.tenNgan || ''; $('cMST').value = c.congTy.mst || ''; $('cDiaChi').value = c.congTy.diaChi || '';
+        $('cNguoiLap').value = c.nguoiLap || ''; $('cGiamDoc').value = c.giamDoc || ''; $('cNgayKy').value = c.ngayKy || '';
+        $('tblBP').tBodies[0].innerHTML = ''; Object.entries(c.boPhan || {}).forEach(([k, n]) => addBPRow(k, n));
+        for (const [k, , t] of MD_FIELDS) { const v = c.macDinh[k]; $('md-' + k).value = v == null ? '' : t === 'pct' ? pctOut(v) : t === 'money' ? money(v) : String(v).replace('.', ','); }
+        $('tblThue').tBodies[0].innerHTML = ''; (c.bacThue || []).forEach(([l, r]) => addThueRow(l, r));
+        for (const [k] of KH_FIELDS) $('kh-' + k).value = ((c.kyHieu || {})[k] || []).join(', ');
+        document.querySelectorAll('#secCfg input').forEach(i => i.classList.remove('bad'));
+        $('msgCfg').classList.add('hidden');
+      }
+      $('btnResetCfg').onclick = async () => { await reload(); fillCfgForm(); };
+      function readCfgForm(base) {
+        const errs = [], c = JSON.parse(JSON.stringify(base || {}));
+        const bad = (el, msg) => { el.classList.add('bad'); errs.push(msg); };
+        document.querySelectorAll('#secCfg input').forEach(i => i.classList.remove('bad'));
+        c.congTy = Object.assign({}, c.congTy, { ten: $('cTen').value.trim(), tenNgan: $('cTenNgan').value.trim(), mst: $('cMST').value.trim(), diaChi: $('cDiaChi').value.trim() });
+        c.nguoiLap = $('cNguoiLap').value.trim(); c.giamDoc = $('cGiamDoc').value.trim();
+        const nk = +$('cNgayKy').value; if (!Number.isInteger(nk) || nk < 1 || nk > 31) bad($('cNgayKy'), 'Ngày ký phải từ 1 đến 31.'); else c.ngayKy = nk;
+        const bp = {};
+        for (const tr of $('tblBP').tBodies[0].rows) {
+          const ci = tr.querySelector('.bp-c'), code = ci.value.trim().toUpperCase(), name = tr.querySelector('.bp-n').value.trim();
+          if (!code && !name) continue;
+          if (!/^[A-Z0-9_]+$/.test(code)) { bad(ci, `Mã bộ phận “${code}” chỉ gồm chữ không dấu / số.`); continue; }
+          if (code in bp) { bad(ci, `Mã bộ phận ${code} bị trùng.`); continue; }
+          bp[code] = name || code;
+        }
+        if (!Object.keys(bp).length) errs.push('Cần ít nhất một bộ phận.');
+        const used = [...new Set(S.people.map(p => p.obj.boPhan || 'SX'))].filter(x => !(x in bp));
+        if (used.length) errs.push(`Bộ phận ${used.join(', ')} đang có người — không xóa được (sửa bộ phận của những người đó trước).`);
+        c.boPhan = bp;
+        c.macDinh = Object.assign({}, c.macDinh);
+        for (const [k, lab, t] of MD_FIELDS) {
+          const el = $('md-' + k), v = t === 'money' ? parseMoney(el.value) : parseDec(el.value);
+          if (v == null || Number.isNaN(v) || v < 0) { bad(el, `“${lab}” phải là số ≥ 0.`); continue; }
+          if (k === 'ngayCongChuan' && v === 0) { bad(el, 'Ngày công chuẩn phải > 0.'); continue; }
+          c.macDinh[k] = t === 'pct' ? pctIn(v) : v;
+        }
+        const rows = [...$('tblThue').tBodies[0].rows], bac = [];
+        rows.forEach((tr, i) => {
+          const li = tr.querySelector('.th-l'), ri = tr.querySelector('.th-r');
+          const l = parseMoney(li.value), r = parseDec(ri.value), last = i === rows.length - 1;
+          if (r == null || Number.isNaN(r) || r < 0 || r > 100) { bad(ri, `Bậc ${i + 1}: thuế suất phải từ 0 đến 100%.`); return; }
+          if (last) { if (l != null) bad(li, 'Bậc cuối để trống ô “đến”.'); bac.push([null, pctIn(r)]); return; }
+          if (l == null || Number.isNaN(l) || l <= 0) { bad(li, `Bậc ${i + 1}: thiếu mức “đến”.`); return; }
+          if (bac.length && bac[bac.length - 1][0] >= l) { bad(li, `Bậc ${i + 1}: mức “đến” phải lớn hơn bậc trước.`); return; }
+          bac.push([l, pctIn(r)]);
+        });
+        if (!rows.length) errs.push('Cần ít nhất một bậc thuế.');
+        c.bacThue = bac;
+        c.kyHieu = Object.assign({}, c.kyHieu);
+        const seen = {};
+        for (const [k, lab] of KH_FIELDS) {
+          const el = $('kh-' + k), list = el.value.split(/[,;]/).map(s => s.trim()).filter(Boolean);
+          if (!list.length) { bad(el, `“${lab}” cần ít nhất một ký hiệu.`); continue; }
+          for (const s of list) { if (seen[s.toLowerCase()]) bad(el, `Ký hiệu “${s}” dùng cho cả “${seen[s.toLowerCase()]}” và “${lab}”.`); seen[s.toLowerCase()] = lab; }
+          c.kyHieu[k] = list;
+        }
+        return { c, errs };
+      }
+      // JSON dễ đọc: mảng ngắn (bậc thuế, ký hiệu) nằm trên 1 dòng
+      const cfgJsonText = c => JSON.stringify(c, null, 2).replace(/\[\s+([^\[\]{}]*?)\s+\]/g, (m, inner) => '[' + inner.split(/,\s*\n\s*/).join(', ') + ']') + '\n';
+      // liệt kê thay đổi so với file hiện tại
+      function cfgChanges(a, b, path = '') {
+        const out = [];
+        const keys = new Set([...Object.keys(a || {}), ...Object.keys(b || {})]);
+        for (const k of keys) {
+          const p = path ? `${path}.${k}` : k, x = (a || {})[k], y = (b || {})[k];
+          if (x && y && typeof x === 'object' && typeof y === 'object' && !Array.isArray(x) && !Array.isArray(y)) out.push(...cfgChanges(x, y, p));
+          else if (JSON.stringify(x) !== JSON.stringify(y)) out.push(`${p}: ${JSON.stringify(x)} → ${JSON.stringify(y)}`);
+        }
+        return out;
+      }
+      $('btnSaveCfg').onclick = async () => {
+        const btn = $('btnSaveCfg'); btn.disabled = true;
+        try {
+          const dir = await writableDir();
+          let base = S.cfgRaw;
+          if (dir) { const t = await readText(dir, '_config.json'); if (t) base = JSON.parse(t); }
+          const cur = BL.deepMerge(BL.DEFAULT_CONFIG, base || {});
+          const { c, errs } = readCfgForm(base || cur);
+          if (errs.length) { showMsg('msgCfg', 'err', errs.map(h).join('<br>')); return; }
+          const ch = cfgChanges(cur, BL.deepMerge(BL.DEFAULT_CONFIG, c));
+          if (!ch.length && base) { showMsg('msgCfg', 'ok', 'Không có gì thay đổi.'); return; }
+          if (!confirm(`Lưu _config.json với ${ch.length} thay đổi?\n\n${ch.slice(0, 20).join('\n')}${ch.length > 20 ? '\n…' : ''}`)) return;
+          if (dir) {
+            await writeText(dir, '_config.json', cfgJsonText(c));
+            await reload();
+            showMsg('msgCfg', 'ok', `✓ Đã lưu _config.json (${ch.length} thay đổi):<br>` + ch.map(h).join('<br>'));
+          } else {
+            download(cfgJsonText(c), '_config.json');
+            showMsg('msgCfg', 'ok', 'Đã tải về _config.json — chép đè vào thư mục lib/nhanvien.');
+          }
+        } catch (e) { if (e.name !== 'AbortError') { console.error(e); showMsg('msgCfg', 'err', 'Lỗi: ' + h(e.message)); } }
+        finally { btn.disabled = false; }
+      };
+
+      // link sang trang khác giữ tháng đang xem (?thang=YYYY-MM)
+      const URL_THANG = (new URLSearchParams(location.search).get('thang') || '').match(/^\d{4}-\d{2}$/) ? new URLSearchParams(location.search).get('thang') : null;
+      const setNavMonth = mk => document.querySelectorAll('a[data-thang]').forEach(a => { a.href = a.getAttribute('href').split('?')[0] + (mk ? '?thang=' + mk : ''); });
+      if (URL_THANG) setNavMonth(URL_THANG);
+
+      // =====================================================================
+      // Mở trang: thư mục đã nhớ → ./lib/nhanvien
+      // =====================================================================
+      (async () => {
+        fillCfgForm();
+        const r = await tryRemembered();
+        if (r) return;
+        if (await tryFetch()) return;
+        $('stDir').className = 'status'; $('stDir').textContent = 'Chọn thư mục nhân viên (lib/nhanvien) để bắt đầu.';
+        renderList();
+      })();
+    })();
+  </script>
+</body>
+
+</html>

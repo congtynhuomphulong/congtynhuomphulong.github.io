@@ -1,0 +1,86 @@
+{
+  "congTy": {
+    "ten": "CÔNG TY CỔ PHẦN DỆT NHUỘM PHÚ LONG",
+    "tenNgan": "CTY CỔ PHẦN DỆT NHUỘM PHÚ LONG",
+    "mst": "0317900391",
+    "diaChi": "37/8D Đường Nguyễn Thị Sáu, Ấp 7, Xã Bà Điểm, Tp.HCM"
+  },
+  "nguoiLap": "Lê Nguyễn Ngọc Nhung",
+  "giamDoc": "Nguyễn Tấn Văn",
+  "ngayKy": 25,
+  "boPhan": {
+    "QL": "Bộ phận quản lý",
+    "SX": "Bộ phận sản xuất"
+  },
+  "bacThue": [
+    [
+      10000000,
+      0.05
+    ],
+    [
+      30000000,
+      0.1
+    ],
+    [
+      60000000,
+      0.2
+    ],
+    [
+      100000000,
+      0.3
+    ],
+    [
+      null,
+      0.35
+    ]
+  ],
+  "macDinh": {
+    "ngayCongChuan": 26,
+    "tienComNgay": 40000,
+    "heSoCaDem": 0.3,
+    "heSoTangCaNgayThuong": 1.5,
+    "heSoTangCaDemThuong": 1.8,
+    "heSoTangCaNgayCN": 2,
+    "heSoTangCaDemCN": 2.3,
+    "tyLeBHXH": 0.08,
+    "tyLeBHYT": 0.015,
+    "tyLeBHTN": 0.01,
+    "giamTruBanThan": 15500000,
+    "giamTruNguoiPhuThuoc": 6200000,
+    "luongBHXH": 0,
+    "luongKPI": 0,
+    "soNguoiPhuThuoc": 0,
+    "huuTriTuNguyen": 0,
+    "tuThien": 0,
+    "thuong": 0,
+    "tamUng": 0,
+    "traLaiCongTy": 0,
+    "dieuChinh": 0
+  },
+  "kyHieu": {
+    "congNgay": [
+      "+"
+    ],
+    "congDem": [
+      "Đ"
+    ],
+    "congLe": [
+      "L"
+    ],
+    "nghiHuongLuong": [
+      "P",
+      "Cd"
+    ],
+    "nghiBHXH": [
+      "Om",
+      "Co",
+      "Ts",
+      "Ss",
+      "Tl",
+      "Ks"
+    ],
+    "nghiKhongLuong": [
+      "K"
+    ]
+  }
+}

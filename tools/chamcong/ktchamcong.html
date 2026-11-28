@@ -82,6 +82,64 @@
       opacity: .85;
     }
 
+    /* nút "Đi đến Bảng Lương" ở cuối mục Xuất */
+    .next {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid #e3e8ef;
+    }
+
+    /* thanh liên kết 3 trang */
+    header nav.pages {
+      margin-left: auto;
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    header nav.pages a,
+    header nav.pages span {
+      color: #fff;
+      text-decoration: none;
+      font-size: 13px;
+      padding: 4px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, .35);
+    }
+
+    header nav.pages a:hover {
+      background: rgba(255, 255, 255, .15);
+    }
+
+    header nav.pages span {
+      background: #fff;
+      color: #16325c;
+      font-weight: 600;
+      border-color: #fff;
+    }
+
+    @media print {
+      header nav.pages {
+        display: none;
+      }
+    }
+
+    a.nav {
+      display: inline-block;
+      padding: 8px 22px;
+      border-radius: 6px;
+      border: 1px solid #16325c;
+      background: #16325c;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    a.nav:hover {
+      background: #23477f;
+    }
+
     main {
       padding: 16px 24px 60px;
     }
@@ -618,11 +676,18 @@
     <h1>Bảng chấm công tháng</h1>
     <div class="period">Tháng / năm <select id="selPeriod"></select></div>
     <span class="src" id="srcInfo"></span>
+    <nav class="pages" title="Các trang kế toán">
+      <a href="ktCongCu.html">🧰 Công cụ</a>
+      <a href="ktNhanSu.html" data-thang>👤 Nhân sự</a>
+      <span aria-current="page">📅 Chấm công</span>
+      <a href="ktTinhLuong.html" data-thang>💰 Bảng lương</a>
+    </nav>
   </header>
   <main>
 
-    <section class="card">
-      <h2><span class="step">1</span> Dữ liệu</h2>
+    <!-- mục "Dữ liệu" ẩn: dữ liệu tự đọc bằng fetch (../../data, ./lib/nhanvien); giữ phần tử vì script còn dùng -->
+    <section class="card hidden" id="secData">
+      <h2><span class="step">0</span> Dữ liệu</h2>
       <div class="row">
         <button id="btnData" class="primary">📂 Cho phép đọc thư mục banLuong…</button>
         <button id="btnDataAgain" class="hidden primary"></button>
@@ -640,12 +705,12 @@
         <button id="btnClearDraft">Xóa bản nháp tháng này</button>
         <span class="muted" id="draftInfo"></span>
       </div>
-      <div id="codeMap" class="codemap hidden"></div>
-      <ul class="notes" id="notes"></ul>
     </section>
 
     <section class="card">
-      <h2><span class="step">2</span> <span id="ttlMain">Bảng chấm công</span></h2>
+      <h2><span class="step">1</span> <span id="ttlMain">Bảng chấm công</span></h2>
+      <div id="codeMap" class="codemap hidden"></div>
+      <ul class="notes" id="notes"></ul>
       <div class="row">
         <div class="palette" id="palette"></div>
       </div>
@@ -673,7 +738,7 @@
     </section>
 
     <section class="card">
-      <h2><span class="step">3</span> <span id="ttlOt">Bảng chấm công tăng ca</span></h2>
+      <h2><span class="step">2</span> <span id="ttlOt">Bảng chấm công tăng ca</span></h2>
       <div class="gwrap">
         <table class="grid" id="gOt"></table>
       </div>
@@ -682,48 +747,38 @@
     </section>
 
     <section class="card">
-      <h2><span class="step">4</span> Xuất ra Excel</h2>
-      <div id="salBox" class="muted">Cần các file JSON trong <code>./lib/nhanvien/</code> (số HĐLĐ, lương từng người) để
-        xem trước bảng lương.</div>
+      <h2><span class="step">3</span> Xuất ra Excel</h2>
+      <div id="salBox" class="hidden"></div>
 
       <div class="modes">
         <label class="mode"><input type="radio" name="mode" value="new" checked>
-          <div><b>Tạo file chấm công mới và bảng lương mới</b><span>Tải về 2 file riêng của tháng này: <i
+          <div><b>Tạo file chấm công mới</b><span>Tải về file chấm công của tháng này: <i
                 id="lblNewFiles"></i></span></div>
         </label>
         <label class="mode"><input type="radio" name="mode" value="append">
-          <div><b>Ghi thêm sheet vào file cũ</b><span>Thêm sheet <i id="lblSheets"></i> vào BANG CHAM CONG 2026 và BANG
-              LUONG 2026</span></div>
+          <div><b>Ghi thêm sheet vào file cũ</b><span>Thêm sheet <i id="lblSheets"></i> vào file chấm công cũ, tải về: <i
+                id="lblAppendName"></i></span></div>
         </label>
-      </div>
-      <div class="opts">
-        <label><input type="checkbox" id="optCC" checked> Bảng chấm công</label>
-        <label><input type="checkbox" id="optBL" checked> Bảng lương tháng</label>
-        <label><input type="checkbox" id="optPersonal"> Kèm sheet lương cá nhân từng người</label>
       </div>
 
       <div class="oldfiles hidden" id="oldFiles">
         <div class="files">
           <div>
-            <b>File chấm công gốc (BANG CHAM CONG 2026.xlsx)</b>
+            <b>File chấm công gốc (ví dụ BANG_CHAM_CONG_2027_T01.xlsx)</b>
             <button id="btnCC">📂 Chọn file…</button><input type="file" id="fCC" accept=".xlsx" class="hidden">
             <div class="status" id="stCC">Chưa chọn.</div>
-          </div>
-          <div>
-            <b>File bảng lương gốc (BANG LUONG 2026.xlsx)</b>
-            <button id="btnBL">📂 Chọn file…</button><input type="file" id="fBL" accept=".xlsx" class="hidden">
-            <div class="status" id="stBL">Chưa chọn.</div>
           </div>
         </div>
         <div class="opts">
           <label><input type="checkbox" id="optOver"> Ghi đè nếu sheet của tháng này đã có</label>
-          <label><input type="checkbox" id="optInPlace"> Ghi thẳng vào file gốc (Edge/Chrome, nhớ đóng file trong
-            Excel). Không tích: tải về bản sao.</label>
         </div>
       </div>
 
       <button class="primary big" id="btnExport">⬇ Xuất</button>
       <ul class="log" id="log"></ul>
+      <div class="next">
+        <a class="nav" id="lnkBangLuong" href="ktTinhLuong.html" data-thang title="Chuyển sang trang tính bảng lương">Đi đến Bảng Lương →</a>
+      </div>
     </section>
   </main>
 
@@ -775,8 +830,8 @@
       const DATA_DIR = 'data', NV_DIR = ['lib', 'nhanvien'], SKIP_DIRS = ['org', 'locale'];
       // "data/2026/t11/..." -> "2026-11"
       const periodOf = path => { const m = path.match(/^data\/(\d{4})\/t(\d{1,2})(\/|$)/i); return m ? `${m[1]}-${pad2(+m[2])}` : null; };
-      // dòng cuối của data/months.txt ("2026/t11") -> "2026-11"
-      const lastMonthOf = text => { const ls = String(text || '').split(/\r?\n/).map(s => s.trim()).filter(Boolean); return ls.length ? periodOf(DATA_DIR + '/' + ls[ls.length - 1]) : null; };
+      // các dòng của data/months.txt ("2026/t11") -> ["2026-11", ...] (giữ thứ tự trong file)
+      const monthsOf = text => String(text || '').split(/\r?\n/).map(s => s.trim().replace(/^\/+|\/+$/g, '')).filter(Boolean).map(s => periodOf(DATA_DIR + '/' + s)).filter(Boolean);
       const subDir = async (dir, parts) => { let d = dir; for (const p of parts) d = await d.getDirectoryHandle(p); return d; };
       // root = thư mục banLuong (chứa chamcong.html). Trả về [{path, text}] chỉ của data/** và lib/nhanvien/*.json
       async function readProject(root) {
@@ -795,21 +850,25 @@
             else if (name.toLowerCase().endsWith('.json')) files.push({ path: rel + '/' + name, text: await (await hd.getFile()).text() });
           }
         };
-        let defaultPeriod = null;
+        let listed = null;
         if (data) {
           await walk(data, DATA_DIR, 0);
-          try { defaultPeriod = lastMonthOf(await (await (await data.getFileHandle('months.txt')).getFile()).text()); } catch (e) { /* không có months.txt */ }
+          try { listed = monthsOf(await (await (await data.getFileHandle('months.txt')).getFile()).text()); } catch (e) { /* không có months.txt */ }
         }
         if (nv) for await (const [name, hd] of nv.entries()) if (hd.kind === 'file' && name.toLowerCase().endsWith('.json')) files.push({ path: NV_DIR.join('/') + '/' + name, text: await (await hd.getFile()).text() });
-        return { files, hasData: !!data, hasNv: !!nv, periods: [...periods], defaultPeriod };
+        return { files, hasData: !!data, hasNv: !!nv, periods: [...periods], listed };
       }
       // prefer = tháng đang chọn trong combo (giữ nguyên sau khi đọc thư mục)
-      function ingestData({ files, hasData, hasNv, periods, defaultPeriod }, rootName, prefer) {
+      function ingestData({ files, hasData, hasNv, periods, listed }, rootName, prefer) {
         // chỉ nhận chấm công trong ./data/<năm>/t<tháng>, bỏ ./data/org và ./data/locale
         const att = files.filter(f => periodOf(f.path));
+        S.hdOf = {}; collectHD(att);
         S.periods = [...new Set([...(periods || []), ...att.map(f => periodOf(f.path))])];
-        S.defaultPeriod = defaultPeriod || null;
+        // danh sách tháng ưu tiên lấy bằng fetch("../data/months.txt"); chỉ dùng months.txt trong thư mục khi fetch không được
+        if (!S.fetchedMonths) S.listed = listed && listed.length ? listed : null;
         const nvf = files.filter(f => f.path.startsWith(NV_DIR.join('/') + '/'));
+        const ds = nvf.find(f => /\/danhsach_nhanvien\.json$/i.test(f.path));
+        if (ds) { try { setDsNV(JSON.parse(ds.text)); } catch (e) { console.warn(ds.path, e); } }
         const scanA = BL.scanDataFiles(att, NOW.getFullYear());
         const scanN = BL.scanDataFiles(nvf, NOW.getFullYear());
         S.data = scanA.months; S.dataRoot = rootName;
@@ -875,52 +934,77 @@
         const files = await Promise.all(fs.map(async f => ({ path: rel(f), text: await f.text() })));
         const mt = all.find(f => rel(f) === DATA_DIR + '/months.txt');
         const periods = all.map(f => periodOf(rel(f))).filter(Boolean);
-        ingestData({ files, periods, defaultPeriod: mt ? lastMonthOf(await mt.text()) : null, hasData: files.some(f => f.path.startsWith(DATA_DIR + '/')), hasNv: files.some(f => f.path.startsWith(NV_DIR.join('/') + '/')) }, root || 'thư mục', S.month ? monthKey() : null);
+        ingestData({ files, periods, listed: mt ? monthsOf(await mt.text()) : null, hasData: files.some(f => f.path.startsWith(DATA_DIR + '/')), hasNv: files.some(f => f.path.startsWith(NV_DIR.join('/') + '/')) }, root || 'thư mục', S.month ? monthKey() : null);
         S.root = S.root || { offline: true };
         e.target.value = '';
       };
-      // mỗi lần mở trang: tự đọc lại thư mục đã cấp quyền; nếu trình duyệt bắt hỏi lại thì xin quyền ở lần bấm đầu tiên trên trang
-      (async () => {
-        try {
-          const dir = await idb.get('rootDir');
-          if (!dir) {
-            // lần đầu dùng: bấm vào combo tháng sẽ mở hộp chọn thư mục banLuong
-            $('selPeriod').addEventListener('pointerdown', () => { if (!S.root) ensureAccess(S.month ? monthKey() : null); }, { once: true });
-            return;
-          }
-          if (dir.queryPermission && (await dir.queryPermission({ mode: 'read' })) === 'granted') { await openRoot(dir, null); return; }
-          const b = $('btnDataAgain'); b.textContent = `↺ Đọc ./data trong “${dir.name}”`; b.classList.remove('hidden');
-          $('btnData').classList.remove('primary'); $('btnData').textContent = '📂 Chọn thư mục khác…';
-          b.onclick = () => ensureAccess(S.month ? monthKey() : null);
-          document.addEventListener('pointerdown', e => {
-            if (S.root || e.target.closest('#btnData, #btnDataAgain, #fData')) return;
-            ensureAccess(S.month ? monthKey() : null);
-          }, { capture: true, once: true });
-        } catch (e) { /* trình duyệt không hỗ trợ */ }
-      })();
+      // Không tự đọc thư mục đã nhớ và không xin quyền thư mục nữa:
+      // mục "Dữ liệu" đã ẩn, mọi dữ liệu đọc bằng fetch (../../data/months.txt, ../../data/<năm>/t<tháng>/, ./lib/nhanvien/danhsach_nhanvien.json)
 
       // ---------------- combobox tháng/năm ----------------
-      // chỉ các thư mục ./data/<năm>/t<tháng> có thật; mặc định = dòng cuối data/months.txt (không có thì tháng mới nhất)
+      // danh sách lấy từ ../../data/months.txt; mặc định = tháng mới nhất trong danh sách
+      // (không có months.txt thì dùng các thư mục ./data/<năm>/t<tháng> có thật)
+      // link sang trang khác giữ tháng đang xem (?thang=YYYY-MM)
+      const URL_THANG = (new URLSearchParams(location.search).get('thang') || '').match(/^\d{4}-\d{2}$/) ? new URLSearchParams(location.search).get('thang') : null;
+      const setNavMonth = mk => document.querySelectorAll('a[data-thang]').forEach(a => { a.href = a.getAttribute('href').split('?')[0] + (mk ? '?thang=' + mk : ''); });
       function buildPeriodOptions(select) {
-        let opts = [...new Set([...(S.periods || []), ...Object.keys(S.data)])].sort();
+        const listed = S.listed;
+        let opts = [...new Set(listed || [...(S.periods || []), ...Object.keys(S.data)])].sort();
         if (!opts.length) opts = [`${NOW.getFullYear()}-${pad2(NOW.getMonth() + 1)}`];
-        let cur = opts.includes(S.defaultPeriod) ? S.defaultPeriod : opts[opts.length - 1];
+        let cur = opts[opts.length - 1];
         if (S.picked && opts.includes(select)) cur = select;
-        $('selPeriod').innerHTML = opts.map(k => {
-          const n = S.data[k] ? S.data[k].length : 0;
-          return `<option value="${k}">Tháng ${k.slice(5)}/${k.slice(0, 4)}${n ? ` — có dữ liệu (${n} người)` : ''}</option>`;
-        }).join('');
+        else if (!S.picked && URL_THANG && opts.includes(URL_THANG)) cur = URL_THANG;   // mở từ trang khác
+        $('selPeriod').innerHTML = opts.map(k => `<option value="${k}">Tháng ${k.slice(5)}/${k.slice(0, 4)}</option>`).join('');
         $('selPeriod').value = cur;
         [S.year, S.month] = cur.split('-').map(Number);
+        setNavMonth(cur);
       }
       $('selPeriod').onchange = async () => {
         saveDraftNow();
         S.picked = true;
         [S.year, S.month] = $('selPeriod').value.split('-').map(Number);
-        // chưa đọc được ./data thì xin quyền rồi đọc luôn tháng vừa chọn
-        if (!S.root && await ensureAccess(monthKey())) return;
+        setNavMonth(monthKey());
+        await fetchMonthData(monthKey());
         loadMonth(true);
       };
+
+      // ---------------- đọc chấm công của tháng bằng fetch: ../../data/<năm>/t<tháng>/nv1.json, nv2.json, ... ----------------
+      const DATA_URL = '../../data';
+      const fetchingMonth = {};
+      function fetchMonthData(key) {
+        if (S.root && !S.root.offline) return Promise.resolve();   // đã đọc cả thư mục banLuong thì dùng dữ liệu đó
+        if (S.data[key]) return Promise.resolve();                 // tháng này đã tải
+        if (fetchingMonth[key]) return fetchingMonth[key];
+        const dir = `${key.slice(0, 4)}/t${+key.slice(5)}`;        // "2026-11" -> "2026/t11"
+        const getText = async url => { try { const r = await fetch(url, { cache: 'no-store' }); return r.ok ? await r.text() : null; } catch (e) { return null; } };
+        return fetchingMonth[key] = (async () => {
+          $('stData').className = 'status';
+          $('stData').textContent = `Đang đọc ${DATA_URL}/${dir}/ …`;
+          // không liệt kê được thư mục qua HTTP: thử nv1.json, nv2.json, ... theo từng đợt 10 file, dừng khi cả đợt không có file nào
+          const files = [];
+          for (let start = 1; ; start += 10) {
+            const batch = await Promise.all(Array.from({ length: 10 }, async (_, k) => {
+              const name = `nv${start + k}.json`, text = await getText(`${DATA_URL}/${dir}/${name}`);
+              return text == null ? null : { path: `${DATA_DIR}/${dir}/${name}`, text };
+            }));
+            const hit = batch.filter(Boolean);
+            files.push(...hit);
+            if (!hit.length) break;
+          }
+          if (!files.length) {
+            $('stData').className = 'status err';
+            $('stData').textContent = `✗ Không có dữ liệu chấm công trong ${DATA_URL}/${dir}/ (nv1.json, nv2.json, …)`;
+            return;
+          }
+          const scan = BL.scanDataFiles(files, NOW.getFullYear());
+          Object.assign(S.data, scan.months);
+          collectHD(files);
+          const n = S.data[key] ? S.data[key].length : 0;
+          $('stData').className = 'status ' + (n ? 'ok' : 'err');
+          $('stData').innerHTML = `✓ <code>${h(DATA_URL)}/${h(dir)}/</code>: <b>${files.length}</b> file, <b>${n}</b> người`
+            + (scan.errors.length ? `<br><span class="status err">${scan.errors.map(h).join('<br>')}</span>` : '');
+        })().finally(() => { delete fetchingMonth[key]; });
+      }
 
       // ---------------- bản nháp ----------------
       const draftKey = () => `chamcong-nhap-${monthKey()}`;
@@ -935,8 +1019,56 @@
       const touch = () => { S.dirty = true; saveDraft(); scheduleSalary(); };
 
       // ---------------- nạp dữ liệu cho tháng ----------------
+      // soHDLD ghi trong ./data/<năm>/t<tháng>/nvN.json: S.hdOf["2026-11"][keyName(name)] = soHDLD
+      S.hdOf = {};
+      function collectHD(files) {
+        for (const f of files) {
+          const key = periodOf(f.path); if (!key) continue;
+          try {
+            const o = JSON.parse(f.text);
+            const hd = o && String(o.soHDLD || '').trim();
+            if (o && o.name && hd) (S.hdOf[key] = S.hdOf[key] || {})[BL.keyName(o.name)] = hd;
+          } catch (e) { /* file lỗi: scanDataFiles đã báo */ }
+        }
+      }
+      // overwrite = true: ưu tiên số HĐLĐ trong file JSON của tháng; false: chỉ điền chỗ còn trống
+      // ./lib/nhanvien/danhsach_nhanvien.json: [{ soHDLD, hoTen }] -> S.dsNV[keyName(hoTen)] = soHDLD
+      const DSNV_URL = 'lib/nhanvien/danhsach_nhanvien.json';
+      S.dsNV = {};
+      function setDsNV(list) {
+        S.dsNV = {};
+        if (Array.isArray(list)) list.forEach(x => { const hd = x && String(x.soHDLD || '').trim(); if (hd && x.hoTen) S.dsNV[BL.keyName(x.hoTen)] = hd; });
+      }
+      // Số HĐLĐ: ưu tiên JSON của tháng; còn thiếu thì lấy từ danhsach_nhanvien.json (khớp theo họ tên)
+      function applyHD(people, overwrite) {
+        const m = S.hdOf[monthKey()] || {};
+        people.forEach(p => {
+          if (!p.hoTen) return;
+          const k = BL.keyName(p.hoTen), hd = m[k];
+          if (hd && (overwrite || !String(p.soHDLD || '').trim())) p.soHDLD = hd;
+          if (!String(p.soHDLD || '').trim() && S.dsNV[k]) p.soHDLD = S.dsNV[k];
+        });
+      }
+      // BL.attendanceToSheet ghi "Chưa có trong ./lib/nhanvien — nhập Số HĐLĐ và thêm file JSON cho người này"
+      // cho mọi người không khớp tên trong ./lib/nhanvien. Sửa lại cho đúng:
+      //  - chưa đọc ./lib/nhanvien: không báo từng người (báo chung một dòng), chỉ nhắc khi thiếu Số HĐLĐ
+      //  - có Số HĐLĐ (từ JSON tháng) và số đó có trong ./lib/nhanvien: bỏ ghi chú
+      //  - có Số HĐLĐ nhưng không có trong ./lib/nhanvien: chỉ nhắc thêm file JSON lương
+      const NOTE_NV = /Chưa có trong \.\/lib\/nhanvien[^;\n]*/;
+      function fixNvNotes(people) {
+        people.forEach(p => {
+          if (!NOTE_NV.test(p.note || '')) return;
+          const hd = String(p.soHDLD || '').trim();
+          let msg;
+          if (!S.models.length) msg = hd ? '' : 'Thiếu Số HĐLĐ — nhập tay hoặc thêm vào ./lib/nhanvien/danhsach_nhanvien.json';
+          else if (hd && S.models.some(x => BL.keyHD(x.soHDLD) === BL.keyHD(hd))) msg = '';
+          else msg = hd ? 'Chưa có trong ./lib/nhanvien — thêm file JSON (lương) cho người này' : null;
+          if (msg === null) return;                              // giữ nguyên ghi chú gốc
+          p.note = p.note.replace(NOTE_NV, msg).replace(/^[\s;—-]+|[\s;—-]+$/g, '').replace(/;\s*;/g, ';');
+        });
+      }
       function employees() {
-        return BL.sortByHD(S.models.filter(m => m.trangThai !== 'nghi_viec')).map(m => ({ soHDLD: m.soHDLD, hoTen: m.hoTen, chucVu: m.chucVu || '' }));
+        return BL.sortByHD(S.models.filter(m => !BL.daNghi(m) && !m.khongChamCong)).map(m => ({ soHDLD: m.soHDLD, hoTen: m.hoTen, chucVu: m.chucVu || '' }));
       }
       function loadMonth(preferDraft) {
         S.days = BL.ccDays(S.month, S.year); S.dirty = false;
@@ -946,11 +1078,14 @@
         S.rawCodes = {};
         if (draft) {
           S.people = draft.people.map(fixPerson); S.giamDoc = draft.giamDoc || null;
+          applyHD(S.people, false);
           src = `Bản nháp đã chỉnh lúc ${new Date(draft.savedAt).toLocaleString('vi-VN')}`;
           S.people.forEach(p => p.src.forEach(c => { if (c) S.rawCodes[c] = (S.rawCodes[c] || 0) + 1; }));
         } else if (recs) {
           const r = BL.attendanceToSheet(recs, S.month, S.year, employees(), cfg(), S.codeMap);
           S.people = r.people.map(fixPerson); S.rawCodes = r.rawCodes; notes = r.notes;
+          applyHD(S.people, true);
+          fixNvNotes(S.people);
           src = `Dữ liệu máy chấm công: ${S.dataRoot || ''}/…/${recs[0].path.split('/').slice(-2, -1)[0]} (${recs.length} file)`;
         } else {
           const raw = S.cc ? BL.readChamCongRaw(S.cc.wb, monthKey(), cfg()) : null;
@@ -959,6 +1094,8 @@
           else { S.people = Array.from({ length: 5 }, emptyPerson); src = ''; }
         }
         S.people.forEach(p => S.days.forEach((d, k) => { if (!d) { p.codes[k] = ''; p.ot[k] = ''; } }));
+        // bảng chấm công + tăng ca chỉ gồm những người có Số HĐLĐ (dòng thêm tay bằng “+ Thêm dòng” vẫn hiện)
+        S.people = S.people.filter(p => String(p.soHDLD || '').trim());
         // ghi chú từng người
         S.people.forEach(p => { if (p.note) notes.push(`${p.hoTen || '(chưa có tên)'}: ${p.note}`); });
         const nf = S.people.reduce((n, p) => n + p.flags.filter(Boolean).length, 0);
@@ -1063,14 +1200,22 @@
       }
       function renderAddJson() {
         const have = new Set(S.people.map(p => BL.keyHD(p.soHDLD)));
-        const miss = BL.sortByHD(S.models.filter(m => m.trangThai !== 'nghi_viec' && !have.has(BL.keyHD(m.soHDLD))));
+        const miss = BL.sortByHD(S.models.filter(m => !BL.daNghi(m) && !m.khongChamCong && !have.has(BL.keyHD(m.soHDLD))));
         $('selAddJson').classList.toggle('hidden', !miss.length); $('btnAddJson').classList.toggle('hidden', !miss.length);
         $('selAddJson').innerHTML = miss.map(m => `<option value="${h(m.soHDLD)}">${h(m.hoTen)} — ${h(m.soHDLD)}</option>`).join('');
       }
+      // tên file chấm công: tạo mới -> BANG_CHAM_CONG_2027_T01.xlsx
+      //                     ghi thêm vào file cũ -> nối tháng vào tên cũ: BANG_CHAM_CONG_2027_T01.xlsx -> BANG_CHAM_CONG_2027_T01_T02.xlsx
+      const ccNewName = () => `BANG_CHAM_CONG_${S.year}_T${pad2(S.month)}.xlsx`;
+      function ccAppendName(oldName) {
+        const base = String(oldName).replace(/\.xlsx$/i, ''), suf = `_T${pad2(S.month)}`;
+        return (base.toUpperCase().endsWith(suf) ? base : base + suf) + '.xlsx';   // không nối trùng nếu tên đã kết thúc bằng tháng này
+      }
       function refreshLabels() {
         const lbl = BL.monthLabel(monthKey());
-        $('lblNewFiles').textContent = `BANG CHAM CONG T${lbl}.xlsx, BANG LUONG T${lbl}.xlsx`;
+        $('lblNewFiles').textContent = ccNewName();
         $('lblSheets').textContent = `${BL.ccSheetName(S.month, S.year)} / ${lbl}`;
+        $('lblAppendName').textContent = ccAppendName(S.cc ? S.cc.name : '<tên file cũ>');
       }
 
       // ---------------- nhập liệu ----------------
@@ -1188,6 +1333,8 @@
           }
           if (m) models.push(m);
         }
+        // người không chấm công (Kế toán trưởng…) vẫn có lương: BL.buildMonth tự tính đủ công từ JSON
+        S.models.forEach(m => { if (m.khongChamCong && !models.includes(m)) models.push(m); });
         const month = BL.buildMonth(ccData, models, cfg());
         month.monthKey = monthKey();
         return month;
@@ -1195,7 +1342,7 @@
       function updateSalary() {
         const box = $('salBox');
         if (!S.month) return;
-        if (!S.models.length && !(S.bl && mode() === 'append')) { box.className = 'muted'; box.innerHTML = 'Cần các file JSON trong <code>./lib/nhanvien/</code> (số HĐLĐ, lương từng người) để xem trước bảng lương.'; return; }
+        if (!S.models.length && !(S.bl && mode() === 'append')) { box.className = 'hidden'; box.innerHTML = ''; return; }
         const month = computeSalary();
         const tot = { P: 0, T: 0, AA: 0, AC: 0 };
         const rows = month.rows.map((r, i) => {
@@ -1235,25 +1382,54 @@
           st.className = 'status ok';
           st.innerHTML = `✓ ${h(file.name)} — ${wb.worksheets.length} sheet` + (exists ? ` · <span class="tag warn">sheet ${h(target)} đã có</span>` : ` · sẽ thêm sheet <b>${h(target)}</b>`);
           if (kind === 'bl') { S.prefill = {}; updateSalary(); }
+          refreshLabels();                                // cập nhật tên file sẽ tải về
         } catch (err) { st.className = 'status err'; st.textContent = '✗ ' + err.message; console.error(err); }
       }
       $('btnCC').onclick = () => openExcel('cc');
-      $('btnBL').onclick = () => openExcel('bl');
       $('fCC').onchange = e => { if (e.target.files[0]) loadExcel('cc', e.target.files[0]); e.target.value = ''; };
-      $('fBL').onchange = e => { if (e.target.files[0]) loadExcel('bl', e.target.files[0]); e.target.value = ''; };
 
+      // luôn tải về bản sao (đã bỏ tùy chọn "Ghi thẳng vào file gốc")
       async function saveOut(fileObj, data, fallbackName) {
-        if ($('optInPlace').checked && fileObj && fileObj.handle) {
-          try {
-            if (fileObj.handle.requestPermission && (await fileObj.handle.requestPermission({ mode: 'readwrite' })) !== 'granted') throw new Error('không được cấp quyền ghi');
-            const w = await fileObj.handle.createWritable(); await w.write(data); await w.close();
-            fileObj.buf = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
-            const wb = new ExcelJS.Workbook(); await wb.xlsx.load(fileObj.buf); fileObj.wb = wb;
-            log(`✓ Đã ghi thẳng vào “${fileObj.name}”.`, 'ok'); return;
-          } catch (e) { log(`Không ghi được vào “${fileObj.name}” (${e.message}). Có thể file đang mở trong Excel — đã tải về bản sao.`, 'warn'); }
-        }
         download(data, fallbackName); log(`✓ Đã tải về “${fallbackName}”.`, 'ok');
       }
+      // ---------------- xuất bằng file mẫu temp/BangChamCongTemp.xlsx: chỉ điền dữ liệu ----------------
+      // Phần cố định (công ty, ký hiệu, giám đốc, ngày ký, công thức tổng, tổng hợp công) giữ nguyên theo file mẫu.
+      const CC_TEMPLATE_URL = 'temp/BangChamCongTemp.xlsx';
+      const TPL = {
+        month: 'AL1', year: 'AL2',      // ô tháng / năm (tiêu đề, ngày, thứ tính theo 2 ô này)
+        mainRow: 10, otRow: 55, rows: 20,   // bảng chấm công dòng 10–29, bảng tăng ca dòng 55–74
+        dayCol: 5,                      // cột E = ngày 26 tháng trước … cột AI = ngày 25
+        hd: 'B', ten: 'C', cv: 'D', ttDem: 'AK'
+      };
+      class TemplateError extends Error { }
+      async function buildCcFromTemplate(people, sheetName) {
+        let buf = null;
+        try { const r = await fetch(CC_TEMPLATE_URL, { cache: 'no-store' }); if (r.ok) buf = await r.arrayBuffer(); } catch (e) { console.warn(e); }
+        if (!buf) throw new TemplateError(`Không tải được file mẫu “${CC_TEMPLATE_URL}”.`);
+        const wb = new ExcelJS.Workbook();
+        try { await wb.xlsx.load(buf); } catch (e) { throw new TemplateError(`File mẫu “${CC_TEMPLATE_URL}” bị lỗi: ${e.message}`); }
+        const ws = wb.worksheets[0];
+        if (!ws) throw new TemplateError(`File mẫu “${CC_TEMPLATE_URL}” không có sheet nào.`);
+        ws.name = sheetName;
+        ws.pageSetup.printArea = 'A1:AN106';          // vùng in của mẫu gắn với tên sheet cũ → đặt lại
+        const val = v => (v === '' || v == null ? null : v);
+        ws.getCell(TPL.month).value = S.month;
+        ws.getCell(TPL.year).value = S.year;
+        for (let i = 0; i < TPL.rows; i++) {
+          const p = people[i] || null, rm = TPL.mainRow + i, ro = TPL.otRow + i;
+          ws.getCell(`${TPL.hd}${rm}`).value = p ? val(p.soHDLD.trim()) : null;
+          ws.getCell(`${TPL.ten}${rm}`).value = p ? val(p.hoTen.trim()) : null;
+          ws.getCell(`${TPL.cv}${rm}`).value = p ? val(String(p.chucVu || '').trim()) : null;
+          for (let k = 0; k < ND; k++) {
+            ws.getCell(rm, TPL.dayCol + k).value = p ? val(p.codes[k]) : null;
+            ws.getCell(ro, TPL.dayCol + k).value = p ? val(p.ot[k]) : null;
+          }
+          ws.getCell(`${TPL.ttDem}${ro}`).value = p ? val(p.ttDem) : null;
+        }
+        wb.calcProperties = Object.assign({}, wb.calcProperties, { fullCalcOnLoad: true });   // Excel tính lại công thức khi mở
+        return wb;
+      }
+
       $('btnExport').onclick = async () => {
         const btn = $('btnExport'); btn.disabled = true; $('log').innerHTML = '';
         try {
@@ -1263,54 +1439,63 @@
           const dup = named.map(p => BL.keyHD(p.soHDLD)).filter((k, i, a) => k && a.indexOf(k) !== i);
           if (dup.length) { log('Số HĐLĐ bị trùng: ' + [...new Set(dup)].join(', '), 'err'); return; }
           const noHD = named.filter(p => !p.soHDLD.trim()).map(p => p.hoTen);
-          if (noHD.length) log('Thiếu Số HĐLĐ (không tính được lương): ' + noHD.join(', '), 'warn');
+          if (noHD.length) log('Thiếu Số HĐLĐ: ' + noHD.join(', '), 'warn');
           const bad = named.reduce((n, p) => n + p.codes.filter(v => !BL.ccValidCode(v, cfg())).length + p.ot.filter(v => !BL.ccValidOt(v, cfg())).length, 0);
           if (bad && !confirm(`Có ${bad} ô ký hiệu không hợp lệ (tô đỏ) — các ô này không được tính công. Vẫn xuất?`)) return;
           const label = BL.monthLabel(monthKey());
           const isNew = mode() === 'new';
-          if (!isNew && $('optCC').checked && !S.cc) { log('Chưa chọn file chấm công gốc ở dưới.', 'err'); return; }
-          if (!isNew && $('optBL').checked && !S.bl) { log('Chưa chọn file bảng lương gốc ở dưới.', 'err'); return; }
+          if (!isNew && !S.cc) { log('Chưa chọn file chấm công gốc ở dưới.', 'err'); return; }
           const over = $('optOver').checked;
 
-          if ($('optCC').checked) {
-            const res = await BL.buildChamCongWorkbook(sheet, cfg(), isNew ? { newFile: true } : { existingNames: S.cc.wb.worksheets.map(w => w.name), overwrite: over });
-            if (!res.plan.length) log(`Sheet “${res.skipped[0]}” đã có trong file chấm công — tích “Ghi đè” nếu muốn thay.`, 'warn');
+          if (named.length > TPL.rows) { const msg = `File mẫu chỉ có ${TPL.rows} dòng nhân viên, đang có ${named.length} người.`; log(msg, 'err'); alert(msg); return; }
+
+          // luôn xuất bảng chấm công, điền vào file mẫu (đã bỏ bảng lương)
+          const name = BL.ccSheetName(S.month, S.year);
+          if (isNew) {
+            const wb = await buildCcFromTemplate(named, name);
+            const fn = ccNewName(); download(await wb.xlsx.writeBuffer(), fn); log(`✓ Đã tải về “${fn}”.`, 'ok');
+          } else {
+            const existing = S.cc.wb.worksheets.map(w => w.name).find(n => n.trim().toLowerCase() === name.toLowerCase());
+            if (existing && !over) log(`Sheet “${existing.trim()}” đã có trong file chấm công — tích “Ghi đè” nếu muốn thay.`, 'warn');
             else {
-              const gen = await res.wb.xlsx.writeBuffer();
-              if (isNew) { download(gen, `BANG CHAM CONG T${label}.xlsx`); log(`✓ Đã tải về “BANG CHAM CONG T${label}.xlsx”.`, 'ok'); }
-              else {
-                const out = await BL.mergeIntoXlsx(S.cc.buf, gen, res.plan);
-                log(`Chấm công: ${res.plan[0].action === 'overwrite' ? 'ghi đè' : 'thêm'} sheet “${res.plan[0].finalName.trim()}”.`, 'ok');
-                await saveOut(S.cc, out.data, S.cc.name.replace(/\.xlsx$/i, '') + ` (cap nhat T${label}).xlsx`);
-              }
+              const wb = await buildCcFromTemplate(named, '__CC1');
+              const plan = [{ tempName: '__CC1', finalName: existing || name, action: existing ? 'overwrite' : 'add', kind: 'chamcong' }];
+              const out = await BL.mergeIntoXlsx(S.cc.buf, await wb.xlsx.writeBuffer(), plan);
+              log(`Chấm công: ${existing ? 'ghi đè' : 'thêm'} sheet “${plan[0].finalName.trim()}”.`, 'ok');
+              await saveOut(S.cc, out.data, ccAppendName(S.cc.name));
             }
           }
-          if ($('optBL').checked) {
-            const month = computeSalary();
-            month.warnings.forEach(w => log(w, 'warn'));
-            if (!month.rows.length) log('Không có ai tính được lương (cần JSON trong ./lib/nhanvien).', 'err');
-            else {
-              const res = BL.salaryWorkbookFor(isNew ? null : S.bl.wb, month, cfg(), { createMonth: true, createPersonal: $('optPersonal').checked, overwriteMonth: over, overwritePersonal: over });
-              res.warnings.forEach(w => log(w, 'warn'));
-              if (res.skipped.length) log('Bảng lương — bỏ qua vì đã có: ' + res.skipped.join(', ') + '. Tích “Ghi đè” nếu muốn thay.', 'warn');
-              if (res.plan.length) {
-                const gen = await res.wb.xlsx.writeBuffer();
-                if (isNew) { download(gen, `BANG LUONG T${label}.xlsx`); log(`✓ Đã tải về “BANG LUONG T${label}.xlsx” (${res.plan.length} sheet).`, 'ok'); }
-                else {
-                  const out = await BL.mergeIntoXlsx(S.bl.buf, gen, res.plan);
-                  log(`Bảng lương: ${res.plan.map(p => (p.action === 'overwrite' ? 'ghi đè ' : 'thêm ') + '“' + p.finalName.trim() + '”').join(', ')}.`, 'ok');
-                  await saveOut(S.bl, out.data, S.bl.name.replace(/\.xlsx$/i, '') + ` (cap nhat T${label}).xlsx`);
-                }
-              }
-            }
-          }
-        } catch (err) { console.error(err); log('Lỗi: ' + err.message, 'err'); }
+        } catch (err) {
+          console.error(err); log('Lỗi: ' + err.message, 'err');
+          if (err instanceof TemplateError) alert(err.message + '\nKhông xuất được file chấm công.');
+        }
         finally { btn.disabled = false; }
       };
 
       window.addEventListener('beforeunload', saveDraftNow);
       buildPeriodOptions(null);
       loadMonth(true);
+
+      // mở trang: 1) đọc ../../data/months.txt bằng fetch -> combo tháng (không cần xin quyền thư mục)
+      //           2) chọn tháng mới nhất  3) đọc ../../data/<năm>/t<tháng>/ của tháng đó
+      (async () => {
+        try {
+          const r = await fetch(DSNV_URL, { cache: 'no-store' });
+          if (r.ok) setDsNV(await r.json());
+        } catch (e) { console.warn('Không đọc được ' + DSNV_URL, e); }
+        try {
+          const r = await fetch(DATA_URL + '/months.txt', { cache: 'no-store' });
+          const listed = r.ok ? monthsOf(await r.text()) : [];
+          if (listed.length) {
+            S.listed = listed; S.fetchedMonths = true;
+            saveDraftNow();                       // lưu nháp của tháng hiện tại trước khi đổi tháng
+            buildPeriodOptions(S.picked ? monthKey() : null);
+          }
+        } catch (e) { console.warn('Không đọc được ' + DATA_URL + '/months.txt', e); }
+        const key = monthKey();
+        await fetchMonthData(key);
+        if (monthKey() === key) loadMonth(true);
+      })();
     })();
   </script>
 </body>

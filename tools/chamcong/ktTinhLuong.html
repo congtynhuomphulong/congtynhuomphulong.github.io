@@ -1,0 +1,1880 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tính bảng lương tháng</title>
+  <script src="lib/exceljs.min.js"></script>
+  <script src="lib/jszip.min.js"></script>
+  <script>
+    if (!window.ExcelJS) document.write('<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"><\/script>');
+    if (!window.JSZip) document.write('<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"><\/script>');
+  </script>
+  <script src="lib/banluong-core.js"></script>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --card: #fff;
+      --text: #1d2330;
+      --muted: #667085;
+      --line: #e3e6eb;
+      --accent: #1f6feb;
+      --hdr: #ddebf7;
+      --inp: #fffbe6;
+      --grp: #f2f2f2;
+      --tot: #fce4d6;
+      --helper: #eef0f3;
+      --edited: #1f6feb;
+      --ok: #1a7f37;
+      --ok-weak: #e6f4ea;
+      --warn-weak: #fff4d6;
+      --err: #c62828;
+      --err-weak: #fde7e7;
+      --cell: #c8ced6;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 14px/1.45 "Segoe UI", system-ui, sans-serif;
+    }
+
+    header {
+      background: #16325c;
+      color: #fff;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 600;
+    }
+
+    header .period {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+    }
+
+    header select {
+      font: inherit;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 0;
+      background: #ffe699;
+      color: #c00000;
+      min-width: 200px;
+    }
+
+    header .src {
+      font-size: 13px;
+      opacity: .85;
+    }
+
+    /* thanh liên kết 3 trang */
+    header nav.pages {
+      margin-left: auto;
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    header nav.pages a,
+    header nav.pages span {
+      color: #fff;
+      text-decoration: none;
+      font-size: 13px;
+      padding: 4px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, .35);
+    }
+
+    header nav.pages a:hover {
+      background: rgba(255, 255, 255, .15);
+    }
+
+    header nav.pages span {
+      background: #fff;
+      color: #16325c;
+      font-weight: 600;
+      border-color: #fff;
+    }
+
+    @media print {
+      header nav.pages {
+        display: none;
+      }
+    }
+
+    header a.back {
+      margin-left: auto;
+      color: #fff;
+      font-size: 13px;
+    }
+
+    main {
+      padding: 16px 24px 60px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .step {
+      display: inline-grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 13px;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .row>b:first-child {
+      min-width: 120px;
+    }
+
+    .status {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .status.ok {
+      color: var(--ok);
+    }
+
+    .status.err {
+      color: var(--err);
+    }
+
+    button {
+      font: inherit;
+      border: 1px solid #c9d0da;
+      background: #fff;
+      color: var(--text);
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #f0f3f7;
+    }
+
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    button.primary:hover {
+      background: #1a5fd0;
+    }
+
+    button.big {
+      padding: 8px 22px;
+      font-size: 15px;
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .kpiwarn {
+      margin: 0 0 10px;
+      padding: 8px 12px;
+      border: 1px solid #f1a7a7;
+      border-left: 4px solid #d32f2f;
+      border-radius: 4px;
+      background: #fdecec;
+      color: #c62828;
+      font-weight: 700;
+    }
+
+    .kpiwarn small {
+      display: block;
+      margin-top: 2px;
+      font-weight: 400;
+    }
+
+    .notes {
+      margin: 6px 0 0;
+      padding: 0;
+      list-style: none;
+      font-size: 13px;
+    }
+
+    .notes li {
+      padding: 3px 8px;
+      border-left: 3px solid #e0b84a;
+      background: var(--warn-weak);
+      margin-bottom: 3px;
+    }
+
+    .legend {
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+
+    .legend i {
+      display: inline-block;
+      width: 14px;
+      height: 12px;
+      vertical-align: -1px;
+      border: 1px solid #b9c3cf;
+      margin: 0 3px 0 10px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .toolbar label {
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .toolbar select {
+      font: inherit;
+      padding: 2px 6px;
+    }
+
+    /* ---------- vùng "sheet" giống Excel ---------- */
+    .gwrap {
+      overflow: auto;
+      border: 1px solid #b9c3cf;
+      border-radius: 6px;
+      max-height: 78vh;
+      background: #fff;
+    }
+
+    .sheet {
+      font-family: "Times New Roman", serif;
+      color: #000;
+      padding: 10px 12px 24px;
+      width: max-content;
+    }
+
+    .sheet .co {
+      font-weight: 700;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .sheet .co.addr {
+      font-weight: 400;
+    }
+
+    /* tiêu đề, chữ ký: giữ trong vùng đang nhìn thấy khi bảng rộng hơn màn hình */
+    .sheet .vis {
+      position: sticky;
+      left: 12px;
+      width: var(--vw, 1200px);
+    }
+
+    .sheet .title {
+      text-align: center;
+      font-weight: 700;
+      font-size: 21px;
+      margin: 14px 0 2px;
+    }
+
+    .sheet .subtitle {
+      text-align: center;
+      font-weight: 700;
+      font-size: 19px;
+      margin-bottom: 12px;
+    }
+
+    table.sal {
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 13.5px;
+      table-layout: fixed;
+    }
+
+    .sal th,
+    .sal td {
+      border-right: 1px solid var(--cell);
+      border-bottom: 1px solid var(--cell);
+      padding: 2px 5px;
+      height: 30px;
+      vertical-align: middle;
+    }
+
+    .sal tr>*:first-child {
+      border-left: 1px solid var(--cell);
+    }
+
+    .sal thead th {
+      background: var(--hdr);
+      font-weight: 700;
+      text-align: center;
+      white-space: normal;
+      line-height: 1.2;
+      position: sticky;
+      z-index: 3;
+    }
+
+    .sal thead tr.h1 th {
+      top: 0;
+      border-top: 1px solid var(--cell);
+    }
+
+    .sal thead tr.h2 th {
+      top: var(--h1, 34px);
+    }
+
+    .sal thead tr.h3 th {
+      top: var(--h2, 84px);
+      font-weight: 400;
+      font-size: 11.5px;
+      height: 20px;
+    }
+
+    .sal thead tr.h4 th {
+      top: var(--h3, 104px);
+      font-weight: 400;
+      font-style: italic;
+      font-size: 11.5px;
+      height: 20px;
+    }
+
+    .sal thead th.gap,
+    .sal td.gap {
+      background: #fff;
+      border-top: 0;
+      border-bottom: 0;
+      border-left: 0;
+    }
+
+    .sal thead th.hp {
+      background: #e4e7eb;
+    }
+
+    .sal td {
+      text-align: right;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sal td.t {
+      text-align: left;
+    }
+
+    .sal td.ctr {
+      text-align: center;
+    }
+
+    /* cột cố định A–C khi cuộn ngang */
+    .sal .fz {
+      position: sticky;
+      z-index: 2;
+      background: #fff;
+    }
+
+    .sal thead .fz {
+      z-index: 4;
+      background: var(--hdr);
+    }
+
+    .sal .fz.fa {
+      left: 0;
+    }
+
+    .sal .fz.fb {
+      left: var(--wa);
+    }
+
+    .sal .fz.fc {
+      left: calc(var(--wa) + var(--wb));
+      box-shadow: 2px 0 0 #9aa6b4;
+    }
+
+    .sal tr.grp td {
+      background: var(--grp);
+      font-weight: 700;
+    }
+
+    .sal tr.tot td {
+      background: var(--tot);
+      font-weight: 700;
+      height: 38px;
+    }
+
+    .sal tr.grp td.gap,
+    .sal tr.tot td.gap {
+      background: #fff;
+    }
+
+    .sal td.hp {
+      background: var(--helper);
+    }
+
+    .sal td.ac {
+      font-weight: 700;
+    }
+
+    .sal td.zero {
+      color: #9aa3ad;
+    }
+
+    .sal tr.nocong td.t {
+      color: #8a929c;
+    }
+
+    /* ô nhập */
+    .sal td.in {
+      background: var(--inp);
+      padding: 0;
+    }
+
+    .sal td.in input {
+      width: 100%;
+      height: 29px;
+      border: 0;
+      background: transparent;
+      font: inherit;
+      text-align: right;
+      padding: 2px 5px;
+      outline: none;
+    }
+
+    .sal td.in .pv {
+      display: none;
+    }
+
+    .sal td.in input:focus {
+      background: #fff;
+      box-shadow: inset 0 0 0 2px var(--accent);
+    }
+
+    /* ô tiền tự tính được mở cho sửa: nền trắng, viền chấm */
+    .sal td.in.fx {
+      background: #fff;
+      box-shadow: inset 0 0 0 1px #c9d3df;
+    }
+
+    /* ô tiền đã sửa tay nhưng đang khóa (bỏ tích "Cho sửa các ô tiền tự tính") */
+    .sal td.ed:not(.in) {
+      background: #e8f0fe;
+      color: var(--edited);
+      font-weight: 700;
+    }
+
+    .sal td.in.ed input {
+      color: var(--edited);
+      font-weight: 700;
+    }
+
+    .sal td.in.ed {
+      background: #e8f0fe;
+    }
+
+    .sal td.in input.bad {
+      color: var(--err);
+      box-shadow: inset 0 0 0 2px var(--err);
+    }
+
+    .sign {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 22px;
+      padding: 0 60px 0 120px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .sign div {
+      min-width: 260px;
+    }
+
+    .sign .date {
+      font-style: italic;
+    }
+
+    .sign b {
+      display: block;
+    }
+
+    .sign .name {
+      margin-top: 78px;
+      font-weight: 700;
+    }
+
+    /* xuất */
+    .modes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .mode {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+      cursor: pointer;
+      max-width: 460px;
+    }
+
+    .mode span {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .mode:has(input:checked) {
+      border-color: var(--accent);
+      background: #f3f7ff;
+    }
+
+    .opts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 18px;
+      margin: 8px 0 12px;
+      font-size: 13.5px;
+    }
+
+    .log {
+      font-size: 13px;
+      margin: 10px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .log li {
+      padding: 4px 8px;
+      border-left: 3px solid var(--line);
+      margin-bottom: 3px;
+      background: #fafbfc;
+    }
+
+    .log li.warn {
+      border-color: #e0b84a;
+      background: var(--warn-weak);
+    }
+
+    .log li.err {
+      border-color: var(--err);
+      background: var(--err-weak);
+    }
+
+    .log li.ok {
+      border-color: var(--ok);
+      background: var(--ok-weak);
+    }
+
+    /* ---------- in: chỉ in bảng lương, bỏ cột phụ AF–AJ ---------- */
+    @page {
+      size: A4 landscape;
+      margin: 8mm;
+    }
+
+    /* ===== Bảng lương cá nhân (giống sheet MM.YYYY-Tên_HO khi xuất Excel) ===== */
+    .slipwrap {
+      overflow: auto;
+      background: #eef1f5;
+      border: 1px solid #d0d7de;
+      border-radius: 6px;
+      padding: 16px;
+    }
+
+    .slip {
+      font-family: 'Times New Roman', Times, serif;
+      color: #000;
+      background: #fff;
+      width: 660px;
+      margin: 0 auto;
+      padding: 28px 30px 36px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .15);
+    }
+
+    .slip + .slip {
+      margin-top: 16px;
+    }
+
+    .slip .co {
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .slip .ttl {
+      text-align: center;
+      font-size: 19px;
+      font-weight: 700;
+      margin: 10px 0 16px;
+    }
+
+    .slip table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 16px;
+      table-layout: fixed;
+    }
+
+    .slip td,
+    .slip th {
+      border: 1px solid #000;
+      padding: 2px 6px;
+      height: 24px;
+    }
+
+    .slip table.box {
+      border: 3px double #000;
+    }
+
+    .slip table.info {
+      margin-bottom: 22px;
+    }
+
+    .slip th {
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .slip td.n {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .slip td.stt {
+      text-align: center;
+    }
+
+    .slip tr.last td {
+      font-weight: 700;
+    }
+
+    .slip table.after {
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .slip table.after td {
+      border: 0;
+    }
+
+    .slip table.after .red {
+      color: #e00;
+    }
+
+    .slip .sg {
+      display: flex;
+      font-size: 17px;
+      font-weight: 700;
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .slip .sg > div {
+      width: 50%;
+    }
+
+    .slip .sg .nm {
+      margin-top: 80px;
+    }
+
+    .slipbar select {
+      min-width: 280px;
+    }
+
+    .slip input.tl {
+      width: 100%;
+      box-sizing: border-box;
+      font: inherit;
+      text-align: right;
+      color: inherit;
+      background: #fffbe6;
+      border: 1px solid #c9d3df;
+      border-radius: 3px;
+      padding: 0 4px;
+    }
+
+    .slip input.tl.bad {
+      border-color: #d33;
+      background: #fde8e8;
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      /* in bảng lương tháng: không in phần cá nhân; in phần cá nhân: chỉ in phiếu */
+      body:not(.print-slip) #secSlip,
+      body.print-slip main > section:not(#secSlip) {
+        display: none !important;
+      }
+
+      .slipwrap {
+        overflow: visible;
+        background: none;
+        border: 0;
+        padding: 0;
+      }
+
+      .slip {
+        box-shadow: none;
+        width: auto;
+        margin: 0;
+        padding: 0;
+      }
+
+      .slip + .slip {
+        margin-top: 0;
+        break-before: page;
+      }
+
+      .slip input.tl {
+        border: 0;
+        background: none;
+        padding: 0;
+      }
+
+      .slip {
+        break-inside: avoid;
+      }
+
+      .slip table {
+        font-size: 14px;
+      }
+
+      .slip td,
+      .slip th {
+        height: 21px;
+        padding: 1px 6px;
+      }
+
+      .slip table.info {
+        margin-bottom: 14px;
+      }
+
+      .slip .sg {
+        margin-top: 18px;
+      }
+
+      .slip .sg .nm {
+        margin-top: 64px;
+      }
+
+      header,
+      .noprint {
+        display: none !important;
+      }
+
+      main {
+        padding: 0;
+      }
+
+      .card {
+        border: 0;
+        padding: 0;
+        margin: 0;
+      }
+
+      .gwrap {
+        overflow: visible;
+        max-height: none;
+        border: 0;
+      }
+
+      .sheet {
+        zoom: 1 !important;
+        width: auto;
+        padding: 0;
+      }
+
+      .sheet .co {
+        font-size: 10px;
+      }
+
+      .sheet .title {
+        font-size: 14px;
+        margin-top: 6px;
+      }
+
+      .sheet .subtitle {
+        font-size: 12px;
+        margin-bottom: 6px;
+      }
+
+      table.sal {
+        font-size: 6.5px;
+        table-layout: auto !important;
+        width: 100% !important;
+      }
+
+      .sal col {
+        width: auto !important;
+      }
+
+      .sal th,
+      .sal td {
+        height: auto;
+        padding: 1px 2px;
+        overflow: visible;
+        text-overflow: clip;
+      }
+
+      .sal td.fc {
+        white-space: normal;
+      }
+
+      .sal thead tr.h3 th,
+      .sal thead tr.h4 th {
+        font-size: inherit;
+        height: auto;
+      }
+
+      .sal td.in input {
+        display: none;
+      }
+
+      .sal td.in .pv {
+        display: inline !important;
+      }
+
+      .sal thead th {
+        position: static;
+      }
+
+      .sal .fz {
+        position: static;
+        box-shadow: none !important;
+      }
+
+      .sal .hp,
+      .sal .gap {
+        display: none;
+      }
+
+      .sal td.in,
+      .sal td.in.ed,
+      .sal td.ed:not(.in) {
+        box-shadow: none;
+        background: transparent;
+        padding: 1px 2px;
+      }
+
+      .sheet .vis {
+        position: static;
+        width: auto;
+      }
+
+      .sign {
+        font-size: 11px;
+        break-inside: avoid;
+      }
+
+      .sign .name {
+        margin-top: 50px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Bảng lương tháng</h1>
+    <div class="period">Tháng / năm <select id="selPeriod"></select></div>
+    <span class="src" id="srcInfo"></span>
+    <nav class="pages" title="Các trang kế toán">
+      <a href="ktCongCu.html">🧰 Công cụ</a>
+      <a href="ktNhanSu.html" data-thang>👤 Nhân sự</a>
+      <a href="ktchamcong.html" data-thang>📅 Chấm công</a>
+      <span aria-current="page">💰 Bảng lương</span>
+    </nav>
+  </header>
+  <main>
+
+    <section class="card noprint">
+      <h2><span class="step">1</span> Dữ liệu</h2>
+      <div class="row">
+        <b>Lương nhân viên</b>
+        <button id="btnNv" class="primary">📂 Chọn thư mục nhân viên…</button>
+        <button id="btnNvAgain" class="hidden primary"></button>
+        <input type="file" id="fNv" webkitdirectory multiple class="hidden">
+        <span class="status" id="stNv">Chưa có dữ liệu lương.</span>
+        <a href="ktNhanSu.html" data-thang title="Tạo / sửa nhân sự, KPI mặc định, chính sách _config.json">✎ Quản lý nhân sự</a>
+      </div>
+      <div class="row">
+        <b>Chấm công</b>
+        <span class="status" id="stCc">—</span>
+      </div>
+      <div class="row">
+        <b>Sửa tay</b>
+        <label title="Cho gõ số đè lên các ô tiền tính bằng công thức (tiền cơm, phụ cấp ca đêm, tăng ca, bảo hiểm, thuế, thực lãnh…). Các cột tính sau sẽ dùng số đã sửa."><input type="checkbox" id="optEditF"> Cho sửa các ô tiền tự tính (tiền cơm, tăng ca, bảo hiểm, thuế…)</label>
+        <button id="btnClearEdits">Bỏ mọi ô sửa tay của tháng này</button>
+        <span class="muted" id="editInfo"></span>
+      </div>
+      <ul class="notes" id="notes"></ul>
+    </section>
+
+    <section class="card">
+      <h2 class="noprint"><span class="step">2</span> <span id="ttlSheet">Bảng lương</span></h2>
+      <div class="row noprint hidden" id="kpiRow">
+        <b>KPI, thưởng</b>
+        <button id="btnSaveKpi" class="primary hidden" title="Ghi KPI (cột F) và thưởng (cột L) của tháng đang xem vào &quot;theoThang&quot; trong danhsach_nhanvien.json">💾 Lưu KPI, thưởng tháng này vào JSON</button>
+        <span class="status" id="kpiInfo"></span>
+        <button id="btnDelKpi" class="hidden" title="Xóa luongKPI và thuong của tháng đang xem khỏi &quot;theoThang&quot; (danhsach_nhanvien.json và file riêng nếu có) — tháng này quay về KPI mặc định, thưởng 0">🗑 Xóa KPI, thưởng tháng này khỏi JSON</button>
+        <label title="Ẩn khung đỏ “KPI và thưởng đang lấy mặc định…” (nút lưu vẫn còn). Trang nhớ lựa chọn này trên máy."><input type="checkbox" id="optNoKpiWarn"> Tắt cảnh báo KPI</label>
+      </div>
+      <div class="kpiwarn noprint hidden" id="kpiWarn"></div>
+      <div class="toolbar noprint">
+        <span class="legend">
+          <i style="background:var(--inp)"></i>ô nhập được
+          <i style="background:#fff;box-shadow:inset 0 0 0 1px #c9d3df"></i>ô tiền tự tính mở cho sửa
+          <i style="background:#e8f0fe"></i>đã sửa tay (rê chuột để xem giá trị gốc)
+          <i style="background:var(--helper)"></i>cột phụ, không in
+        </span>
+        <label><input type="checkbox" id="optHelper" checked> Hiện cột phụ AF–AJ</label>
+        <label>Thu phóng <select id="selZoom">
+            <option value="0.7">70%</option>
+            <option value="0.85">85%</option>
+            <option value="1" selected>100%</option>
+            <option value="1.15">115%</option>
+          </select></label>
+        <button id="btnPrint">🖨 In bảng lương</button>
+      </div>
+      <div class="gwrap">
+        <div class="sheet" id="sheet"></div>
+      </div>
+    </section>
+
+    <section class="card" id="secSlip">
+      <h2 class="noprint"><span class="step">3</span> Bảng lương cá nhân</h2>
+      <div class="toolbar noprint slipbar">
+        <button id="btnSlipPrev" title="Người trước">◀</button>
+        <select id="selPerson"></select>
+        <button id="btnSlipNext" title="Người sau">▶</button>
+        <button id="btnSlipPrint" class="primary" title="Chọn máy in “Lưu dưới dạng PDF” / “Microsoft Print to PDF” để ra file PDF">🖨 In / lưu PDF người này</button>
+        <button id="btnSlipAll" title="Mỗi người một trang A4">🖨 In tất cả (mỗi người 1 trang)</button>
+        <label title="Thêm dòng “Trả lại công ty (tiền mặt)” (gõ số trực tiếp trên phiếu) ngay trước “Số tiền còn lại nhận được”; khi đó số còn lại = Thực lãnh − trả lại. Cũng áp dụng cho sheet cá nhân khi xuất Excel."><input type="checkbox" id="optTraLai"> Thêm mục trả lại công ty (Tiền Mặt)</label>
+        <span class="muted">Muốn ra file PDF: chọn máy in “Lưu dưới dạng PDF” hoặc “Microsoft Print to PDF”.</span>
+      </div>
+      <div class="slipwrap">
+        <div id="slip"></div>
+      </div>
+    </section>
+
+    <section class="card noprint">
+      <h2><span class="step">4</span> Xuất ra Excel</h2>
+      <div class="modes">
+        <label class="mode"><input type="radio" name="mode" value="new" checked>
+          <div><b>Tạo file bảng lương mới</b><span>Tải về <i id="lblNewName"></i></span></div>
+        </label>
+        <label class="mode"><input type="radio" name="mode" value="append">
+          <div><b>Ghi thêm vào file bảng lương cũ</b><span>Thêm sheet <i id="lblSheet"></i> vào file cũ (ví dụ BANG LUONG
+              2026.xlsx), tải về bản sao.</span></div>
+        </label>
+      </div>
+      <div class="row hidden" id="oldFile">
+        <button id="btnBL">📂 Chọn file bảng lương cũ…</button>
+        <input type="file" id="fBL" accept=".xlsx" class="hidden">
+        <span class="status" id="stBL">Chưa chọn.</span>
+      </div>
+      <div class="opts">
+        <label><input type="checkbox" id="optPersonal" checked> Tạo sheet lương cá nhân cho từng người</label>
+        <label id="lblOver" class="hidden"><input type="checkbox" id="optOver"> Ghi đè nếu sheet của tháng này đã
+          có</label>
+      </div>
+      <button class="primary big" id="btnExport">⬇ Xuất Excel</button>
+      <ul class="log" id="log"></ul>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      'use strict';
+      const $ = id => document.getElementById(id);
+      const h = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+      const num = BL.num;
+      const pad2 = n => String(n).padStart(2, '0');
+      const fmt = n => { const r = Math.round(num(n)); return r === 0 ? '-' : r.toLocaleString('vi-VN'); };
+      const fmtD = n => { const r = Math.round(num(n) * 1000) / 1000; return r === 0 ? '' : r.toLocaleString('vi-VN'); };
+      const XLSX_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+      const NOW = new Date();
+
+      const S = {
+        models: [], config: BL.clone(BL.DEFAULT_CONFIG), nvSrc: '',
+        year: NOW.getFullYear(), month: NOW.getMonth() + 1,
+        rawData: {}, ccSrc: '', edits: {}, rows: [], groups: [], warnings: [], bl: null
+      };
+      const cfg = () => S.config;
+      const monthKey = () => `${S.year}-${pad2(S.month)}`;
+      const mode = () => document.querySelector('input[name=mode]:checked').value;
+
+      // =====================================================================
+      // Cột của sheet Month.Year trong temp/BangLuongTemp.xlsx
+      //   kind: 'txt' chữ · 'in' ô nhập · 'f' công thức · 'sign' ô ký nhận
+      //   day: số ngày (hiện số lẻ) · hp: cột phụ "không in" (AF–AJ)
+      // =====================================================================
+      const COLS = [
+        { c: 'A', top: 'STT', w: 44, kind: 'txt' },
+        { c: 'B', top: 'Số HĐLĐ', w: 128, kind: 'txt' },
+        { c: 'C', top: 'Họ và tên', w: 190, kind: 'txt' },
+        { c: 'E', top: 'Lương đóng BHXH', w: 112, kind: 'in' },
+        { c: 'F', top: 'Lương KPI thực nhận', w: 108, kind: 'in' },
+        { c: 'G', top: 'Tổng ngày nghỉ', w: 58, kind: 'in', day: 1 },
+        { c: 'H', top: 'Nghỉ hưởng lương', w: 62, kind: 'in', day: 1 },
+        { c: 'I', top: 'Công thực tế làm việc', w: 62, kind: 'in', day: 1 },
+        { c: 'J', grp: 'Các khoản hỗ trợ', sub: 'Tiền cơm', w: 96, kind: 'f' },
+        { c: 'K', grp: 'Các khoản hỗ trợ', sub: 'Phụ cấp ca đêm', w: 100, kind: 'f' },
+        { c: 'L', grp: 'Các khoản hỗ trợ', sub: 'Thưởng (nếu có)', w: 100, kind: 'in' },
+        { c: 'M', grp: 'Tăng ca', sub: 'Ngày thường (ngày+đêm)', w: 100, kind: 'f' },
+        { c: 'N', grp: 'Tăng ca', sub: 'Ngày chủ nhật (ngày+đêm)', w: 100, kind: 'f' },
+        { c: 'O', top: 'Tổng các khoản hỗ trợ + tăng ca', w: 104, kind: 'f' },
+        { c: 'P', top: 'Tổng thu nhập', w: 116, kind: 'f' },
+        { c: 'Q', grp: 'Khoản trích trừ lương NLĐ', sub: 'BHXH', rate: 'tyLeBHXH', w: 96, kind: 'f' },
+        { c: 'R', grp: 'Khoản trích trừ lương NLĐ', sub: 'BHYT', rate: 'tyLeBHYT', w: 90, kind: 'f' },
+        { c: 'S', grp: 'Khoản trích trừ lương NLĐ', sub: 'BHTN', rate: 'tyLeBHTN', w: 90, kind: 'f' },
+        { c: 'T', grp: 'Khoản trích trừ lương NLĐ', sub: 'Tổng', w: 100, kind: 'f' },
+        { c: 'U', grp: 'Giảm trừ gia cảnh', sub: 'Bản thân', w: 108, kind: 'in' },
+        { c: 'V', grp: 'Giảm trừ gia cảnh', sub: 'Người PT', w: 104, kind: 'in' },
+        { c: 'W', grp: 'Giảm trừ khác', sub: 'Hưu trí TN', w: 90, kind: 'in' },
+        { c: 'X', grp: 'Giảm trừ khác', sub: 'Từ thiện nhân đạo', w: 90, kind: 'in' },
+        { c: 'Y', top: 'Thu nhập chịu thuế TNCN', w: 116, kind: 'f' },
+        { c: 'Z', top: 'Thu nhập tính thuế TNCN', w: 112, kind: 'f' },
+        { c: 'AA', top: 'Thuế TNCN phải nộp', w: 96, kind: 'f' },
+        { c: 'AB', top: 'Tạm ứng', w: 100, kind: 'in' },
+        { c: 'AC', top: 'Thực lãnh', w: 120, kind: 'f' },
+        { c: 'AD', top: 'Ký nhận', w: 86, kind: 'sign' },
+        { c: 'AE', gap: 1, w: 18 },
+        { c: 'AF', top: 'Số ngày làm đêm', w: 66, kind: 'in', day: 1, hp: 1 },
+        { c: 'AG', top: 'Số ngày TT tăng ca ban ngày', w: 76, kind: 'in', day: 1, hp: 1 },
+        { c: 'AH', top: 'Số ngày TT tăng ca đêm', w: 76, kind: 'in', day: 1, hp: 1 },
+        { c: 'AI', top: 'Số ngày CT tăng ca ban ngày', w: 76, kind: 'in', day: 1, hp: 1 },
+        { c: 'AJ', top: 'Số ngày CT tăng ca ban đêm', w: 76, kind: 'in', day: 1, hp: 1 }
+      ];
+      const COL = Object.fromEntries(COLS.map(x => [x.c, x]));
+      const INPUTS = COLS.filter(x => x.kind === 'in').map(x => x.c);
+      const FCOLS = COLS.filter(x => x.kind === 'f').map(x => x.c);     // ô tiền tự tính (sửa được khi tích "Cho sửa các ô tiền tự tính")
+      const editF = () => $('optEditF').checked;
+      const editable = x => x.kind === 'in' || (x.kind === 'f' && editF());
+      // cột có dòng tổng nhóm / tổng A+B (giống SUBTOTAL trong sheet)
+      const SUMS = ['E', 'F', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC'];
+
+      function log(msg, type = '') { const li = document.createElement('li'); li.className = type; li.textContent = msg; $('log').appendChild(li); }
+      function download(data, name) {
+        const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([data], { type: XLSX_TYPE })); a.download = name;
+        document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 3000);
+      }
+      const lsGet = k => { try { const s = localStorage.getItem(k); return s ? JSON.parse(s) : null; } catch (e) { return null; } };
+      const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* */ } };
+      const lsDel = k => { try { localStorage.removeItem(k); } catch (e) { /* */ } };
+
+      // =====================================================================
+      // 1a. Dữ liệu lương nhân viên (thư mục nhanvien: _config.json + một file JSON mỗi người)
+      //     Ưu tiên thư mục trên máy (không đưa lên web); thư mục đã chọn được nhớ trong IndexedDB.
+      //     Còn ./lib/nhanvien thì vẫn đọc được bằng fetch (khi chạy trên máy).
+      // =====================================================================
+      const idb = {
+        open: () => new Promise((res, rej) => { const r = indexedDB.open('tinhluong', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }),
+        async get(k) { const db = await this.open(); return new Promise(res => { const t = db.transaction('kv').objectStore('kv').get(k); t.onsuccess = () => res(t.result); t.onerror = () => res(null); }); },
+        async set(k, v) { const db = await this.open(); return new Promise(res => { const t = db.transaction('kv', 'readwrite').objectStore('kv').put(v, k); t.onsuccess = () => res(); t.onerror = () => res(); }); }
+      };
+      const isNvFile = name => name.toLowerCase().endsWith('.json');
+
+      function ingestNv(files, srcLabel) {
+        const scan = BL.scanDataFiles(files, S.year);
+        if (!scan.models.length) {
+          $('stNv').className = 'status err';
+          $('stNv').textContent = `✗ ${srcLabel}: không có file JSON nhân viên nào (cần các file có "soHDLD" và "hoTen").`;
+          return false;
+        }
+        S.models = scan.models;
+        S.config = scan.config ? BL.deepMerge(BL.DEFAULT_CONFIG, scan.config) : BL.clone(BL.DEFAULT_CONFIG);
+        S.nvSrc = srcLabel;
+        const act = S.models.filter(m => !BL.daNghi(m)).length;
+        $('stNv').className = 'status ok';
+        $('stNv').innerHTML = `✓ ${h(srcLabel)}: <b>${act}</b> nhân viên đang làm` + (S.models.length > act ? ` (${S.models.length - act} đã nghỉ)` : '')
+          + (scan.config ? ' · có _config.json' : ' · <span class="status err">không có _config.json, dùng cấu hình mặc định</span>')
+          + (scan.errors.length ? `<br><span class="status err">${scan.errors.map(h).join('<br>')}</span>` : '');
+        $('btnNvAgain').classList.add('hidden');
+        loadMonth();
+        return true;
+      }
+      // dir = thư mục nhanvien, hoặc thư mục cha có ./nhanvien hay ./lib/nhanvien
+      async function readNvDir(dir) {
+        const read = async d => {
+          const out = [];
+          for await (const [name, hd] of d.entries()) if (hd.kind === 'file' && isNvFile(name)) out.push({ path: name, text: await (await hd.getFile()).text() });
+          return out;
+        };
+        let files = await read(dir), used = dir;
+        if (!BL.scanDataFiles(files, S.year).models.length) {
+          for (const parts of [['nhanvien'], ['lib', 'nhanvien']]) {
+            try { let d = dir; for (const p of parts) d = await d.getDirectoryHandle(p); files = await read(d); used = d; break; } catch (e) { /* không có */ }
+          }
+        }
+        S.nvDir = used; S.nvRoot = dir;     // đặt trước ingestNv (nó vẽ lại bảng + nút lưu)
+        const ok = ingestNv(files, `thư mục “${dir.name}”`);
+        S.nvDir = ok ? used : null;        // thư mục chứa file JSON (để nút "Lưu KPI, thưởng" ghi lại)
+        S.nvRoot = ok ? dir : null;
+        return ok;
+      }
+      async function pickNvDir() {
+        if (window.showDirectoryPicker) {
+          try {
+            const dir = await window.showDirectoryPicker({ id: 'tinhluong-nhanvien' });
+            if (await readNvDir(dir)) idb.set('nvDir', dir).catch(() => { });
+            return;
+          } catch (e) { if (e.name === 'AbortError') return; console.warn(e); }
+        }
+        $('fNv').click();
+      }
+      $('btnNv').onclick = pickNvDir;
+      // trình duyệt không có File System Access (Firefox): chọn thư mục qua hộp chọn thư mục
+      $('fNv').onchange = async e => {
+        const all = [...e.target.files].filter(f => isNvFile(f.name));
+        const files = await Promise.all(all.map(async f => ({ path: f.name, text: await f.text() })));
+        const root = (e.target.files[0] && e.target.files[0].webkitRelativePath || '').split('/')[0] || 'đã chọn';
+        S.nvDir = null;
+        ingestNv(files, `thư mục “${root}”`);
+        e.target.value = '';
+      };
+      // thư mục đã nhớ: đọc luôn nếu còn quyền, không thì hiện nút cấp lại quyền (cần người dùng bấm)
+      async function tryRememberedDir() {
+        let dir = null;
+        // IndexedDB có thể không trả lời (trình duyệt chặn, tab khác giữ) → chờ tối đa 2 giây
+        try { dir = await Promise.race([idb.get('nvDir'), new Promise(res => setTimeout(() => res(null), 2000))]); } catch (e) { /* */ }
+        if (!dir) return false;
+        try {
+          const st = dir.queryPermission ? await dir.queryPermission({ mode: 'read' }) : 'granted';
+          if (st === 'granted') return await readNvDir(dir);
+        } catch (e) { console.warn(e); return false; }
+        const b = $('btnNvAgain');
+        b.textContent = `🔓 Đọc lại thư mục “${dir.name}”`;
+        b.classList.remove('hidden');
+        b.onclick = async () => {
+          try { if (await dir.requestPermission({ mode: 'read' }) === 'granted') await readNvDir(dir); }
+          catch (e) { console.warn(e); pickNvDir(); }
+        };
+        $('stNv').className = 'status';
+        $('stNv').textContent = 'Bấm nút bên cạnh để trình duyệt cho đọc lại thư mục nhân viên đã chọn lần trước.';
+        return true;
+      }
+      // dự phòng: ./lib/nhanvien (danhsach_nhanvien.json → tên từng file)
+      async function tryFetchNv() {
+        const base = 'lib/nhanvien/';
+        const get = async name => { try { const r = await fetch(base + name, { cache: 'no-store' }); return r.ok ? await r.text() : null; } catch (e) { return null; } };
+        const ds = await get('danhsach_nhanvien.json');
+        if (!ds) return false;
+        let list; try { list = JSON.parse(ds); } catch (e) { return false; }
+        if (!Array.isArray(list)) return false;
+        const names = ['_config.json', ...list.filter(x => x && x.soHDLD && x.hoTen).map(x => BL.personFileName(x))];
+        const files = (await Promise.all(names.map(async n => { const t = await get(n); return t == null ? null : { path: n, text: t }; }))).filter(Boolean);
+        if (!files.some(f => f.path !== '_config.json')) return false;
+        files.push({ path: 'danhsach_nhanvien.json', text: ds });       // KPI, theoThang của mọi người
+        S.nvDir = null;
+        return ingestNv(files, './lib/nhanvien');
+      }
+
+      // =====================================================================
+      // 1b. Chấm công của tháng
+      //     ưu tiên bản nháp của ktchamcong.html (localStorage "chamcong-nhap-<năm>-<tháng>"),
+      //     không có thì đọc dữ liệu máy chấm công ../../data/<năm>/t<tháng>/nvN.json
+      // =====================================================================
+      const DATA_URL = '../../data';
+      const monthsOf = text => String(text || '').split(/\r?\n/).map(s => s.trim().replace(/^\/+|\/+$/g, ''))
+        .map(s => s.match(/^(\d{4})\/t(\d{1,2})$/i)).filter(Boolean).map(m => `${m[1]}-${pad2(+m[2])}`);
+      async function fetchRaw(key) {
+        if (S.rawData[key] !== undefined) return S.rawData[key];
+        const dir = `${key.slice(0, 4)}/t${+key.slice(5)}`;
+        const get = async url => { try { const r = await fetch(url, { cache: 'no-store' }); return r.ok ? await r.text() : null; } catch (e) { return null; } };
+        const files = [];
+        for (let start = 1; ; start += 10) {
+          const batch = await Promise.all(Array.from({ length: 10 }, async (_, k) => {
+            const name = `nv${start + k}.json`, text = await get(`${DATA_URL}/${dir}/${name}`);
+            return text == null ? null : { path: `data/${dir}/${name}`, text };
+          }));
+          const hit = batch.filter(Boolean); files.push(...hit);
+          if (!hit.length) break;
+        }
+        const recs = files.length ? (BL.scanDataFiles(files, +key.slice(0, 4)).months[key] || []) : [];
+        return (S.rawData[key] = recs);
+      }
+      function employees() {
+        return BL.sortByHD(S.models.filter(m => !BL.daNghi(m) && !m.khongChamCong)).map(m => ({ soHDLD: m.soHDLD, hoTen: m.hoTen, chucVu: m.chucVu || '' }));
+      }
+      // → { monthKey, people: [{soHDLD, hoTen, congThucTe, ...}], warnings }
+      async function attendance() {
+        const key = monthKey();
+        const sheetOf = people => BL.chamCongToCcData({ month: S.month, year: S.year, people }, cfg());
+        const draft = lsGet(`chamcong-nhap-${key}`);
+        if (draft && Array.isArray(draft.people) && draft.people.length) {
+          S.ccSrc = `✓ Bản nháp của trang Bảng chấm công (lưu lúc ${new Date(draft.savedAt).toLocaleString('vi-VN')})`;
+          return sheetOf(draft.people);
+        }
+        const recs = await fetchRaw(key);
+        if (key !== monthKey()) return null;                  // đã đổi tháng trong lúc chờ
+        if (recs.length) {
+          const r = BL.attendanceToSheet(recs, S.month, S.year, employees(), cfg(), lsGet('chamcong-codemap') || {});
+          S.ccSrc = `✓ Dữ liệu máy chấm công ${DATA_URL}/${key.slice(0, 4)}/t${+key.slice(5)}/ (${recs.length} file) — chưa chỉnh trên trang Bảng chấm công`;
+          return sheetOf(r.people);
+        }
+        S.ccSrc = 'Chưa có chấm công tháng này — nhập công trực tiếp vào bảng (cột G, H, I, AF–AJ).';
+        return sheetOf(employees());
+      }
+
+      // =====================================================================
+      // 2. Tính lương: BL.buildMonth (khớp người, cấu hình) + ô sửa tay → BL.calcSalary
+      // =====================================================================
+      const editKey = () => `tinhluong-nhap-${monthKey()}`;
+      const editCount = () => Object.values(S.edits).reduce((s, o) => s + Object.keys(o).length, 0);
+      function showEditInfo() { const n = editCount(); $('editInfo').textContent = n ? `${n} ô đã sửa tay (tự lưu trên máy này).` : 'Chưa sửa ô nào.'; }
+      function loadEdits() { const d = lsGet(editKey()); S.edits = d && d.edits ? d.edits : {}; showEditInfo(); }
+      // chỉ gọi khi người dùng sửa ô / bỏ sửa (không gọi lúc vẽ bảng, để khỏi xóa nhầm bản đã lưu)
+      function saveEdits() {
+        if (editCount()) lsSet(editKey(), { savedAt: new Date().toISOString(), edits: S.edits }); else lsDel(editKey());
+        showEditInfo();
+      }
+
+      let ccData = null;
+      function compute() {
+        const key = monthKey();
+        const month = BL.buildMonth(ccData, S.models, cfg());
+        S.warnings = month.warnings;
+        S.rows = month.rows.map(r => {
+          const k = BL.keyHD(r.model.soHDLD);
+          const eff = BL.effective(r.model, key, cfg());
+          const ed = S.edits[k] || {};
+          const auto = {
+            G: num(r.cc.tongNghi), H: num(r.cc.nghiHuongLuong), I: num(r.cc.congThucTe),
+            L: num(eff.thuong), U: num(eff.giamTruBanThan), V: num(eff.soNguoiPhuThuoc) * num(eff.giamTruNguoiPhuThuoc),
+            W: num(eff.huuTriTuNguyen), X: num(eff.tuThien), AB: num(eff.tamUng),
+            AF: num(r.cc.soNgayDem), AG: num(r.cc.tc.ttNgay), AH: num(r.cc.tc.ttDem), AI: num(r.cc.tc.ctNgay), AJ: num(r.cc.tc.ctDem)
+          };
+          const x = Object.assign({}, auto, ed);
+          // không có ngày công nào (H + I = 0): không tính lương, không trừ bảo hiểm (giống banluong-core)
+          const coCong = num(x.H) + num(x.I) > 0;
+          auto.E = coCong ? num(eff.luongBHXH) : 0;
+          auto.F = coCong ? num(eff.luongKPI) : 0;
+          if (!coCong) { auto.U = 0; auto.V = 0; }            // không có thu nhập thì không ghi giảm trừ gia cảnh
+          for (const c of ['E', 'F', 'U', 'V']) if (!(c in ed)) x[c] = auto[c];
+          const e = Object.assign({}, r.e, {
+            luongBHXH: x.E, luongKPI: x.F, thuong: x.L, giamTruBanThan: x.U, soNguoiPhuThuoc: 1, giamTruNguoiPhuThuoc: x.V,
+            huuTriTuNguyen: x.W, tuThien: x.X, tamUng: x.AB
+          });
+          const cc = Object.assign({}, r.cc, {
+            tongNghi: x.G, nghiHuongLuong: x.H, congThucTe: x.I, soNgayDem: x.AF,
+            tc: { ttNgay: x.AG, ttDem: x.AH, ctNgay: x.AI, ctDem: x.AJ }
+          });
+          // ô tiền tự tính đã sửa tay → đè lên công thức; giá trị gốc = tính khi bỏ riêng ô đó
+          const ov = {};
+          FCOLS.forEach(c => { if (c in ed) ov[c] = ed[c]; });
+          const v = BL.calcSalary(e, cc, cfg(), ov);
+          FCOLS.forEach(c => {
+            if (!(c in ov)) { auto[c] = v[c]; return; }
+            const o2 = Object.assign({}, ov); delete o2[c];
+            auto[c] = BL.calcSalary(e, cc, cfg(), o2)[c];
+          });
+          Object.assign(v, { AF: x.AF, AG: x.AG, AH: x.AH, AI: x.AI, AJ: x.AJ });
+          // "Trả lại công ty (tiền mặt)" sửa ở phiếu lương cá nhân → số còn lại = Thực lãnh − trả lại
+          if ('traLai' in ed) { v.traLai = num(ed.traLai); v.conLai = num(v.AC) - v.traLai; }
+          return { key: k, model: r.model, e, cc, v, ov, auto, ed, coCong, taoSheet: coCong && num(v.E) > 0 };
+        });
+        // nhóm theo bộ phận (A: quản lý, B: sản xuất…)
+        S.groups = [];
+        S.rows.forEach(r => { const c = r.model.boPhan || 'SX'; let g = S.groups.find(x => x.code === c); if (!g) S.groups.push(g = { code: c, rows: [] }); g.rows.push(r); });
+      }
+
+      // =====================================================================
+      // Vẽ "sheet"
+      // =====================================================================
+      const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const cls = (x, extra) => [x.hp ? 'hp' : '', x.gap ? 'gap' : '', x.c === 'A' ? 'fz fa' : x.c === 'B' ? 'fz fb' : x.c === 'C' ? 'fz fc' : '', extra || ''].filter(Boolean).join(' ');
+      const showVal = (x, val) => x.day ? fmtD(val) : fmt(val);
+      const rawStr = (x, val) => { const n = num(val); return n === 0 ? '' : x.day ? String(Math.round(n * 1000) / 1000).replace('.', ',') : n.toLocaleString('vi-VN'); };
+
+      function render() {
+        const [y, mo] = [S.year, pad2(S.month)];
+        const c = cfg();
+        const md = Object.assign({}, BL.DEFAULT_CONFIG.macDinh, c.macDinh || {});
+        $('ttlSheet').textContent = `Bảng lương tháng ${mo}/${y}`;
+        // tiêu đề 2 tầng (dòng 8–9 của sheet)
+        let h1 = '', h2 = '';
+        for (let i = 0; i < COLS.length; i++) {
+          const x = COLS[i];
+          if (x.gap) { h1 += `<th class="gap" rowspan="2"></th>`; continue; }
+          if (!x.grp) { h1 += `<th class="${cls(x)}" rowspan="2">${h(x.top)}</th>`; continue; }
+          let j = i; while (j + 1 < COLS.length && COLS[j + 1].grp === x.grp) j++;
+          h1 += `<th colspan="${j - i + 1}">${h(x.grp)}</th>`;
+          for (let k = i; k <= j; k++) {
+            const s = COLS[k];
+            const rate = s.rate ? ` (${+(num(md[s.rate]) * 100).toFixed(2)}%)` : '';
+            h2 += `<th>${h(s.sub + rate)}</th>`;
+          }
+          i = j;
+        }
+        // dòng 10 (tỷ lệ bảo hiểm) và dòng 11 (số thứ tự cột)
+        let h3 = '', h4 = '', n = 0;
+        COLS.forEach(x => {
+          h3 += `<th class="${cls(x)}">${x.rate ? (num(md[x.rate]) * 100).toLocaleString('vi-VN') + '%' : ''}</th>`;
+          h4 += `<th class="${cls(x)}">${x.gap || x.hp ? '' : ++n}</th>`;
+        });
+        const colgroup = '<colgroup>' + COLS.map(x => `<col class="${x.hp ? 'hp' : ''}" style="width:${x.w}px">`).join('') + '</colgroup>';
+
+        let body = '';
+        const groupRow = (label, name, id, kls) => '<tr class="' + kls + '">' + COLS.map(x => {
+          if (x.gap) return '<td class="gap"></td>';
+          if (x.c === 'A') return `<td class="${cls(x, 'ctr')}">${h(label)}</td>`;
+          if (x.c === 'B') return `<td class="${cls(x, 't')}" colspan="1" style="overflow:visible">${h(name)}</td>`;
+          if (SUMS.includes(x.c)) return `<td class="${cls(x)}" id="${id}-${x.c}"></td>`;
+          return `<td class="${cls(x)}"></td>`;
+        }).join('') + '</tr>';
+        S.groups.forEach((g, gi) => {
+          body += groupRow(LETTERS[gi], (c.boPhan || {})[g.code] || g.code, `g${gi}`, 'grp');
+          g.rows.forEach((r, k) => {
+            const idx = S.rows.indexOf(r);
+            body += `<tr data-r="${idx}" class="${r.coCong ? '' : 'nocong'}">` + COLS.map(x => {
+              if (x.gap) return '<td class="gap"></td>';
+              if (x.c === 'A') return `<td class="${cls(x, 'ctr')}">${k + 1}</td>`;
+              if (x.c === 'B') return `<td class="${cls(x, 't')}">${h(r.model.soHDLD)}</td>`;
+              if (x.c === 'C') return `<td class="${cls(x, 't')}" title="${h([r.model.chucVu, r.cc.khongChamCong ? 'Không chấm công — tự động đủ công (số liệu lấy từ JSON)' : '', r.coCong ? '' : 'Không có ngày công — không tính lương'].filter(Boolean).join(' · '))}">${h(r.model.hoTen)}</td>`;
+              if (x.kind === 'sign') return `<td class="${cls(x)}"></td>`;
+              if (editable(x)) return `<td class="${cls(x, 'in' + (x.kind === 'f' ? ' fx' : '') + (x.c === 'AC' ? ' ac' : ''))}" id="c${idx}-${x.c}"><input data-r="${idx}" data-c="${x.c}" inputmode="decimal" autocomplete="off"><span class="pv"></span></td>`;
+              return `<td class="${cls(x, x.c === 'AC' ? 'ac' : '')}" id="c${idx}-${x.c}"></td>`;
+            }).join('') + '</tr>';
+          });
+        });
+        body += groupRow('', 'Tổng ' + S.groups.map((g, gi) => LETTERS[gi]).join('+'), 'tot', 'tot');
+
+        const empty = !S.rows.length
+          ? `<p class="muted" style="font-family:'Segoe UI',sans-serif;padding:8px 2px">${S.models.length ? 'Không có ai để tính lương tháng này.' : 'Chọn thư mục nhân viên ở mục 1 để hiện bảng lương.'}</p>` : '';
+        $('sheet').innerHTML = `
+          <div class="co">${h(c.congTy.ten)}</div>
+          <div class="co">MST: ${h(c.congTy.mst)}</div>
+          <div class="co addr">Địa chỉ: ${h(c.congTy.diaChi)}</div>
+          <div class="vis"><div class="title">BẢNG LƯƠNG VÀ CÁC KHOẢN HỖ TRỢ KHÁC</div>
+          <div class="subtitle">THÁNG ${mo} NĂM ${y}</div></div>
+          <table class="sal" id="tbl">${colgroup}<thead><tr class="h1">${h1}</tr><tr class="h2">${h2}</tr><tr class="h3">${h3}</tr><tr class="h4">${h4}</tr></thead>
+          <tbody>${S.rows.length ? body : ''}</tbody></table>${empty}
+          <div class="sign vis">
+            <div><b>&nbsp;</b><b>Người lập</b><div class="name">${h(c.nguoiLap || '')}</div></div>
+            <div><span class="date">Ngày ${c.ngayKy || 25} tháng ${mo} năm ${y}</span><b>Giám đốc</b><div class="name">${h(c.giamDoc || '')}</div></div>
+          </div>`;
+        const tbl = $('tbl');
+        tbl.style.setProperty('--wa', COL.A.w + 'px'); tbl.style.setProperty('--wb', COL.B.w + 'px');
+        tbl.style.width = COLS.reduce((s, x) => s + x.w, 0) + 'px';
+        applyHelper();
+        fillPersonSelect();
+        update();
+        $('notes').innerHTML = S.warnings.map(w => `<li>${h(w)}</li>`).join('');
+        $('lblNewName').textContent = newName();
+        $('lblSheet').textContent = BL.monthLabel(monthKey());
+      }
+      // các dòng tiêu đề dính trên cùng khi cuộn: tính vị trí theo chiều cao thật
+      function fixStickyTops() {
+        const w = $('sheet').parentElement.clientWidth / (num($('selZoom').value) || 1) - 24;
+        $('sheet').style.setProperty('--vw', Math.max(600, w) + 'px');
+        const t = $('tbl'); if (!t) return;
+        const rs = t.tHead.rows; let top = 0;
+        for (let i = 0; i < rs.length - 1; i++) { top += rs[i].offsetHeight; t.style.setProperty(`--h${i + 1}`, top + 'px'); }
+      }
+      // cập nhật số (không vẽ lại bảng để giữ con trỏ khi đang gõ)
+      function update() {
+        const active = document.activeElement;
+        S.rows.forEach((r, i) => {
+          COLS.forEach(x => {
+            if (x.gap || ['A', 'B', 'C', 'AD'].includes(x.c)) return;
+            const td = $(`c${i}-${x.c}`); if (!td) return;
+            const val = r.v[x.c];
+            const edited = x.c in r.ed;
+            if (td.classList.contains('in')) {
+              const inp = td.firstElementChild;
+              if (inp !== active) inp.value = showVal(x, val);
+              td.lastElementChild.textContent = showVal(x, val);
+              td.classList.toggle('ed', edited);
+              td.title = edited ? `Đã sửa tay · giá trị gốc: ${showVal(x, r.auto[x.c]) || '0'} (xóa trống ô để trả lại)` : '';
+            } else {
+              td.textContent = showVal(x, val);
+              td.classList.toggle('zero', !Math.round(num(val)));
+              td.classList.toggle('ed', edited);
+              td.title = edited ? `Đã sửa tay · giá trị gốc: ${showVal(x, r.auto[x.c]) || '0'} (tích "Cho sửa các ô tiền tự tính" để sửa lại)` : '';
+            }
+          });
+        });
+        S.groups.forEach((g, gi) => SUMS.forEach(c => { const td = $(`g${gi}-${c}`); if (td) td.textContent = fmt(g.rows.reduce((s, r) => s + num(r.v[c]), 0)); }));
+        SUMS.forEach(c => { const td = $(`tot-${c}`); if (td) td.textContent = fmt(S.rows.reduce((s, r) => s + num(r.v[c]), 0)); });
+        renderSlip();
+        renderKpi();
+      }
+
+      // ---------------- nhập ô ----------------
+      // tiền: "1.500.000" hoặc "1500000"; số ngày: "0,5" hoặc "0.5"
+      function parseCell(x, s) {
+        s = String(s).trim().replace(/\s/g, '');
+        if (s === '') return null;
+        if (x.day) s = s.includes(',') ? s.replace(/\./g, '').replace(',', '.') : s;
+        else s = s.replace(/\./g, '').replace(',', '.');
+        const n = Number(s);
+        return isFinite(n) ? n : NaN;
+      }
+      function onInput(inp, final) {
+        const i = +inp.dataset.r, c = inp.dataset.c, x = COL[c], r = S.rows[i];
+        const v = parseCell(x, inp.value);
+        inp.classList.toggle('bad', Number.isNaN(v));
+        if (Number.isNaN(v)) return;
+        const ed = S.edits[r.key] = S.edits[r.key] || {};
+        if (v === null) delete ed[c];                       // xóa trống ô: trả về giá trị tự tính
+        else ed[c] = v;
+        compute();
+        // bỏ ô sửa tay trùng với giá trị tự tính
+        const nr = S.rows.find(q => q.key === r.key);
+        if (nr && c in ed && Math.abs(num(ed[c]) - num(nr.auto[c])) < 1e-9) { delete ed[c]; compute(); }
+        if (!Object.keys(ed).length) delete S.edits[r.key];
+        if (final) inp.value = showVal(x, S.rows[i].v[c]);
+        saveEdits();
+        update();
+        document.querySelectorAll('#tbl tbody tr[data-r]').forEach(tr => tr.classList.toggle('nocong', !S.rows[+tr.dataset.r].coCong));
+      }
+      const sheetEl = $('sheet');
+      sheetEl.addEventListener('focusin', e => {
+        const inp = e.target; if (inp.tagName !== 'INPUT') return;
+        const x = COL[inp.dataset.c], r = S.rows[+inp.dataset.r];
+        inp.value = rawStr(x, r.v[inp.dataset.c]);
+        inp.select();
+      });
+      sheetEl.addEventListener('input', e => { if (e.target.tagName === 'INPUT') onInput(e.target, false); });
+      sheetEl.addEventListener('focusout', e => { if (e.target.tagName === 'INPUT') onInput(e.target, true); });
+      sheetEl.addEventListener('keydown', e => {
+        const inp = e.target; if (inp.tagName !== 'INPUT') return;
+        const dir = { ArrowUp: -1, ArrowDown: 1, Enter: e.shiftKey ? -1 : 1 }[e.key];
+        if (e.key === 'Escape') { inp.blur(); return; }
+        if (!dir) return;
+        e.preventDefault();
+        const all = [...document.querySelectorAll(`#tbl input[data-c="${inp.dataset.c}"]`)];
+        const nx = all[all.indexOf(inp) + dir];
+        if (nx) nx.focus(); else inp.blur();
+      });
+      $('btnClearEdits').onclick = () => {
+        if (!Object.keys(S.edits).length) return;
+        if (!confirm(`Bỏ mọi ô sửa tay của tháng ${pad2(S.month)}/${S.year}, tính lại theo chấm công và file JSON?`)) return;
+        S.edits = {}; saveEdits(); if (ccData) { compute(); render(); }
+      };
+      $('optHelper').onchange = () => applyHelper();
+      try { $('optEditF').checked = localStorage.getItem('tinhluong-suaOTien') === '1'; } catch (e) { /* */ }
+      $('optEditF').onchange = () => {
+        try { localStorage.setItem('tinhluong-suaOTien', editF() ? '1' : '0'); } catch (e) { /* */ }
+        if (ccData) render();
+      };
+      function applyHelper(force) {
+        const on = force === undefined ? $('optHelper').checked : force, t = $('tbl'); if (!t) return;
+        const vis = COLS.filter(x => on || !(x.hp || x.gap));
+        t.querySelector('colgroup').innerHTML = vis.map(x => `<col style="width:${x.w}px">`).join('');
+        t.querySelectorAll('.hp, .gap').forEach(el => { el.style.display = on ? '' : 'none'; });
+        t.style.width = vis.reduce((s, x) => s + x.w, 0) + 'px';
+        fixStickyTops();
+      }
+      // =====================================================================
+      // KPI, thưởng theo tháng: chưa ghi trong "theoThang" của JSON → đang lấy mặc định (KPI = luongKPI_default, thưởng = 0)
+      // =====================================================================
+      // người cần ghi: có ngày công; số cần ghi = số đang dùng trên bảng (đã tính ô sửa tay cột F, L)
+      function kpiStatus() {
+        const mk = monthKey(), list = [];
+        for (const r of S.rows) {
+          if (!r.coCong || r.model.khongKPI) continue;          // "khongKPI": true → không nhắc, không lưu
+          const da = BL.thangDaGhi(r.model, mk), o = ((r.model.theoThang || {})[mk]) || {};
+          const val = { luongKPI: num(r.e.luongKPI), thuong: num(r.e.thuong) };
+          const macDinh = !da.luongKPI || !da.thuong;
+          const khac = (da.luongKPI && num(o.luongKPI) !== val.luongKPI) || (da.thuong && num(o.thuong) !== val.thuong);
+          if (macDinh || khac) list.push({ r, val, macDinh });
+        }
+        return list;
+      }
+      // những người tháng này đã có KPI / thưởng trong JSON
+      const kpiDaGhiThang = () => S.models.filter(m => { const d = BL.thangDaGhi(m, monthKey()); return d.luongKPI || d.thuong; });
+      function renderKpi() {
+        const list = S.rows.length ? kpiStatus() : [], md = list.filter(x => x.macDinh);
+        $('kpiRow').classList.toggle('hidden', !S.rows.length);
+        $('btnSaveKpi').classList.toggle('hidden', !list.length);
+        $('btnDelKpi').classList.toggle('hidden', !kpiDaGhiThang().length);
+        $('kpiWarn').classList.toggle('hidden', !md.length || $('optNoKpiWarn').checked);
+        if (md.length) $('kpiWarn').innerHTML = 'KPI và thưởng đang lấy mặc định. Vui lòng sửa cho đúng tháng này và ấn nút lưu lại'
+          + `<small>Tháng ${pad2(S.month)}/${S.year} — ${md.length} người chưa có số riêng: ${md.map(x => h(x.r.model.hoTen)).join(', ')}. Sửa ở cột F (Lương KPI thực nhận) và L (Thưởng).</small>`;
+        const info = $('kpiInfo');
+        if (!S.rows.length) info.textContent = '';
+        else if (!list.length) { info.className = 'status ok'; info.textContent = `✓ KPI, thưởng tháng ${pad2(S.month)}/${S.year} đã có trong JSON của mọi người.`; }
+        else { info.className = 'status'; info.textContent = `${list.length} người cần lưu${list.length > md.length ? ` (${list.length - md.length} người đã sửa khác JSON)` : ''}.`; }
+        // kết quả lưu / xóa gần nhất của tháng này (giữ lại khi bảng vẽ lại)
+        if (S.kpiMsg && S.kpiMsg.mk !== monthKey()) S.kpiMsg = null;
+        if (S.kpiMsg && S.rows.length) { const st = info.textContent; info.className = S.kpiMsg.cls; info.innerHTML = S.kpiMsg.html + (S.kpiMsg.cls.includes('err') || st.startsWith('✓') ? '' : ' · ' + h(st)); }
+      }
+      try { $('optNoKpiWarn').checked = localStorage.getItem('tinhluong-tatCanhBaoKPI') === '1'; } catch (e) { /* */ }
+      $('optNoKpiWarn').onchange = () => {
+        try { localStorage.setItem('tinhluong-tatCanhBaoKPI', $('optNoKpiWarn').checked ? '1' : '0'); } catch (e) { /* */ }
+        renderKpi();
+      };
+      // tìm thư mục JSON có quyền ghi: thư mục đã chọn, không có thì hỏi người dùng chọn
+      async function writableNvDir() {
+        let dir = S.nvDir;
+        if (!dir) {
+          if (!window.showDirectoryPicker) throw new Error('Trình duyệt này không ghi file được — mở trang bằng Chrome hoặc Edge.');
+          const root = await window.showDirectoryPicker({ id: 'tinhluong-nhanvien', mode: 'readwrite' });
+          dir = root;
+          const want = S.rows.find(r => r.model._file);
+          const has = async d => { try { await d.getFileHandle(want.model._file); return true; } catch (e) { return false; } };
+          if (want && !(await has(dir))) {
+            for (const parts of [['nhanvien'], ['lib', 'nhanvien']]) {
+              try { let d = root; for (const p of parts) d = await d.getDirectoryHandle(p); if (await has(d)) { dir = d; break; } } catch (e) { /* */ }
+            }
+          }
+          S.nvRoot = root; S.nvDir = dir; idb.set('nvDir', root).catch(() => { });
+        }
+        if (dir.queryPermission && await dir.queryPermission({ mode: 'readwrite' }) !== 'granted'
+          && await dir.requestPermission({ mode: 'readwrite' }) !== 'granted') throw new Error('Không được cấp quyền ghi vào thư mục nhân viên.');
+        return dir;
+      }
+      const kpiMsg = (cls, html) => { S.kpiMsg = { mk: monthKey(), cls, html }; renderKpi(); };
+      $('btnSaveKpi').onclick = async () => {
+        S.kpiMsg = null;
+        const btn = $('btnSaveKpi'), list = kpiStatus(), mk = monthKey();
+        if (!list.length) return;
+        btn.disabled = true;
+        const ok = [], bad = [];
+        try {
+          const dir = await writableNvDir();
+          // có danhsach_nhanvien.json → ghi KPI, thưởng vào đó (một file cho mọi người)
+          let dsH = null; try { dsH = await dir.getFileHandle(BL.DS_FILE); } catch (e) { /* không có */ }
+          if (dsH) {
+            let ds = JSON.parse(await (await dsH.getFile()).text());
+            if (!Array.isArray(ds)) throw new Error(BL.DS_FILE + ' không phải danh sách [ ... ]');
+            for (const { r, val } of list) { ds = BL.setThangDanhSach(ds, r.model, mk, val); ok.push(r); }
+            const w = await dsH.createWritable(); await w.write(BL.danhSachJsonText(ds)); await w.close();
+            S.kpiSavedTo = BL.DS_FILE;
+          } else for (const { r, val } of list) {
+            const name = r.model._file || BL.personFileName(r.model);
+            try {
+              const fh = await dir.getFileHandle(name);
+              const obj = JSON.parse(await (await fh.getFile()).text());
+              const out = BL.setThang(obj, mk, val, cfg());
+              const w = await fh.createWritable(); await w.write(BL.modelJsonText(out)); await w.close();
+              ok.push(r); S.kpiSavedTo = 'file JSON của từng người';
+            } catch (e) { bad.push(`${name}: ${e.name === 'NotFoundError' ? 'không thấy file trong thư mục “' + dir.name + '”' : e.message}`); }
+          }
+          // số đã nằm trong JSON → bỏ ô sửa tay cột F, L của những người vừa lưu
+          ok.forEach(r => { const ed = S.edits[r.key]; if (!ed) return; delete ed.F; delete ed.L; if (!Object.keys(ed).length) delete S.edits[r.key]; });
+          if (ok.length) saveEdits();
+          if (ok.length) await readNvDir(S.nvRoot || dir);
+        } catch (e) { if (e.name !== 'AbortError') bad.push(e.message); console.error(e); }
+        finally { btn.disabled = false; }
+        if (bad.length) kpiMsg('status err', (ok.length ? `Đã lưu ${ok.length} người. ` : '') + 'Lỗi: ' + bad.map(h).join('<br>'));
+        else if (ok.length) kpiMsg('status ok', h(`✓ Đã lưu KPI, thưởng tháng ${pad2(S.month)}/${S.year} của ${ok.length} người vào ${S.kpiSavedTo}.`));
+      };
+
+      $('btnDelKpi').onclick = async () => {
+        const who = kpiDaGhiThang(), mk = monthKey(), KEYS = ['luongKPI', 'thuong'];
+        if (!who.length) return;
+        if (!confirm(`Xóa KPI và thưởng tháng ${pad2(S.month)}/${S.year} của ${who.length} người khỏi JSON?\n\n${who.map(m => '• ' + m.hoTen).join('\n')}\n\nTháng này sẽ quay về KPI mặc định (luongKPI_default) và thưởng 0. Ô sửa tay trên bảng (nếu có) vẫn giữ.`)) return;
+        S.kpiMsg = null;
+        const btn = $('btnDelKpi'); btn.disabled = true;
+        const done = [], bad = [];
+        try {
+          const dir = await writableNvDir();
+          const write = async (fh, text) => { const w = await fh.createWritable(); await w.write(text); await w.close(); };
+          // danhsach_nhanvien.json
+          let dsH = null; try { dsH = await dir.getFileHandle(BL.DS_FILE); } catch (e) { /* không có */ }
+          if (dsH) {
+            const ds = JSON.parse(await (await dsH.getFile()).text());
+            let n = 0; if (Array.isArray(ds)) ds.forEach(d => { if (BL.xoaThang(d, mk, KEYS)) n++; });
+            if (n) { await write(dsH, BL.danhSachJsonText(ds)); done.push(`${BL.DS_FILE} (${n} người)`); }
+          }
+          // file riêng của từng người (nếu còn ghi KPI / thưởng tháng này)
+          for (const m of who) {
+            if (!m._file) continue;
+            try {
+              const fh = await dir.getFileHandle(m._file);
+              const obj = JSON.parse(await (await fh.getFile()).text());
+              if (BL.xoaThang(obj, mk, KEYS)) { await write(fh, BL.modelJsonText(obj)); done.push(m._file); }
+            } catch (e) { if (e.name !== 'NotFoundError') bad.push(`${m._file}: ${e.message}`); }
+          }
+          if (done.length) await readNvDir(S.nvRoot || dir);
+        } catch (e) { if (e.name !== 'AbortError') bad.push(e.message); console.error(e); }
+        finally { btn.disabled = false; }
+        if (bad.length) kpiMsg('status err', 'Lỗi: ' + bad.map(h).join('<br>'));
+        else if (done.length) kpiMsg('status ok', h(`✓ Đã xóa KPI, thưởng tháng ${pad2(S.month)}/${S.year} khỏi ${done.join(', ')}.`));
+      };
+
+      // =====================================================================
+      // Bảng lương cá nhân (giống sheet cá nhân khi xuất Excel) — chọn từng người, in / lưu PDF
+      // =====================================================================
+      const slipKey = () => $('selPerson').value;
+      const traLaiOn = () => $('optTraLai').checked;
+      const vnd0 = n => Math.round(num(n)).toLocaleString('vi-VN');   // như fmt nhưng 0 hiện "0"
+      try { $('optTraLai').checked = localStorage.getItem('tinhluong-traLai') === '1'; } catch (e) { /* */ }
+      $('optTraLai').onchange = () => {
+        try { localStorage.setItem('tinhluong-traLai', traLaiOn() ? '1' : '0'); } catch (e) { /* */ }
+        renderSlip();
+      };
+      // ô "Trả lại công ty (tiền mặt)": gõ thì cập nhật ngay số còn lại; rời ô thì lưu (như ô sửa tay)
+      const slipEl = $('slip');
+      slipEl.addEventListener('focusin', e => {
+        const inp = e.target; if (!inp.classList.contains('tl')) return;
+        const r = S.rows.find(q => q.key === inp.dataset.k);
+        inp.value = r && num(r.v.traLai) ? String(Math.round(num(r.v.traLai))) : '';
+        inp.select();
+      });
+      slipEl.addEventListener('input', e => {
+        const inp = e.target; if (!inp.classList.contains('tl')) return;
+        const n = parseCell({}, inp.value), bad = Number.isNaN(n);
+        inp.classList.toggle('bad', bad);
+        const r = S.rows.find(q => q.key === inp.dataset.k), cl = inp.closest('table').querySelector('.cl');
+        if (!bad && r && cl) cl.textContent = fmt(num(r.v.AC) - num(n));
+      });
+      slipEl.addEventListener('focusout', e => {
+        const inp = e.target; if (!inp.classList.contains('tl')) return;
+        const n = parseCell({}, inp.value);
+        if (Number.isNaN(n)) return;
+        const k = inp.dataset.k, r = S.rows.find(q => q.key === k); if (!r) return;
+        const ed = S.edits[k] = S.edits[k] || {};
+        const goc = num(BL.calcSalary(r.e, r.cc, cfg(), r.ov).traLai);   // số trong JSON (traLaiCongTy), thường là 0
+        if (n === null || Math.abs(num(n) - goc) < 1e-9) delete ed.traLai; else ed.traLai = n;
+        if (!Object.keys(ed).length) delete S.edits[k];
+        saveEdits(); compute(); update();
+      });
+      slipEl.addEventListener('keydown', e => {
+        if (e.target.classList.contains('tl') && (e.key === 'Enter' || e.key === 'Escape')) e.target.blur();
+      });
+      function fillPersonSelect() {
+        const sel = $('selPerson'), cur = sel.value;
+        sel.innerHTML = S.rows.length
+          ? S.groups.map(g => `<optgroup label="${h((cfg().boPhan || {})[g.code] || g.code)}">` + g.rows.map(r =>
+            `<option value="${h(r.key)}">${h(r.model.soHDLD)} — ${h(r.model.hoTen)}${r.coCong ? '' : ' (không có công)'}</option>`).join('') + '</optgroup>').join('')
+          : '<option value="">— chưa có ai —</option>';
+        if (cur && S.rows.some(r => r.key === cur)) sel.value = cur;
+        ['btnSlipPrev', 'btnSlipNext', 'btnSlipPrint', 'btnSlipAll'].forEach(id => { $(id).disabled = !S.rows.length; });
+      }
+      function slipHtml(r) {
+        const c = cfg(), [y, mo] = [S.year, pad2(S.month)];
+        const info = [['Số HĐLĐ', r.model.soHDLD], ['Họ và tên', r.model.hoTen], ['Chức vụ', r.model.chucVuCaNhan || r.model.chucVu || ''], ['Mã BP', r.model.maPB || '']];
+        const items = BL.PERSONAL_ITEMS;
+        const val = col => COL[col] && COL[col].day ? (fmtD(r.v[col]) || '-') : fmt(r.v[col]);
+        const cols = '<colgroup><col style="width:11%"><col style="width:51%"><col style="width:38%"></colgroup>';
+        return `<div class="slip">
+          <div class="co"><b>${h(c.congTy.tenNgan || c.congTy.ten)}</b></div>
+          <div class="co"><b>MST : ${h(c.congTy.mst)}</b></div>
+          <div class="co">Địa chỉ : ${h(c.congTy.diaChi)}</div>
+          <div class="ttl">BẢNG LƯƠNG CÁ NHÂN THÁNG ${mo}/${y}</div>
+          <table class="box info"><colgroup><col style="width:62%"><col style="width:38%"></colgroup>
+            ${info.map(([a, b]) => `<tr><td>${h(a)}</td><td>${h(b)}</td></tr>`).join('')}</table>
+          <table class="box">${cols}
+            <tr><th>STT</th><th>THÔNG TIN CƠ BẢN</th><th>THU NHẬP</th></tr>
+            ${items.map(([lab, col], k) => `<tr class="${k === items.length - 1 ? 'last' : ''}"><td class="stt">${k + 1}</td><td>${h(lab)}</td><td class="n">${val(col)}</td></tr>`).join('')}
+          </table>
+          <table class="after">${cols}
+            ${traLaiOn() ? `<tr><td></td><td class="red">Trả lại công ty (tiền mặt)</td><td class="n"><input class="tl" data-k="${h(r.key)}" inputmode="numeric" title="Gõ số tiền trả lại (vd. 7.000.000). Xóa trống = 0." value="${vnd0(r.v.traLai)}"></td></tr>` : ''}
+            <tr><td></td><td>Số tiền còn lại nhận được</td><td class="n cl">${fmt(traLaiOn() ? r.v.conLai : r.v.AC)}</td></tr>
+          </table>
+          <div class="sg"><div>Người lập<div class="nm">${h(c.nguoiLap || '')}</div></div><div>Ký nhận<div class="nm">${h(r.model.hoTen)}</div></div></div>
+        </div>`;
+      }
+      function renderSlip(all) {
+        const list = all ? S.rows : S.rows.filter(r => r.key === slipKey());
+        $('slip').innerHTML = list.length ? list.map(slipHtml).join('')
+          : `<p class="muted" style="padding:8px">${S.models.length ? 'Không có ai để tính lương tháng này.' : 'Chọn thư mục nhân viên ở mục 1.'}</p>`;
+      }
+      $('selPerson').onchange = () => renderSlip();
+      const stepPerson = d => {
+        const sel = $('selPerson'), n = sel.options.length; if (!n) return;
+        sel.selectedIndex = (sel.selectedIndex + d + n) % n; renderSlip();
+      };
+      $('btnSlipPrev').onclick = () => stepPerson(-1);
+      $('btnSlipNext').onclick = () => stepPerson(1);
+      // in phiếu: khổ A4 dọc, tên file PDF gợi ý = tên sheet (vd. 11.2026-Nhung_LNN)
+      function printSlip(all) {
+        const r = S.rows.find(x => x.key === slipKey());
+        if (!all && !r) return;
+        renderSlip(all);
+        const title = document.title;
+        document.title = all ? `BANG_LUONG_CA_NHAN_${S.year}_T${pad2(S.month)}` : `${BL.monthLabel(monthKey())}-${BL.personalSheetName(r.model.hoTen)}`;
+        const pg = document.createElement('style');
+        pg.textContent = '@page { size: A4 portrait; margin: 15mm 12mm 12mm 18mm; }';
+        document.head.appendChild(pg);
+        document.body.classList.add('print-slip');
+        const done = () => {
+          window.removeEventListener('afterprint', done);
+          document.body.classList.remove('print-slip'); pg.remove(); document.title = title;
+          renderSlip();
+        };
+        window.addEventListener('afterprint', done);
+        window.print();
+      }
+      $('btnSlipPrint').onclick = () => printSlip(false);
+      $('btnSlipAll').onclick = () => printSlip(true);
+
+      // in: luôn bỏ cột phụ AF–AJ
+      window.addEventListener('beforeprint', () => applyHelper(false));
+      window.addEventListener('afterprint', () => applyHelper());
+      $('selZoom').onchange = () => { $('sheet').style.zoom = $('selZoom').value; fixStickyTops(); };
+      $('btnPrint').onclick = () => window.print();
+
+      // =====================================================================
+      // Tháng / năm
+      // =====================================================================
+      // link sang trang khác giữ tháng đang xem (?thang=YYYY-MM)
+      const URL_THANG = (new URLSearchParams(location.search).get('thang') || '').match(/^\d{4}-\d{2}$/) ? new URLSearchParams(location.search).get('thang') : null;
+      const setNavMonth = mk => document.querySelectorAll('a[data-thang]').forEach(a => { a.href = a.getAttribute('href').split('?')[0] + (mk ? '?thang=' + mk : ''); });
+      function buildPeriods(list) {
+        let opts = [...new Set(list)].sort();
+        if (!opts.length) opts = [monthKey()];
+        $('selPeriod').innerHTML = opts.map(k => `<option value="${k}">Tháng ${k.slice(5)}/${k.slice(0, 4)}</option>`).join('');
+        const cur = URL_THANG && opts.includes(URL_THANG) ? URL_THANG : opts[opts.length - 1];   // mở từ trang khác: giữ tháng
+        $('selPeriod').value = cur;
+        [S.year, S.month] = cur.split('-').map(Number);
+        setNavMonth(cur);
+      }
+      $('selPeriod').onchange = () => { [S.year, S.month] = $('selPeriod').value.split('-').map(Number); setNavMonth(monthKey()); loadMonth(); };
+
+      let loadSeq = 0;
+      async function loadMonth() {
+        const seq = ++loadSeq;
+        loadEdits();
+        $('stCc').className = 'status'; $('stCc').textContent = 'Đang đọc chấm công…';
+        const d = await attendance();
+        if (seq !== loadSeq || !d) return;
+        ccData = d;
+        $('stCc').className = 'status' + (S.ccSrc.startsWith('✓') ? ' ok' : '');
+        $('stCc').textContent = S.ccSrc;
+        $('srcInfo').textContent = S.nvSrc ? `Lương: ${S.nvSrc}` : '';
+        compute(); render();
+      }
+
+      // =====================================================================
+      // 3. Xuất Excel (dùng BL.salaryWorkbookFor: sheet tổng tháng + sheet cá nhân, có công thức)
+      // =====================================================================
+      const newName = () => `BANG_LUONG_${S.year}_T${pad2(S.month)}.xlsx`;
+      const appendName = old => { const base = String(old).replace(/\.xlsx$/i, ''), suf = `_T${pad2(S.month)}`; return (base.toUpperCase().endsWith(suf) ? base : base + suf) + '.xlsx'; };
+      document.querySelectorAll('input[name=mode]').forEach(r => r.onchange = () => {
+        const ap = mode() === 'append';
+        $('oldFile').classList.toggle('hidden', !ap); $('lblOver').classList.toggle('hidden', !ap);
+      });
+      async function loadBL(file) {
+        $('stBL').className = 'status'; $('stBL').textContent = 'Đang đọc…';
+        try {
+          const buf = await file.arrayBuffer();
+          const wb = new ExcelJS.Workbook(); await wb.xlsx.load(buf);
+          S.bl = { name: file.name, buf, wb };
+          const target = BL.monthLabel(monthKey());
+          const has = wb.worksheets.some(w => w.name.trim().toLowerCase() === target.toLowerCase());
+          $('stBL').className = 'status ok';
+          $('stBL').innerHTML = `✓ ${h(file.name)} — ${wb.worksheets.length} sheet · ` + (has ? `<b>sheet ${h(target)} đã có</b>` : `sẽ thêm sheet <b>${h(target)}</b>`);
+        } catch (e) { S.bl = null; $('stBL').className = 'status err'; $('stBL').textContent = '✗ ' + e.message; console.error(e); }
+      }
+      $('btnBL').onclick = async () => {
+        if (window.showOpenFilePicker) {
+          try { const [hd] = await window.showOpenFilePicker({ id: 'tinhluong-xlsx', types: [{ description: 'Excel', accept: { [XLSX_TYPE]: ['.xlsx'] } }] }); return loadBL(await hd.getFile()); }
+          catch (e) { if (e.name === 'AbortError') return; console.warn(e); }
+        }
+        $('fBL').click();
+      };
+      $('fBL').onchange = e => { if (e.target.files[0]) loadBL(e.target.files[0]); e.target.value = ''; };
+
+      $('btnExport').onclick = async () => {
+        const btn = $('btnExport'); btn.disabled = true; $('log').innerHTML = '';
+        try {
+          if (!S.rows.length) { log('Chưa có dòng lương nào để xuất.', 'err'); return; }
+          const bad = document.querySelectorAll('#tbl input.bad').length;
+          if (bad) { log(`Có ${bad} ô nhập sai (viền đỏ) — sửa trước khi xuất.`, 'err'); return; }
+          const month = { monthKey: monthKey(), rows: S.rows, warnings: S.warnings };
+          const personal = $('optPersonal').checked;
+          if (mode() === 'new') {
+            const out = BL.salaryWorkbookFor(null, month, cfg(), { createMonth: true, createPersonal: personal, traLai: traLaiOn() });
+            out.warnings.forEach(w => log(w, 'warn'));
+            const fn = newName(); download(await out.wb.xlsx.writeBuffer(), fn);
+            log(`✓ Đã tải về “${fn}” (${out.plan.length} sheet).`, 'ok');
+          } else {
+            if (!S.bl) { log('Chưa chọn file bảng lương cũ.', 'err'); return; }
+            const over = $('optOver').checked;
+            const out = BL.salaryWorkbookFor(S.bl.wb, month, cfg(), { createMonth: true, createPersonal: personal, overwriteMonth: over, overwritePersonal: over, traLai: traLaiOn() });
+            out.skipped.forEach(s => log(`Bỏ qua: ${s} — tích “Ghi đè” nếu muốn thay.`, 'warn'));
+            out.warnings.forEach(w => log(w, 'warn'));
+            if (!out.plan.length) { log('Không có sheet nào mới để ghi.', 'err'); return; }
+            const merged = await BL.mergeIntoXlsx(S.bl.buf, await out.wb.xlsx.writeBuffer(), out.plan);
+            out.plan.forEach(p => log(`${p.action === 'overwrite' ? 'Ghi đè' : 'Thêm'} sheet “${p.finalName.trim()}”.`, 'ok'));
+            const fn = appendName(S.bl.name); download(merged.data, fn); log(`✓ Đã tải về “${fn}”.`, 'ok');
+          }
+        } catch (err) { console.error(err); log('Lỗi: ' + err.message, 'err'); }
+        finally { btn.disabled = false; }
+      };
+
+      // =====================================================================
+      // Mở trang
+      // =====================================================================
+      window.addEventListener('resize', fixStickyTops);
+      // quay lại từ trang chấm công (bản nháp vừa đổi): tính lại
+      window.addEventListener('storage', e => { if (e.key === `chamcong-nhap-${monthKey()}`) loadMonth(); });
+      (async () => {
+        try {
+          const r = await fetch(DATA_URL + '/months.txt', { cache: 'no-store' });
+          buildPeriods(r.ok ? monthsOf(await r.text()) : []);
+        } catch (e) { buildPeriods([]); }
+        render();
+        if (!(await tryRememberedDir())) {
+          if (!(await tryFetchNv())) {
+            $('stNv').className = 'status';
+            $('stNv').textContent = 'Chọn thư mục chứa file JSON lương của nhân viên (để trên máy, không đưa lên web).';
+            loadMonth();
+          }
+        }
+      })();
+    })();
+  </script>
+</body>
+
+</html>
